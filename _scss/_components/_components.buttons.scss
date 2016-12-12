@@ -21,7 +21,7 @@
   font: inherit; /* [3] */
   text-align: center; /* [4] */
   margin: 0; /* [4] */
-  padding: $inuit-global-spacing-unit-small $inuit-global-spacing-unit $inuit-global-spacing-unit-small*1.1;
+  padding: $inuit-global-spacing-unit-small $inuit-global-spacing-unit;
   transition: $global-transition;
   border-radius: $global-radius;
 }
@@ -34,11 +34,11 @@
    ========================================================================== */
 
 .c-btn--small {
-  padding: inuit-rem($inuit-global-spacing-unit-tiny) inuit-rem($inuit-global-spacing-unit-small) inuit-rem($inuit-global-spacing-unit-tiny*1.1);
+  padding: inuit-rem($inuit-global-spacing-unit-tiny) inuit-rem($inuit-global-spacing-unit-small);
 }
 
 .c-btn--large {
-  padding: inuit-rem($inuit-global-spacing-unit) inuit-rem($inuit-global-spacing-unit-large) inuit-rem($inuit-global-spacing-unit*1.1);
+  padding: inuit-rem($inuit-global-spacing-unit) inuit-rem($inuit-global-spacing-unit-large);
 }
 
 .c-btn--block {
@@ -121,7 +121,7 @@ $btn-ghost-border-width: 2px !default;
 
 .c-btn--ghost {
   border: $btn-ghost-border-width solid currentColor;
-  padding: ($inuit-global-spacing-unit-small - $btn-ghost-border-width) ($inuit-global-spacing-unit - $btn-ghost-border-width) ($inuit-global-spacing-unit-small*1.1 - $btn-ghost-border-width);
+  padding: ($inuit-global-spacing-unit-small - $btn-ghost-border-width) ($inuit-global-spacing-unit - $btn-ghost-border-width);
 
   &,
   &:hover,
@@ -131,11 +131,11 @@ $btn-ghost-border-width: 2px !default;
   }
 
   &.c-btn--small {
-    padding: ($inuit-global-spacing-unit-tiny - $btn-ghost-border-width) ($inuit-global-spacing-unit-small - $btn-ghost-border-width) ($inuit-global-spacing-unit-tiny*1.1 - $btn-ghost-border-width);
+    padding: ($inuit-global-spacing-unit-tiny - $btn-ghost-border-width) ($inuit-global-spacing-unit-small - $btn-ghost-border-width);
   }
 
   &.c-btn--large {
-    padding: ($inuit-global-spacing-unit - $btn-ghost-border-width) ($inuit-global-spacing-unit-large - $btn-ghost-border-width) ($inuit-global-spacing-unit*1.1 - $btn-ghost-border-width);
+    padding: ($inuit-global-spacing-unit - $btn-ghost-border-width) ($inuit-global-spacing-unit-large - $btn-ghost-border-width);
   }
 
   &.c-btn--primary {
@@ -189,11 +189,4 @@ $btn-ghost-border-width: 2px !default;
   .c-link {
     margin: $inuit-global-spacing-unit 0;
   }
-
-
-  // @include mq(small) {
-  //   .c-btn {
-  //     margin-bottom: 0;
-  //   }
-  // }
 }

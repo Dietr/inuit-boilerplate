@@ -1,0 +1,20 @@
+/* ==========================================================================
+   #CARDS
+   ========================================================================== */
+
+.c-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-radius: $global-radius;
+  overflow: hidden;
+}
+
+.c-card--shadow {
+  border: 1px solid $color-neutral-xlight;
+  box-shadow: 0 0 20px rgba($black,.1);
+}
+
+.c-card--match {
+  height: 100%;
+}

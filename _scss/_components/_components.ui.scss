@@ -6,11 +6,6 @@
 .c-ui {
   display: flex;
   justify-content: space-between;
-  padding: $inuit-global-spacing-unit; // @TODO: should this be a responsive box object?
-
-  @include mq(large) {
-    padding: $inuit-global-spacing-unit-large;
-  }
 }
 
 .c-ui--header {

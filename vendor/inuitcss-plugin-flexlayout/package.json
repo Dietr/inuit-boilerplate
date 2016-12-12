@@ -2,25 +2,25 @@
   "_args": [
     [
       {
-        "raw": "inuitcss-plugin-flexlayout",
+        "raw": "inuitcss-plugin-flexlayout@^1.0.1",
         "scope": null,
         "escapedName": "inuitcss-plugin-flexlayout",
         "name": "inuitcss-plugin-flexlayout",
-        "rawSpec": "",
-        "spec": "latest",
-        "type": "tag"
+        "rawSpec": "^1.0.1",
+        "spec": ">=1.0.1 <2.0.0",
+        "type": "range"
       },
-      "/Users/dieterpeirs/3-Sites/hashi-boilerplate"
+      "/Users/dieterpeirs/3-Sites/inuit-boilerplate"
     ]
   ],
-  "_from": "inuitcss-plugin-flexlayout@latest",
-  "_id": "inuitcss-plugin-flexlayout@1.0.0",
+  "_from": "inuitcss-plugin-flexlayout@>=1.0.1 <2.0.0",
+  "_id": "inuitcss-plugin-flexlayout@1.0.1",
   "_inCache": true,
   "_location": "/inuitcss-plugin-flexlayout",
   "_nodeVersion": "7.2.1",
   "_npmOperationalInternal": {
     "host": "packages-18-east.internal.npmjs.com",
-    "tmp": "tmp/inuitcss-plugin-flexlayout-1.0.0.tgz_1481393303787_0.17192586278542876"
+    "tmp": "tmp/inuitcss-plugin-flexlayout-1.0.1.tgz_1481559816746_0.3588170842267573"
   },
   "_npmUser": {
     "name": "dietr",
@@ -29,23 +29,22 @@
   "_npmVersion": "3.10.10",
   "_phantomChildren": {},
   "_requested": {
-    "raw": "inuitcss-plugin-flexlayout",
+    "raw": "inuitcss-plugin-flexlayout@^1.0.1",
     "scope": null,
     "escapedName": "inuitcss-plugin-flexlayout",
     "name": "inuitcss-plugin-flexlayout",
-    "rawSpec": "",
-    "spec": "latest",
-    "type": "tag"
+    "rawSpec": "^1.0.1",
+    "spec": ">=1.0.1 <2.0.0",
+    "type": "range"
   },
   "_requiredBy": [
-    "#USER",
     "/"
   ],
-  "_resolved": "https://registry.npmjs.org/inuitcss-plugin-flexlayout/-/inuitcss-plugin-flexlayout-1.0.0.tgz",
-  "_shasum": "477c991e82a8a9d1285f2e804ce2aa6dcba1eded",
+  "_resolved": "https://registry.npmjs.org/inuitcss-plugin-flexlayout/-/inuitcss-plugin-flexlayout-1.0.1.tgz",
+  "_shasum": "f456871715e3ead78967f3ffb8c927e3659aa4f5",
   "_shrinkwrap": null,
-  "_spec": "inuitcss-plugin-flexlayout",
-  "_where": "/Users/dieterpeirs/3-Sites/hashi-boilerplate",
+  "_spec": "inuitcss-plugin-flexlayout@^1.0.1",
+  "_where": "/Users/dieterpeirs/3-Sites/inuit-boilerplate",
   "author": {
     "name": "Dieter Peirs"
   },
@@ -57,10 +56,10 @@
   "devDependencies": {},
   "directories": {},
   "dist": {
-    "shasum": "477c991e82a8a9d1285f2e804ce2aa6dcba1eded",
-    "tarball": "https://registry.npmjs.org/inuitcss-plugin-flexlayout/-/inuitcss-plugin-flexlayout-1.0.0.tgz"
+    "shasum": "f456871715e3ead78967f3ffb8c927e3659aa4f5",
+    "tarball": "https://registry.npmjs.org/inuitcss-plugin-flexlayout/-/inuitcss-plugin-flexlayout-1.0.1.tgz"
   },
-  "gitHead": "dc9d416ba49191f00653351b73aa1ef9fbd50f13",
+  "gitHead": "10e71d7316f85d401055872709fe354bde3efbdf",
   "homepage": "https://github.com/Dietr/inuitcss-plugin-flexlayout",
   "license": "Apache-2.0",
   "main": "_objects.flexlayout.scss",
@@ -78,5 +77,5 @@
     "url": "git+https://github.com/Dietr/inuitcss-plugin-flexlayout.git"
   },
   "scripts": {},
-  "version": "1.0.0"
+  "version": "1.0.1"
 }
