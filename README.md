@@ -31,10 +31,6 @@ Inuit boilerplate uses Jekyll to generate the html and process the `.scss` files
 - [Jekyll documentation](http://jekyllrb.com/docs/home/)
 - [Gulp documentation](https://github.com/gulpjs/gulp/blob/master/docs/getting-started.md)
 
-Documentation of the '.scss' framework can be found as comments in the following files:
-- [css/main.scss](https://github.com/Dietr/hashi-boilerplate/blob/master/css/main.scss)
-- [_scss/*.scss](https://github.com/Dietr/hashi-boilerplate/tree/master/_scss)
-
 ## Credits
 - [InuitCSS](https://github.com/inuitcss/inuitcss) by [@csswizardry](https://twitter.com/csswizardry) for [InuitCSS](https://github.com/inuitcss).
 - [Chopstick boilerplate](https://github.com/getchopstick/chopstick-boilerplate/).
