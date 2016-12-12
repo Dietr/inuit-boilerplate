@@ -1,6 +1,6 @@
 # Inuit boilerplate
 
-Inuit boilerplate is an opinionated starter kit to help you build or prototype static marketing or content websites. It uses [Jekyll](http://jekyllrb.com/) as a static site generator, [Gulp](http://gulpjs.com/) as a worklow automation tool and  [InuitCSS](https://github.com/inuitcss) as CSS framework.
+Inuit boilerplate is an opinionated starter kit to help you build or prototype static marketing or content websites. It uses [Jekyll](http://jekyllrb.com/) as a static site generator, [Gulp](http://gulpjs.com/) as a worklow automation tool and [InuitCSS](https://github.com/inuitcss) as CSS framework.
 
 You are free to copy, modify, and distribute Inuit boilerplate, even for commercial purposes, without asking for permission. For any third-party code please refer to the corresponding license included in this project.
 
@@ -36,4 +36,5 @@ Documentation of the '.scss' framework can be found as comments in the following
 - [_scss/*.scss](https://github.com/Dietr/hashi-boilerplate/tree/master/_scss)
 
 ## Credits
-- [InuitCSS](https://github.com/inuitcss/inuitcss) by [@csswizardry](https://twitter.com/csswizardry) for the ITcss architecture and tons of ideas and best practices.
+- [InuitCSS](https://github.com/inuitcss/inuitcss) by [@csswizardry](https://twitter.com/csswizardry) for [InuitCSS](https://github.com/inuitcss).
+- [Chopstick boilerplate](https://github.com/getchopstick/chopstick-boilerplate/).

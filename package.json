@@ -1,18 +1,18 @@
 {
-  "name": "hashi-boilerplate",
-  "version": "0.2.0",
-  "description": "Hashi is a prototyping boilerplate using Jekyll as static site generator and InuitCSS as CSS framework",
+  "name": "inuit-boilerplate",
+  "version": "0.1.0",
+  "description": "Inuit boilerplate is a prototyping boilerplate using Jekyll as static site generator and InuitCSS as CSS framework",
   "main": "gulpfile.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Dietr/hashi-boilerplate.git"
+    "url": "git+https://github.com/Dietr/inuit-boilerplate.git"
   },
   "author": "",
   "license": "Unlicense",
   "bugs": {
-    "url": "https://github.com/Dietr/hashi-boilerplate/issues"
+    "url": "https://github.com/Dietr/inuit-boilerplate/issues"
   },
-  "homepage": "https://github.com/Dietr/hashi-boilerplate#readme",
+  "homepage": "https://github.com/Dietr/inuit-boilerplate#readme",
   "devDependencies": {
     "autoprefixer": "^6.5.0",
     "babel-core": "^6.17.0",
