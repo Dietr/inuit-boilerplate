@@ -3,31 +3,73 @@
    ========================================================================== */
 
 .c-navigation {
-  display: none;
+  position: fixed;
+  z-index: $z-index-alpha;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  padding-left: $inuit-global-spacing-unit;
+  padding-right: $inuit-global-spacing-unit;
+  background-color: rgba($color-neutral-light,.95);
+  transform: translateX(-100%);
+  transition: $global-transition;
+
+  &.is-active {
+    display: block;
+    transform: translateX(0);
+  }
 
   @include mq(small) {
-    display: block;
+    position: relative;
+    padding: 0;
+    transform: translateX(0);
+    background-color: transparent;
+    transition: none;
   }
 }
 
+.has-nav {
+  overflow: hidden;
+}
+
 .c-navigation-list {
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
   margin-bottom: 0;
+  text-align: center;
+
+  @include mq(small) {
+    text-align: left;
+    top: 0;
+    transform: translateY(0);
+  }
 }
 
   .c-navigation-list__item {
-    display: inline-block;
-
     & + & {
-      margin-left: $inuit-global-spacing-unit;
+      margin-top: $inuit-global-spacing-unit;
+    }
+
+    @include mq(small) {
+      display: inline-block;
+
+      & + & {
+        margin-top: 0;
+        margin-left: $inuit-global-spacing-unit;
+      }
     }
   }
 
 .c-navigation-toggle {
   position: absolute;
+  z-index: $z-index-alpha;
   right: $inuit-global-spacing-unit;
   border: 0;
   color: $color-primary;
   background-color: transparent;
+  transition: $global-transition;
 
   &:focus {
     outline: 0;

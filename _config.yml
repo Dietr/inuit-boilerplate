@@ -13,6 +13,7 @@ exclude:
 - "*.md"
 - "*.json"
 - node_modules
+- vendor
 - gulp*
 - ".jekyll-metadata"
 - ".*"
@@ -34,8 +35,8 @@ google_analytics: none
 
 # Site navigation
 navigation:
-  - title: About
-    url: About/
+  - title: Base
+    url: base/
 
 
 # Collections

@@ -21,6 +21,7 @@ import cleanCSS from 'gulp-clean-css';
 import postcss from 'gulp-postcss';
 import autoprefixer from 'autoprefixer';
 import sourcemaps from 'gulp-sourcemaps';
+import babel from 'gulp-babel';
 import concat from 'gulp-concat';
 import uglify from 'gulp-uglify';
 import critical from 'critical';
@@ -100,15 +101,26 @@ const paths = {
   scssSrc: '_scss/**/*.scss',
   cssSrc: 'css/',
   cssDist: '_site/css/',
-  jsSrc: 'js/_scripts/*.js',
+  jsSrc: [
+    'node_modules/svgxuse/svgxuse.js',
+    'node_modules/picturefill/dist/picturefill.js',
+    'node_modules/lazysizes/lazysizes.js',
+    'js/_scripts/*.js'
+  ],
   jsDist: 'js/',
-  criticaljsSrc: 'js/_enhance/*.js',
+  jsJekyllDist: '_site/js/',
+  criticaljsSrc: [
+    'node_modules/fg-loadjs/loadJS.js',
+    'node_modules/fg-loadcss/src/cssrelpreload.js',
+    'node_modules/fg-loadcss/src/loadCSS.js',
+    'node_modules/fg-loadcss/src/onloadCSS.js'
+  ],
   criticaljsDist: '_includes/',
   symbolsSrc: '_artwork/symbols/*.svg',
   symbolsDist: 'img/svg/',
   cssWatch: '_scss/**/*.scss',
   criticalcssWatch: 'css/screen.min*',
-  jsWatch: 'js/_scripts/*.js',
+  jsWatch: 'js/_scripts/**/*.js',
   symbolsWatch: '_artwork/symbols/*.svg',
   siteWatch: [
     'img/**/*.png',
@@ -221,7 +233,12 @@ gulp.task('criticalcss', () => {
 // Concat JS > 'gulp js'
 gulp.task('js', () => {
   return gulp.src(paths.jsSrc)
+    .pipe(babel({
+      presets: ['es2017-node7']
+    }))
     .pipe(concat(config.jsConcat))
+    .pipe(gulp.dest(paths.jsJekyllDist))
+    .pipe(browserSync.stream())
     .pipe(gulp.dest(paths.jsDist));
 });
 
@@ -229,6 +246,9 @@ gulp.task('js', () => {
 // Compress and concat JS > 'gulp productionjs'
 gulp.task('productionjs', () => {
   return gulp.src(paths.jsSrc)
+    .pipe(babel({
+      presets: ['es2017-node7']
+    }))
     .pipe(concat(config.minifyjsConcat))
     .pipe(uglify())
     .pipe(gulp.dest(paths.jsDist));
