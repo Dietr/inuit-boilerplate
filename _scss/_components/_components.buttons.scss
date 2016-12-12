@@ -1,0 +1,199 @@
+/* ==========================================================================
+   #BUTTONS
+   ========================================================================== */
+
+/**
+ * This is an example component. Extend inuitcss by building your own components
+ * that make up your UI. Component classes are prefixed with a `c-`.
+ */
+
+/**
+ * 1. Allow us to style box model properties.
+ * 2. Line different sized buttons up a little nicer.
+ * 3. Make buttons inherit font styles (often necessary when styling `input`s as
+ *    buttons).
+ * 4. Reset/normalize some styles.
+ */
+
+.c-btn {
+  display: inline-block; /* [1] */
+  vertical-align: middle; /* [2] */
+  font: inherit; /* [3] */
+  text-align: center; /* [4] */
+  margin: 0; /* [4] */
+  padding: $inuit-global-spacing-unit-small $inuit-global-spacing-unit $inuit-global-spacing-unit-small*1.1;
+  transition: $global-transition;
+  border-radius: $global-radius;
+}
+
+
+
+
+
+/* Size variants
+   ========================================================================== */
+
+.c-btn--small {
+  padding: inuit-rem($inuit-global-spacing-unit-tiny) inuit-rem($inuit-global-spacing-unit-small) inuit-rem($inuit-global-spacing-unit-tiny*1.1);
+}
+
+.c-btn--large {
+  padding: inuit-rem($inuit-global-spacing-unit) inuit-rem($inuit-global-spacing-unit-large) inuit-rem($inuit-global-spacing-unit*1.1);
+}
+
+.c-btn--block {
+  display: block;
+}
+
+
+
+
+
+/* Style variants
+   ========================================================================== */
+
+.c-btn--primary {
+  background-color: $color-primary;
+
+  &,
+  &:hover,
+  &:active,
+  &:focus {
+    text-decoration: none; /* [4] */
+    color: $white;
+  }
+
+  &:hover,
+  &:focus {
+    background-color: $color-primary-light;
+  }
+
+}
+
+.c-btn--secondary {
+  background-color: $color-secondary;
+
+  &,
+  &:hover,
+  &:active,
+  &:focus {
+    text-decoration: none;
+    color: $white;
+  }
+
+  &:hover,
+  &:focus {
+    background-color: $color-secondary-light;
+  }
+
+}
+
+.c-btn--tertiary {
+  background-color: $color-tertiary;
+
+  &,
+  &:hover,
+  &:active,
+  &:focus {
+    text-decoration: none;
+    color: $white;
+  }
+
+  &:hover,
+  &:focus {
+    background-color: $color-tertiary-light;
+  }
+
+}
+
+
+
+
+
+/* Ghost buttons
+   ========================================================================== */
+
+/**
+ * Ghost buttons have see-through backgrounds and are bordered.
+ */
+
+$btn-ghost-border-width: 2px !default;
+
+.c-btn--ghost {
+  border: $btn-ghost-border-width solid currentColor;
+  padding: ($inuit-global-spacing-unit-small - $btn-ghost-border-width) ($inuit-global-spacing-unit - $btn-ghost-border-width) ($inuit-global-spacing-unit-small*1.1 - $btn-ghost-border-width);
+
+  &,
+  &:hover,
+  &:active,
+  &:focus {
+    background: none;
+  }
+
+  &.c-btn--small {
+    padding: ($inuit-global-spacing-unit-tiny - $btn-ghost-border-width) ($inuit-global-spacing-unit-small - $btn-ghost-border-width) ($inuit-global-spacing-unit-tiny*1.1 - $btn-ghost-border-width);
+  }
+
+  &.c-btn--large {
+    padding: ($inuit-global-spacing-unit - $btn-ghost-border-width) ($inuit-global-spacing-unit-large - $btn-ghost-border-width) ($inuit-global-spacing-unit*1.1 - $btn-ghost-border-width);
+  }
+
+  &.c-btn--primary {
+    color: $color-primary;
+
+    &:hover,
+    &:focus {
+      color: $color-primary-light;
+    }
+
+  }
+
+  &.c-btn--secondary {
+    color: $color-secondary;
+
+    &:hover,
+    &:focus {
+      color: $color-secondary-light;
+    }
+
+  }
+
+  &.c-btn--tertiary {
+    color: $color-tertiary;
+
+    &:hover,
+    &:focus {
+      color: $color-tertiary-light;
+    }
+
+  }
+
+}
+
+
+
+
+
+/* Button groups
+   ========================================================================== */
+
+.c-btn-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+
+  .c-btn {
+    margin-right: $inuit-global-spacing-unit;
+  }
+
+  .c-link {
+    margin: $inuit-global-spacing-unit 0;
+  }
+
+
+  // @include mq(small) {
+  //   .c-btn {
+  //     margin-bottom: 0;
+  //   }
+  // }
+}

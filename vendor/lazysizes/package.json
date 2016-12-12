@@ -1,0 +1,133 @@
+{
+  "_args": [
+    [
+      {
+        "raw": "lazysizes@^3.0.0-rc2",
+        "scope": null,
+        "escapedName": "lazysizes",
+        "name": "lazysizes",
+        "rawSpec": "^3.0.0-rc2",
+        "spec": ">=3.0.0-rc2 <4.0.0",
+        "type": "range"
+      },
+      "/Users/dieterpeirs/3-Sites/hashi-boilerplate"
+    ]
+  ],
+  "_from": "lazysizes@>=3.0.0-rc2 <4.0.0",
+  "_id": "lazysizes@3.0.0-rc2",
+  "_inCache": true,
+  "_location": "/lazysizes",
+  "_nodeVersion": "6.9.1",
+  "_npmOperationalInternal": {
+    "host": "packages-12-west.internal.npmjs.com",
+    "tmp": "tmp/lazysizes-3.0.0-rc2.tgz_1480366356207_0.9982177747879177"
+  },
+  "_npmUser": {
+    "name": "afarkas",
+    "email": "info@corrupt-system.de"
+  },
+  "_npmVersion": "3.10.8",
+  "_phantomChildren": {},
+  "_requested": {
+    "raw": "lazysizes@^3.0.0-rc2",
+    "scope": null,
+    "escapedName": "lazysizes",
+    "name": "lazysizes",
+    "rawSpec": "^3.0.0-rc2",
+    "spec": ">=3.0.0-rc2 <4.0.0",
+    "type": "range"
+  },
+  "_requiredBy": [
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/lazysizes/-/lazysizes-3.0.0-rc2.tgz",
+  "_shasum": "f83c9c5d3a061a44e636012dc37a622714251ed0",
+  "_shrinkwrap": null,
+  "_spec": "lazysizes@^3.0.0-rc2",
+  "_where": "/Users/dieterpeirs/3-Sites/hashi-boilerplate",
+  "author": {
+    "name": "Alexander Farkas",
+    "email": "info@corrupt-system.de"
+  },
+  "browser": "lazysizes.js",
+  "bugs": {
+    "url": "https://github.com/aFarkas/lazysizes/issues"
+  },
+  "dependencies": {},
+  "description": "High performance (jankfree) lazy loader for images (including responsive images), iframes and scripts (widgets).",
+  "devDependencies": {
+    "grunt": "~0.4.2",
+    "grunt-bytesize": "~0.1.1",
+    "grunt-cli": "~0.1",
+    "grunt-contrib-jshint": "^1.0.0",
+    "grunt-contrib-qunit": "^0.5.2",
+    "grunt-contrib-uglify": "^0.7.0",
+    "grunt-contrib-watch": "~0.4.0",
+    "grunt-max-filesize": "^0.1.0",
+    "grunt-plato": "^1.2.1",
+    "grunt-uncss": "~0.3.7",
+    "jquery": "^2.1.4",
+    "jquery-deparam": "^0.1.0",
+    "picturefill": "^2.2.0",
+    "qunitjs": "^1.17.0",
+    "respimage": "^1.4.2"
+  },
+  "directories": {},
+  "dist": {
+    "shasum": "f83c9c5d3a061a44e636012dc37a622714251ed0",
+    "tarball": "https://registry.npmjs.org/lazysizes/-/lazysizes-3.0.0-rc2.tgz"
+  },
+  "filename": "lazysizes.min.js",
+  "gitHead": "ffb23cf9bfa2c410fff14c41316be20bfffb45ef",
+  "homepage": "https://github.com/aFarkas/lazysizes#readme",
+  "keywords": [
+    "lazy",
+    "loader",
+    "lazyloader",
+    "lazyload",
+    "lazySizes",
+    "performance",
+    "responsive",
+    "image",
+    "images",
+    "responsive images",
+    "picture",
+    "srcset",
+    "respimg",
+    "respimage",
+    "include",
+    "ajax",
+    "img",
+    "imager",
+    "imager.js",
+    "picturefill",
+    "component"
+  ],
+  "main": "lazysizes.js",
+  "maintainers": [
+    {
+      "name": "afarkas",
+      "email": "info@corrupt-system.de"
+    }
+  ],
+  "name": "lazysizes",
+  "namespace": "lazySizes",
+  "npmFileMap": [
+    {
+      "basePath": "",
+      "files": [
+        "lazysizes.min.js",
+        "plugins/**/*.min.js"
+      ]
+    }
+  ],
+  "npmName": "lazysizes",
+  "optionalDependencies": {},
+  "readme": "ERROR: No README data found!",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/aFarkas/lazysizes.git"
+  },
+  "scripts": {},
+  "version": "3.0.0-rc2"
+}

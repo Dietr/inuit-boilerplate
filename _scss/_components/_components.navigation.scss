@@ -1,0 +1,39 @@
+/* ==========================================================================
+   #NAVIGATION
+   ========================================================================== */
+
+.c-navigation {
+  display: none;
+
+  @include mq(small) {
+    display: block;
+  }
+}
+
+.c-navigation-list {
+  margin-bottom: 0;
+}
+
+  .c-navigation-list__item {
+    display: inline-block;
+
+    & + & {
+      margin-left: $inuit-global-spacing-unit;
+    }
+  }
+
+.c-navigation-toggle {
+  position: absolute;
+  right: $inuit-global-spacing-unit;
+  border: 0;
+  color: $color-primary;
+  background-color: transparent;
+
+  &:focus {
+    outline: 0;
+  }
+
+  @include mq(small) {
+    display: none;
+  }
+}

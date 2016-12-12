@@ -1,0 +1,58 @@
+/* ==========================================================================
+   #UI
+   ========================================================================== */
+
+// Create a row with responsive padding and even spaced children. Used for a header or footer design pattern.
+.c-ui {
+  display: flex;
+  justify-content: space-between;
+  padding: $inuit-global-spacing-unit; // @TODO: should this be a responsive box object?
+
+  @include mq(large) {
+    padding: $inuit-global-spacing-unit-large;
+  }
+}
+
+.c-ui--header {
+  align-items: center;
+}
+
+.c-ui--footer {
+  flex-direction: column;
+
+  @include mq(small) {
+    flex-direction: row;
+  }
+
+  @include mq(large) {
+    align-items: center;
+  }
+}
+
+
+
+
+
+// A responsive list element. Transforming from a vertical to a horizontal list depending on a breakpoint.
+.c-ui-list {
+  display: flex;
+  flex-direction: column;
+
+  @include mq(medium) {
+    flex-direction: row;
+    margin-bottom: 0;
+  }
+}
+
+  .c-ui-list__item {
+    & + & {
+      margin-top: $inuit-global-spacing-unit-small;
+    }
+
+    @include mq(medium) {
+      & + & {
+        margin-top: 0;
+        margin-left: $inuit-global-spacing-unit;
+      }
+    }
+  }

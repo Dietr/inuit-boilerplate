@@ -1,0 +1,127 @@
+{
+  "_args": [
+    [
+      {
+        "raw": "sass-mq",
+        "scope": null,
+        "escapedName": "sass-mq",
+        "name": "sass-mq",
+        "rawSpec": "",
+        "spec": "latest",
+        "type": "tag"
+      },
+      "/Users/dieterpeirs/3-Sites/hashi-boilerplate"
+    ]
+  ],
+  "_from": "sass-mq@latest",
+  "_id": "sass-mq@3.3.1",
+  "_inCache": true,
+  "_location": "/sass-mq",
+  "_nodeVersion": "6.9.1",
+  "_npmOperationalInternal": {
+    "host": "packages-18-east.internal.npmjs.com",
+    "tmp": "tmp/sass-mq-3.3.1.tgz_1478064025071_0.5354112696368247"
+  },
+  "_npmUser": {
+    "name": "kaelig",
+    "email": "kaelig@deloumeau.fr"
+  },
+  "_npmVersion": "3.10.9",
+  "_phantomChildren": {},
+  "_requested": {
+    "raw": "sass-mq",
+    "scope": null,
+    "escapedName": "sass-mq",
+    "name": "sass-mq",
+    "rawSpec": "",
+    "spec": "latest",
+    "type": "tag"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/",
+    "/inuitcss"
+  ],
+  "_resolved": "https://registry.npmjs.org/sass-mq/-/sass-mq-3.3.1.tgz",
+  "_shasum": "1199f5a43b549f5cbb67bc81f5f495ebf96250ce",
+  "_shrinkwrap": null,
+  "_spec": "sass-mq",
+  "_where": "/Users/dieterpeirs/3-Sites/hashi-boilerplate",
+  "bugs": {
+    "url": "https://github.com/sass-mq/sass-mq/issues"
+  },
+  "contributors": [
+    {
+      "name": "Guardian Media Group and Contributors."
+    }
+  ],
+  "dependencies": {},
+  "description": "mq() is a Sass mixin that helps manipulating media queries in an elegant way.",
+  "devDependencies": {
+    "dart-sass": "^1.0.0-alpha.2",
+    "eyeglass": "^1.1.2",
+    "node-sass": "^3.10.1",
+    "sassdoc": "^2.1.20"
+  },
+  "directories": {},
+  "dist": {
+    "shasum": "1199f5a43b549f5cbb67bc81f5f495ebf96250ce",
+    "tarball": "https://registry.npmjs.org/sass-mq/-/sass-mq-3.3.1.tgz"
+  },
+  "eyeglass": {
+    "needs": "^0.8.2",
+    "sassDir": "./_mq.scss",
+    "exports": false
+  },
+  "files": [
+    "_mq.scss",
+    "LICENSE.md",
+    "README.md",
+    "sass/index.scss"
+  ],
+  "gitHead": "abb74a117b46877f1b67e7e5884b006815660c52",
+  "homepage": "http://sass-mq.github.io/sass-mq/",
+  "ignore": [
+    "test",
+    "sassdoc",
+    "**/.*",
+    "sache.json",
+    "bower.json",
+    "sassdoc.sh",
+    "scripts"
+  ],
+  "keywords": [
+    "responsive",
+    "sass",
+    "rwd",
+    "mediaquery",
+    "query",
+    "queries",
+    "media",
+    "eyeglass-module"
+  ],
+  "license": "MIT",
+  "main": "_mq.scss",
+  "maintainers": [
+    {
+      "name": "kaelig",
+      "email": "kaelig@deloumeau.fr"
+    },
+    {
+      "name": "sndrs",
+      "email": "a@snd.rs"
+    }
+  ],
+  "name": "sass-mq",
+  "optionalDependencies": {},
+  "readme": "ERROR: No README data found!",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sass-mq/sass-mq.git"
+  },
+  "scripts": {
+    "sassdoc": "./scripts/sassdoc.sh",
+    "test": "./scripts/test.sh"
+  },
+  "version": "3.3.1"
+}

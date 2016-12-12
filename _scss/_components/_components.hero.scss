@@ -1,0 +1,47 @@
+/* ==========================================================================
+   #HERO
+   ========================================================================== */
+
+.c-hero {
+  position: relative;
+}
+
+  .c-hero__background {
+    padding-bottom: (1/1) * 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    @include mq(small) {
+      padding-bottom: (3/4) * 100%;
+    }
+
+    @include mq(medium) {
+      padding-bottom: (10/21) * 100%;
+    }
+
+    @include mq(large) {
+      padding-bottom: (10/24) * 100%;
+    }
+
+    @include mq(huge) {
+      padding-bottom: (10/30) * 100%;
+    }
+  }
+
+  .c-hero__body {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    transform: translateY(-50%);
+
+    & > *:last-child,
+    & > .o-wrapper > *:last-child {
+      margin-bottom: 0;
+    }
+
+    // @include mq(large) {
+    //   padding: $inuit-global-spacing-unit;
+    // }
+  }

@@ -1,0 +1,91 @@
+{
+  "_args": [
+    [
+      {
+        "raw": "fg-loadjs@^1.0.0",
+        "scope": null,
+        "escapedName": "fg-loadjs",
+        "name": "fg-loadjs",
+        "rawSpec": "^1.0.0",
+        "spec": ">=1.0.0 <2.0.0",
+        "type": "range"
+      },
+      "/Users/dieterpeirs/3-Sites/hashi-boilerplate"
+    ]
+  ],
+  "_from": "fg-loadjs@>=1.0.0 <2.0.0",
+  "_id": "fg-loadjs@1.0.0",
+  "_inCache": true,
+  "_location": "/fg-loadjs",
+  "_nodeVersion": "5.10.1",
+  "_npmOperationalInternal": {
+    "host": "packages-12-west.internal.npmjs.com",
+    "tmp": "tmp/fg-loadjs-1.0.0.tgz_1468871509718_0.9644021408166736"
+  },
+  "_npmUser": {
+    "name": "filamentgroup",
+    "email": "thegroup@filamentgroup.com"
+  },
+  "_npmVersion": "3.8.3",
+  "_phantomChildren": {},
+  "_requested": {
+    "raw": "fg-loadjs@^1.0.0",
+    "scope": null,
+    "escapedName": "fg-loadjs",
+    "name": "fg-loadjs",
+    "rawSpec": "^1.0.0",
+    "spec": ">=1.0.0 <2.0.0",
+    "type": "range"
+  },
+  "_requiredBy": [
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/fg-loadjs/-/fg-loadjs-1.0.0.tgz",
+  "_shasum": "c096af1675b9ed0d3b588f69ef186c6d81dbfb01",
+  "_shrinkwrap": null,
+  "_spec": "fg-loadjs@^1.0.0",
+  "_where": "/Users/dieterpeirs/3-Sites/hashi-boilerplate",
+  "author": {
+    "name": "Filament Group",
+    "email": "hello@filamentgroup.com"
+  },
+  "bugs": {
+    "url": "https://github.com/filamentgroup/loadJS/issues"
+  },
+  "dependencies": {},
+  "description": "A simple function for asynchronously loading JavaScript files",
+  "devDependencies": {},
+  "directories": {},
+  "dist": {
+    "shasum": "c096af1675b9ed0d3b588f69ef186c6d81dbfb01",
+    "tarball": "https://registry.npmjs.org/fg-loadjs/-/fg-loadjs-1.0.0.tgz"
+  },
+  "gitHead": "75fc7db9615fa12dc40cb3d447986183a5b1325b",
+  "homepage": "https://github.com/filamentgroup/loadJS",
+  "keywords": [
+    "load"
+  ],
+  "license": "MIT",
+  "main": "loadJS.js",
+  "maintainers": [
+    {
+      "name": "zachleat",
+      "email": "zachleatherman@gmail.com"
+    },
+    {
+      "name": "filamentgroup",
+      "email": "thegroup@filamentgroup.com"
+    }
+  ],
+  "name": "fg-loadjs",
+  "optionalDependencies": {},
+  "readme": "ERROR: No README data found!",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/filamentgroup/loadJS.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "version": "1.0.0"
+}

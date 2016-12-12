@@ -1,0 +1,8 @@
+/* ==========================================================================
+   #TYPOGRAPHY
+   ========================================================================== */
+
+.c-lead {
+  @include inuit-font-size($inuit-font-size-h4,1.5);
+  margin-bottom: $inuit-global-spacing-unit-large;
+}

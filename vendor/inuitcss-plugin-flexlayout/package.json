@@ -1,0 +1,82 @@
+{
+  "_args": [
+    [
+      {
+        "raw": "inuitcss-plugin-flexlayout",
+        "scope": null,
+        "escapedName": "inuitcss-plugin-flexlayout",
+        "name": "inuitcss-plugin-flexlayout",
+        "rawSpec": "",
+        "spec": "latest",
+        "type": "tag"
+      },
+      "/Users/dieterpeirs/3-Sites/hashi-boilerplate"
+    ]
+  ],
+  "_from": "inuitcss-plugin-flexlayout@latest",
+  "_id": "inuitcss-plugin-flexlayout@1.0.0",
+  "_inCache": true,
+  "_location": "/inuitcss-plugin-flexlayout",
+  "_nodeVersion": "7.2.1",
+  "_npmOperationalInternal": {
+    "host": "packages-18-east.internal.npmjs.com",
+    "tmp": "tmp/inuitcss-plugin-flexlayout-1.0.0.tgz_1481393303787_0.17192586278542876"
+  },
+  "_npmUser": {
+    "name": "dietr",
+    "email": "accounts@dieterpeirs.com"
+  },
+  "_npmVersion": "3.10.10",
+  "_phantomChildren": {},
+  "_requested": {
+    "raw": "inuitcss-plugin-flexlayout",
+    "scope": null,
+    "escapedName": "inuitcss-plugin-flexlayout",
+    "name": "inuitcss-plugin-flexlayout",
+    "rawSpec": "",
+    "spec": "latest",
+    "type": "tag"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/inuitcss-plugin-flexlayout/-/inuitcss-plugin-flexlayout-1.0.0.tgz",
+  "_shasum": "477c991e82a8a9d1285f2e804ce2aa6dcba1eded",
+  "_shrinkwrap": null,
+  "_spec": "inuitcss-plugin-flexlayout",
+  "_where": "/Users/dieterpeirs/3-Sites/hashi-boilerplate",
+  "author": {
+    "name": "Dieter Peirs"
+  },
+  "bugs": {
+    "url": "https://github.com/Dietr/inuitcss-plugin-flexlayout/issues"
+  },
+  "dependencies": {},
+  "description": "A flexbox-base layout replacement for the default InuitCSS layout object.",
+  "devDependencies": {},
+  "directories": {},
+  "dist": {
+    "shasum": "477c991e82a8a9d1285f2e804ce2aa6dcba1eded",
+    "tarball": "https://registry.npmjs.org/inuitcss-plugin-flexlayout/-/inuitcss-plugin-flexlayout-1.0.0.tgz"
+  },
+  "gitHead": "dc9d416ba49191f00653351b73aa1ef9fbd50f13",
+  "homepage": "https://github.com/Dietr/inuitcss-plugin-flexlayout",
+  "license": "Apache-2.0",
+  "main": "_objects.flexlayout.scss",
+  "maintainers": [
+    {
+      "name": "dietr",
+      "email": "accounts@dieterpeirs.com"
+    }
+  ],
+  "name": "inuitcss-plugin-flexlayout",
+  "optionalDependencies": {},
+  "readme": "ERROR: No README data found!",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Dietr/inuitcss-plugin-flexlayout.git"
+  },
+  "scripts": {},
+  "version": "1.0.0"
+}
