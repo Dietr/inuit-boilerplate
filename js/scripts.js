@@ -2498,4 +2498,6 @@ function toggleNav(e) {
   html.classList.toggle('has-nav');
 }
 
-button.addEventListener('click', toggleNav);
+if ($('.js-nav-toggle')[0] != undefined) {
+  button.addEventListener('click', toggleNav);
+}
