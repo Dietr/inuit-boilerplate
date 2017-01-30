@@ -102,18 +102,19 @@ const paths = {
   cssSrc: 'css/',
   cssDist: '_site/css/',
   jsSrc: [
-    'node_modules/svgxuse/svgxuse.js',
-    'node_modules/picturefill/dist/picturefill.js',
-    'node_modules/lazysizes/lazysizes.js',
+    'vendor/jquery/dist/jquery.slim.js',
+    'vendor/svgxuse/svgxuse.js',
+    'vendor/picturefill/dist/picturefill.js',
+    'vendor/lazysizes/lazysizes.js',
     'js/_scripts/*.js'
   ],
   jsDist: 'js/',
   jsJekyllDist: '_site/js/',
   criticaljsSrc: [
-    'node_modules/fg-loadjs/loadJS.js',
-    'node_modules/fg-loadcss/src/cssrelpreload.js',
-    'node_modules/fg-loadcss/src/loadCSS.js',
-    'node_modules/fg-loadcss/src/onloadCSS.js'
+    'vendor/fg-loadjs/loadJS.js',
+    'vendor/fg-loadcss/src/cssrelpreload.js',
+    'vendor/fg-loadcss/src/loadCSS.js',
+    'vendor/fg-loadcss/src/onloadCSS.js'
   ],
   criticaljsDist: '_includes/',
   symbolsSrc: '_artwork/symbols/*.svg',
@@ -233,9 +234,6 @@ gulp.task('criticalcss', () => {
 // Concat JS > 'gulp js'
 gulp.task('js', () => {
   return gulp.src(paths.jsSrc)
-    .pipe(babel({
-      presets: ['es2017-node7']
-    }))
     .pipe(concat(config.jsConcat))
     .pipe(gulp.dest(paths.jsJekyllDist))
     .pipe(browserSync.stream())
@@ -246,9 +244,6 @@ gulp.task('js', () => {
 // Compress and concat JS > 'gulp productionjs'
 gulp.task('productionjs', () => {
   return gulp.src(paths.jsSrc)
-    .pipe(babel({
-      presets: ['es2017-node7']
-    }))
     .pipe(concat(config.minifyjsConcat))
     .pipe(uglify())
     .pipe(gulp.dest(paths.jsDist));

@@ -2,16 +2,14 @@
    #Mobilenav
    ========================================================================== */
 
-const button = document.querySelector('.js-nav-toggle');
-const navigation = document.querySelector('.js-nav');
-const html = document.querySelector('html');
+var html = $('html');
+var button = $('.js-nav-toggle');
+var navigation = $('.js-nav');
 
 function toggleNav(e) {
-  button.classList.toggle('is-active');
-  navigation.classList.toggle('is-active');
-  html.classList.toggle('has-nav');
+  button.toggleClass('is-active');
+  navigation.toggleClass('is-active');
+  html.toggleClass('has-nav');
 }
 
-if ($('.js-nav-toggle')[0] != undefined) {
-  button.addEventListener('click', toggleNav);
-}
+button.on('click', toggleNav);
