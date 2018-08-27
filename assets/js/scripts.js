@@ -1,15 +1,15 @@
 /*!
- * jQuery JavaScript Library v3.1.1 -ajax,-ajax/jsonp,-ajax/load,-ajax/parseXML,-ajax/script,-ajax/var/location,-ajax/var/nonce,-ajax/var/rquery,-ajax/xhr,-manipulation/_evalUrl,-event/ajax,-effects,-effects/animatedSelector,-effects/Tween,-deprecated
+ * jQuery JavaScript Library v3.3.1 -ajax,-ajax/jsonp,-ajax/load,-ajax/parseXML,-ajax/script,-ajax/var/location,-ajax/var/nonce,-ajax/var/rquery,-ajax/xhr,-manipulation/_evalUrl,-event/ajax,-effects,-effects/Tween,-effects/animatedSelector
  * https://jquery.com/
  *
  * Includes Sizzle.js
  * https://sizzlejs.com/
  *
- * Copyright jQuery Foundation and other contributors
+ * Copyright JS Foundation and other contributors
  * Released under the MIT license
  * https://jquery.org/license
  *
- * Date: 2016-09-22T22:30Z
+ * Date: 2018-01-20T17:24Z
  */
 ( function( global, factory ) {
 
@@ -71,16 +71,57 @@ var ObjectFunctionString = fnToString.call( Object );
 
 var support = {};
 
+var isFunction = function isFunction( obj ) {
+
+      // Support: Chrome <=57, Firefox <=52
+      // In some browsers, typeof returns "function" for HTML <object> elements
+      // (i.e., `typeof document.createElement( "object" ) === "function"`).
+      // We don't want to classify *any* DOM node as a function.
+      return typeof obj === "function" && typeof obj.nodeType !== "number";
+  };
 
 
-	function DOMEval( code, doc ) {
+var isWindow = function isWindow( obj ) {
+		return obj != null && obj === obj.window;
+	};
+
+
+
+
+	var preservedScriptAttributes = {
+		type: true,
+		src: true,
+		noModule: true
+	};
+
+	function DOMEval( code, doc, node ) {
 		doc = doc || document;
 
-		var script = doc.createElement( "script" );
+		var i,
+			script = doc.createElement( "script" );
 
 		script.text = code;
+		if ( node ) {
+			for ( i in preservedScriptAttributes ) {
+				if ( node[ i ] ) {
+					script[ i ] = node[ i ];
+				}
+			}
+		}
 		doc.head.appendChild( script ).parentNode.removeChild( script );
 	}
+
+
+function toType( obj ) {
+	if ( obj == null ) {
+		return obj + "";
+	}
+
+	// Support: Android <=2.3 only (functionish RegExp)
+	return typeof obj === "object" || typeof obj === "function" ?
+		class2type[ toString.call( obj ) ] || "object" :
+		typeof obj;
+}
 /* global Symbol */
 // Defining this global in .eslintrc.json would create a danger of using the global
 // unguarded in another place, it seems safer to define global only for this module
@@ -88,7 +129,7 @@ var support = {};
 
 
 var
-	version = "3.1.1 -ajax,-ajax/jsonp,-ajax/load,-ajax/parseXML,-ajax/script,-ajax/var/location,-ajax/var/nonce,-ajax/var/rquery,-ajax/xhr,-manipulation/_evalUrl,-event/ajax,-effects,-effects/animatedSelector,-effects/Tween,-deprecated",
+	version = "3.3.1 -ajax,-ajax/jsonp,-ajax/load,-ajax/parseXML,-ajax/script,-ajax/var/location,-ajax/var/nonce,-ajax/var/rquery,-ajax/xhr,-manipulation/_evalUrl,-event/ajax,-effects,-effects/Tween,-effects/animatedSelector",
 
 	// Define a local copy of jQuery
 	jQuery = function( selector, context ) {
@@ -100,16 +141,7 @@ var
 
 	// Support: Android <=4.0 only
 	// Make sure we trim BOM and NBSP
-	rtrim = /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g,
-
-	// Matches dashed string for camelizing
-	rmsPrefix = /^-ms-/,
-	rdashAlpha = /-([a-z])/g,
-
-	// Used by jQuery.camelCase as callback to replace()
-	fcamelCase = function( all, letter ) {
-		return letter.toUpperCase();
-	};
+	rtrim = /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g;
 
 jQuery.fn = jQuery.prototype = {
 
@@ -209,7 +241,7 @@ jQuery.extend = jQuery.fn.extend = function() {
 	}
 
 	// Handle case when target is a string or something (possible in deep copy)
-	if ( typeof target !== "object" && !jQuery.isFunction( target ) ) {
+	if ( typeof target !== "object" && !isFunction( target ) ) {
 		target = {};
 	}
 
@@ -236,11 +268,11 @@ jQuery.extend = jQuery.fn.extend = function() {
 
 				// Recurse if we're merging plain objects or arrays
 				if ( deep && copy && ( jQuery.isPlainObject( copy ) ||
-					( copyIsArray = jQuery.isArray( copy ) ) ) ) {
+					( copyIsArray = Array.isArray( copy ) ) ) ) {
 
 					if ( copyIsArray ) {
 						copyIsArray = false;
-						clone = src && jQuery.isArray( src ) ? src : [];
+						clone = src && Array.isArray( src ) ? src : [];
 
 					} else {
 						clone = src && jQuery.isPlainObject( src ) ? src : {};
@@ -275,30 +307,6 @@ jQuery.extend( {
 
 	noop: function() {},
 
-	isFunction: function( obj ) {
-		return jQuery.type( obj ) === "function";
-	},
-
-	isArray: Array.isArray,
-
-	isWindow: function( obj ) {
-		return obj != null && obj === obj.window;
-	},
-
-	isNumeric: function( obj ) {
-
-		// As of jQuery 3.0, isNumeric is limited to
-		// strings and numbers (primitives or objects)
-		// that can be coerced to finite numbers (gh-2662)
-		var type = jQuery.type( obj );
-		return ( type === "number" || type === "string" ) &&
-
-			// parseFloat NaNs numeric-cast false positives ("")
-			// ...but misinterprets leading-number strings, particularly hex literals ("0x...")
-			// subtraction forces infinities to NaN
-			!isNaN( obj - parseFloat( obj ) );
-	},
-
 	isPlainObject: function( obj ) {
 		var proto, Ctor;
 
@@ -332,31 +340,9 @@ jQuery.extend( {
 		return true;
 	},
 
-	type: function( obj ) {
-		if ( obj == null ) {
-			return obj + "";
-		}
-
-		// Support: Android <=2.3 only (functionish RegExp)
-		return typeof obj === "object" || typeof obj === "function" ?
-			class2type[ toString.call( obj ) ] || "object" :
-			typeof obj;
-	},
-
 	// Evaluates a script in a global context
 	globalEval: function( code ) {
 		DOMEval( code );
-	},
-
-	// Convert dashed to camelCase; used by the css and data modules
-	// Support: IE <=9 - 11, Edge 12 - 13
-	// Microsoft forgot to hump their vendor prefix (#9572)
-	camelCase: function( string ) {
-		return string.replace( rmsPrefix, "ms-" ).replace( rdashAlpha, fcamelCase );
-	},
-
-	nodeName: function( elem, name ) {
-		return elem.nodeName && elem.nodeName.toLowerCase() === name.toLowerCase();
 	},
 
 	each: function( obj, callback ) {
@@ -479,37 +465,6 @@ jQuery.extend( {
 	// A global GUID counter for objects
 	guid: 1,
 
-	// Bind a function to a context, optionally partially applying any
-	// arguments.
-	proxy: function( fn, context ) {
-		var tmp, args, proxy;
-
-		if ( typeof context === "string" ) {
-			tmp = fn[ context ];
-			context = fn;
-			fn = tmp;
-		}
-
-		// Quick check to determine if target is callable, in the spec
-		// this throws a TypeError, but we will just return undefined.
-		if ( !jQuery.isFunction( fn ) ) {
-			return undefined;
-		}
-
-		// Simulated bind
-		args = slice.call( arguments, 2 );
-		proxy = function() {
-			return fn.apply( context || this, args.concat( slice.call( arguments ) ) );
-		};
-
-		// Set the guid of unique handler to the same of original handler, so it can be removed
-		proxy.guid = fn.guid = fn.guid || jQuery.guid++;
-
-		return proxy;
-	},
-
-	now: Date.now,
-
 	// jQuery.support is not used in Core but other projects attach their
 	// properties to it so it needs to exist.
 	support: support
@@ -532,9 +487,9 @@ function isArrayLike( obj ) {
 	// hasOwn isn't used here due to false negatives
 	// regarding Nodelist length in IE
 	var length = !!obj && "length" in obj && obj.length,
-		type = jQuery.type( obj );
+		type = toType( obj );
 
-	if ( type === "function" || jQuery.isWindow( obj ) ) {
+	if ( isFunction( obj ) || isWindow( obj ) ) {
 		return false;
 	}
 
@@ -2843,15 +2798,20 @@ var siblings = function( n, elem ) {
 
 var rneedsContext = jQuery.expr.match.needsContext;
 
+
+
+function nodeName( elem, name ) {
+
+  return elem.nodeName && elem.nodeName.toLowerCase() === name.toLowerCase();
+
+};
 var rsingleTag = ( /^<([a-z][^\/\0>:\x20\t\r\n\f]*)[\x20\t\r\n\f]*\/?>(?:<\/\1>|)$/i );
 
 
 
-var risSimple = /^.[^:#\[\.,]*$/;
-
 // Implement the identical functionality for filter and not
 function winnow( elements, qualifier, not ) {
-	if ( jQuery.isFunction( qualifier ) ) {
+	if ( isFunction( qualifier ) ) {
 		return jQuery.grep( elements, function( elem, i ) {
 			return !!qualifier.call( elem, i, elem ) !== not;
 		} );
@@ -2871,16 +2831,8 @@ function winnow( elements, qualifier, not ) {
 		} );
 	}
 
-	// Simple selector that can be filtered directly, removing non-Elements
-	if ( risSimple.test( qualifier ) ) {
-		return jQuery.filter( qualifier, elements, not );
-	}
-
-	// Complex selector, compare the two sets, removing non-Elements
-	qualifier = jQuery.filter( qualifier, elements );
-	return jQuery.grep( elements, function( elem ) {
-		return ( indexOf.call( qualifier, elem ) > -1 ) !== not && elem.nodeType === 1;
-	} );
+	// Filtered directly for both simple and complex selectors
+	return jQuery.filter( qualifier, elements, not );
 }
 
 jQuery.filter = function( expr, elems, not ) {
@@ -3001,7 +2953,7 @@ var rootjQuery,
 						for ( match in context ) {
 
 							// Properties of context are called as methods if possible
-							if ( jQuery.isFunction( this[ match ] ) ) {
+							if ( isFunction( this[ match ] ) ) {
 								this[ match ]( context[ match ] );
 
 							// ...and otherwise set as attributes
@@ -3044,7 +2996,7 @@ var rootjQuery,
 
 		// HANDLE: $(function)
 		// Shortcut for document ready
-		} else if ( jQuery.isFunction( selector ) ) {
+		} else if ( isFunction( selector ) ) {
 			return root.ready !== undefined ?
 				root.ready( selector ) :
 
@@ -3194,7 +3146,18 @@ jQuery.each( {
 		return siblings( elem.firstChild );
 	},
 	contents: function( elem ) {
-		return elem.contentDocument || jQuery.merge( [], elem.childNodes );
+        if ( nodeName( elem, "iframe" ) ) {
+            return elem.contentDocument;
+        }
+
+        // Support: IE 9 - 11 only, iOS 7 only, Android Browser <=4.3 only
+        // Treat the template element as a regular one in browsers that
+        // don't support it.
+        if ( nodeName( elem, "template" ) ) {
+            elem = elem.content || elem;
+        }
+
+        return jQuery.merge( [], elem.childNodes );
 	}
 }, function( name, fn ) {
 	jQuery.fn[ name ] = function( until, selector ) {
@@ -3292,7 +3255,7 @@ jQuery.Callbacks = function( options ) {
 		fire = function() {
 
 			// Enforce single-firing
-			locked = options.once;
+			locked = locked || options.once;
 
 			// Execute callbacks for all pending executions,
 			// respecting firingIndex overrides and runtime changes
@@ -3348,11 +3311,11 @@ jQuery.Callbacks = function( options ) {
 
 					( function add( args ) {
 						jQuery.each( args, function( _, arg ) {
-							if ( jQuery.isFunction( arg ) ) {
+							if ( isFunction( arg ) ) {
 								if ( !options.unique || !self.has( arg ) ) {
 									list.push( arg );
 								}
-							} else if ( arg && arg.length && jQuery.type( arg ) !== "string" ) {
+							} else if ( arg && arg.length && toType( arg ) !== "string" ) {
 
 								// Inspect recursively
 								add( arg );
@@ -3461,25 +3424,26 @@ function Thrower( ex ) {
 	throw ex;
 }
 
-function adoptValue( value, resolve, reject ) {
+function adoptValue( value, resolve, reject, noValue ) {
 	var method;
 
 	try {
 
 		// Check for promise aspect first to privilege synchronous behavior
-		if ( value && jQuery.isFunction( ( method = value.promise ) ) ) {
+		if ( value && isFunction( ( method = value.promise ) ) ) {
 			method.call( value ).done( resolve ).fail( reject );
 
 		// Other thenables
-		} else if ( value && jQuery.isFunction( ( method = value.then ) ) ) {
+		} else if ( value && isFunction( ( method = value.then ) ) ) {
 			method.call( value, resolve, reject );
 
 		// Other non-thenables
 		} else {
 
-			// Support: Android 4.0 only
-			// Strict mode functions invoked without .call/.apply get global-object context
-			resolve.call( undefined, value );
+			// Control `resolve` arguments by letting Array#slice cast boolean `noValue` to integer:
+			// * false: [ value ].slice( 0 ) => resolve( value )
+			// * true: [ value ].slice( 1 ) => resolve()
+			resolve.apply( undefined, [ value ].slice( noValue ) );
 		}
 
 	// For Promises/A+, convert exceptions into rejections
@@ -3489,7 +3453,7 @@ function adoptValue( value, resolve, reject ) {
 
 		// Support: Android 4.0 only
 		// Strict mode functions invoked without .call/.apply get global-object context
-		reject.call( undefined, value );
+		reject.apply( undefined, [ value ] );
 	}
 }
 
@@ -3528,14 +3492,14 @@ jQuery.extend( {
 						jQuery.each( tuples, function( i, tuple ) {
 
 							// Map tuples (progress, done, fail) to arguments (done, fail, progress)
-							var fn = jQuery.isFunction( fns[ tuple[ 4 ] ] ) && fns[ tuple[ 4 ] ];
+							var fn = isFunction( fns[ tuple[ 4 ] ] ) && fns[ tuple[ 4 ] ];
 
 							// deferred.progress(function() { bind to newDefer or newDefer.notify })
 							// deferred.done(function() { bind to newDefer or newDefer.resolve })
 							// deferred.fail(function() { bind to newDefer or newDefer.reject })
 							deferred[ tuple[ 1 ] ]( function() {
 								var returned = fn && fn.apply( this, arguments );
-								if ( returned && jQuery.isFunction( returned.promise ) ) {
+								if ( returned && isFunction( returned.promise ) ) {
 									returned.promise()
 										.progress( newDefer.notify )
 										.done( newDefer.resolve )
@@ -3589,7 +3553,7 @@ jQuery.extend( {
 										returned.then;
 
 									// Handle a returned thenable
-									if ( jQuery.isFunction( then ) ) {
+									if ( isFunction( then ) ) {
 
 										// Special processors (notify) just wait for resolution
 										if ( special ) {
@@ -3685,7 +3649,7 @@ jQuery.extend( {
 							resolve(
 								0,
 								newDefer,
-								jQuery.isFunction( onProgress ) ?
+								isFunction( onProgress ) ?
 									onProgress :
 									Identity,
 								newDefer.notifyWith
@@ -3697,7 +3661,7 @@ jQuery.extend( {
 							resolve(
 								0,
 								newDefer,
-								jQuery.isFunction( onFulfilled ) ?
+								isFunction( onFulfilled ) ?
 									onFulfilled :
 									Identity
 							)
@@ -3708,7 +3672,7 @@ jQuery.extend( {
 							resolve(
 								0,
 								newDefer,
-								jQuery.isFunction( onRejected ) ?
+								isFunction( onRejected ) ?
 									onRejected :
 									Thrower
 							)
@@ -3748,8 +3712,15 @@ jQuery.extend( {
 					// fulfilled_callbacks.disable
 					tuples[ 3 - i ][ 2 ].disable,
 
+					// rejected_handlers.disable
+					// fulfilled_handlers.disable
+					tuples[ 3 - i ][ 3 ].disable,
+
 					// progress_callbacks.lock
-					tuples[ 0 ][ 2 ].lock
+					tuples[ 0 ][ 2 ].lock,
+
+					// progress_handlers.lock
+					tuples[ 0 ][ 3 ].lock
 				);
 			}
 
@@ -3814,11 +3785,12 @@ jQuery.extend( {
 
 		// Single- and empty arguments are adopted like Promise.resolve
 		if ( remaining <= 1 ) {
-			adoptValue( singleValue, master.done( updateFunc( i ) ).resolve, master.reject );
+			adoptValue( singleValue, master.done( updateFunc( i ) ).resolve, master.reject,
+				!remaining );
 
 			// Use .then() to unwrap secondary thenables (cf. gh-3000)
 			if ( master.state() === "pending" ||
-				jQuery.isFunction( resolveValues[ i ] && resolveValues[ i ].then ) ) {
+				isFunction( resolveValues[ i ] && resolveValues[ i ].then ) ) {
 
 				return master.then();
 			}
@@ -3886,15 +3858,6 @@ jQuery.extend( {
 	// the ready event fires. See #6781
 	readyWait: 1,
 
-	// Hold (or release) the ready event
-	holdReady: function( hold ) {
-		if ( hold ) {
-			jQuery.readyWait++;
-		} else {
-			jQuery.ready( true );
-		}
-	},
-
 	// Handle when the DOM is ready
 	ready: function( wait ) {
 
@@ -3955,7 +3918,7 @@ var access = function( elems, fn, key, value, chainable, emptyGet, raw ) {
 		bulk = key == null;
 
 	// Sets many values
-	if ( jQuery.type( key ) === "object" ) {
+	if ( toType( key ) === "object" ) {
 		chainable = true;
 		for ( i in key ) {
 			access( elems, fn, i, key[ i ], true, emptyGet, raw );
@@ -3965,7 +3928,7 @@ var access = function( elems, fn, key, value, chainable, emptyGet, raw ) {
 	} else if ( value !== undefined ) {
 		chainable = true;
 
-		if ( !jQuery.isFunction( value ) ) {
+		if ( !isFunction( value ) ) {
 			raw = true;
 		}
 
@@ -4007,6 +3970,23 @@ var access = function( elems, fn, key, value, chainable, emptyGet, raw ) {
 
 	return len ? fn( elems[ 0 ], key ) : emptyGet;
 };
+
+
+// Matches dashed string for camelizing
+var rmsPrefix = /^-ms-/,
+	rdashAlpha = /-([a-z])/g;
+
+// Used by camelCase as callback to replace()
+function fcamelCase( all, letter ) {
+	return letter.toUpperCase();
+}
+
+// Convert dashed to camelCase; used by the css and data modules
+// Support: IE <=9 - 11, Edge 12 - 15
+// Microsoft forgot to hump their vendor prefix (#9572)
+function camelCase( string ) {
+	return string.replace( rmsPrefix, "ms-" ).replace( rdashAlpha, fcamelCase );
+}
 var acceptData = function( owner ) {
 
 	// Accepts only:
@@ -4069,14 +4049,14 @@ Data.prototype = {
 		// Handle: [ owner, key, value ] args
 		// Always use camelCase key (gh-2257)
 		if ( typeof data === "string" ) {
-			cache[ jQuery.camelCase( data ) ] = value;
+			cache[ camelCase( data ) ] = value;
 
 		// Handle: [ owner, { properties } ] args
 		} else {
 
 			// Copy the properties one-by-one to the cache object
 			for ( prop in data ) {
-				cache[ jQuery.camelCase( prop ) ] = data[ prop ];
+				cache[ camelCase( prop ) ] = data[ prop ];
 			}
 		}
 		return cache;
@@ -4086,7 +4066,7 @@ Data.prototype = {
 			this.cache( owner ) :
 
 			// Always use camelCase key (gh-2257)
-			owner[ this.expando ] && owner[ this.expando ][ jQuery.camelCase( key ) ];
+			owner[ this.expando ] && owner[ this.expando ][ camelCase( key ) ];
 	},
 	access: function( owner, key, value ) {
 
@@ -4130,13 +4110,13 @@ Data.prototype = {
 		if ( key !== undefined ) {
 
 			// Support array or space separated string of keys
-			if ( jQuery.isArray( key ) ) {
+			if ( Array.isArray( key ) ) {
 
 				// If key is an array of keys...
 				// We always set camelCase keys, so remove that.
-				key = key.map( jQuery.camelCase );
+				key = key.map( camelCase );
 			} else {
-				key = jQuery.camelCase( key );
+				key = camelCase( key );
 
 				// If a key with the spaces exists, use it.
 				// Otherwise, create an array by matching non-whitespace
@@ -4282,7 +4262,7 @@ jQuery.fn.extend( {
 						if ( attrs[ i ] ) {
 							name = attrs[ i ].name;
 							if ( name.indexOf( "data-" ) === 0 ) {
-								name = jQuery.camelCase( name.slice( 5 ) );
+								name = camelCase( name.slice( 5 ) );
 								dataAttr( elem, name, data[ name ] );
 							}
 						}
@@ -4356,7 +4336,7 @@ jQuery.extend( {
 
 			// Speed up dequeue by getting out quickly if this is just a lookup
 			if ( data ) {
-				if ( !queue || jQuery.isArray( data ) ) {
+				if ( !queue || Array.isArray( data ) ) {
 					queue = dataPriv.access( elem, type, jQuery.makeArray( data ) );
 				} else {
 					queue.push( data );
@@ -4529,8 +4509,7 @@ var swap = function( elem, options, callback, args ) {
 
 
 function adjustCSS( elem, prop, valueParts, tween ) {
-	var adjusted,
-		scale = 1,
+	var adjusted, scale,
 		maxIterations = 20,
 		currentValue = tween ?
 			function() {
@@ -4548,30 +4527,33 @@ function adjustCSS( elem, prop, valueParts, tween ) {
 
 	if ( initialInUnit && initialInUnit[ 3 ] !== unit ) {
 
+		// Support: Firefox <=54
+		// Halve the iteration target value to prevent interference from CSS upper bounds (gh-2144)
+		initial = initial / 2;
+
 		// Trust units reported by jQuery.css
 		unit = unit || initialInUnit[ 3 ];
-
-		// Make sure we update the tween properties later on
-		valueParts = valueParts || [];
 
 		// Iteratively approximate from a nonzero starting point
 		initialInUnit = +initial || 1;
 
-		do {
+		while ( maxIterations-- ) {
 
-			// If previous iteration zeroed out, double until we get *something*.
-			// Use string for doubling so we don't accidentally see scale as unchanged below
-			scale = scale || ".5";
-
-			// Adjust and apply
-			initialInUnit = initialInUnit / scale;
+			// Evaluate and update our best guess (doubling guesses that zero out).
+			// Finish if the scale equals or crosses 1 (making the old*new product non-positive).
 			jQuery.style( elem, prop, initialInUnit + unit );
+			if ( ( 1 - scale ) * ( 1 - ( scale = currentValue() / initial || 0.5 ) ) <= 0 ) {
+				maxIterations = 0;
+			}
+			initialInUnit = initialInUnit / scale;
 
-		// Update scale, tolerating zero or NaN from tween.cur()
-		// Break the loop if scale is unchanged or perfect, or if we've just had enough.
-		} while (
-			scale !== ( scale = currentValue() / initial ) && scale !== 1 && --maxIterations
-		);
+		}
+
+		initialInUnit = initialInUnit * 2;
+		jQuery.style( elem, prop, initialInUnit + unit );
+
+		// Make sure we update the tween properties later on
+		valueParts = valueParts || [];
 	}
 
 	if ( valueParts ) {
@@ -4689,7 +4671,7 @@ var rcheckableType = ( /^(?:checkbox|radio)$/i );
 
 var rtagName = ( /<([a-z][^\/\0>\x20\t\r\n\f]+)/i );
 
-var rscriptType = ( /^$|\/(?:java|ecma)script/i );
+var rscriptType = ( /^$|^module$|\/(?:java|ecma)script/i );
 
 
 
@@ -4733,7 +4715,7 @@ function getAll( context, tag ) {
 		ret = [];
 	}
 
-	if ( tag === undefined || tag && jQuery.nodeName( context, tag ) ) {
+	if ( tag === undefined || tag && nodeName( context, tag ) ) {
 		return jQuery.merge( [ context ], ret );
 	}
 
@@ -4771,7 +4753,7 @@ function buildFragment( elems, context, scripts, selection, ignored ) {
 		if ( elem || elem === 0 ) {
 
 			// Add nodes directly
-			if ( jQuery.type( elem ) === "object" ) {
+			if ( toType( elem ) === "object" ) {
 
 				// Support: Android <=4.0 only, PhantomJS 1 only
 				// push.apply(_, arraylike) throws on ancient WebKit
@@ -5281,7 +5263,7 @@ jQuery.event = {
 			enumerable: true,
 			configurable: true,
 
-			get: jQuery.isFunction( hook ) ?
+			get: isFunction( hook ) ?
 				function() {
 					if ( this.originalEvent ) {
 							return hook( this.originalEvent );
@@ -5340,7 +5322,7 @@ jQuery.event = {
 
 			// For checkbox, fire native event so checked state will be right
 			trigger: function() {
-				if ( this.type === "checkbox" && this.click && jQuery.nodeName( this, "input" ) ) {
+				if ( this.type === "checkbox" && this.click && nodeName( this, "input" ) ) {
 					this.click();
 					return false;
 				}
@@ -5348,7 +5330,7 @@ jQuery.event = {
 
 			// For cross-browser consistency, don't fire native .click() on links
 			_default: function( event ) {
-				return jQuery.nodeName( event.target, "a" );
+				return nodeName( event.target, "a" );
 			}
 		},
 
@@ -5416,7 +5398,7 @@ jQuery.Event = function( src, props ) {
 	}
 
 	// Create a timestamp if incoming event doesn't have one
-	this.timeStamp = src && src.timeStamp || jQuery.now();
+	this.timeStamp = src && src.timeStamp || Date.now();
 
 	// Mark it as fixed
 	this[ jQuery.expando ] = true;
@@ -5615,21 +5597,21 @@ var
 
 	/* eslint-enable */
 
-	// Support: IE <=10 - 11, Edge 12 - 13
+	// Support: IE <=10 - 11, Edge 12 - 13 only
 	// In IE/Edge using regex groups here causes severe slowdowns.
 	// See https://connect.microsoft.com/IE/feedback/details/1736512/
 	rnoInnerhtml = /<script|<style|<link/i,
 
 	// checked="checked" or checked
 	rchecked = /checked\s*(?:[^=]|=\s*.checked.)/i,
-	rscriptTypeMasked = /^true\/(.*)/,
 	rcleanScript = /^\s*<!(?:\[CDATA\[|--)|(?:\]\]|--)>\s*$/g;
 
+// Prefer a tbody over its parent table for containing new rows
 function manipulationTarget( elem, content ) {
-	if ( jQuery.nodeName( elem, "table" ) &&
-		jQuery.nodeName( content.nodeType !== 11 ? content : content.firstChild, "tr" ) ) {
+	if ( nodeName( elem, "table" ) &&
+		nodeName( content.nodeType !== 11 ? content : content.firstChild, "tr" ) ) {
 
-		return elem.getElementsByTagName( "tbody" )[ 0 ] || elem;
+		return jQuery( elem ).children( "tbody" )[ 0 ] || elem;
 	}
 
 	return elem;
@@ -5641,10 +5623,8 @@ function disableScript( elem ) {
 	return elem;
 }
 function restoreScript( elem ) {
-	var match = rscriptTypeMasked.exec( elem.type );
-
-	if ( match ) {
-		elem.type = match[ 1 ];
+	if ( ( elem.type || "" ).slice( 0, 5 ) === "true/" ) {
+		elem.type = elem.type.slice( 5 );
 	} else {
 		elem.removeAttribute( "type" );
 	}
@@ -5710,15 +5690,15 @@ function domManip( collection, args, callback, ignored ) {
 		l = collection.length,
 		iNoClone = l - 1,
 		value = args[ 0 ],
-		isFunction = jQuery.isFunction( value );
+		valueIsFunction = isFunction( value );
 
 	// We can't cloneNode fragments that contain checked, in WebKit
-	if ( isFunction ||
+	if ( valueIsFunction ||
 			( l > 1 && typeof value === "string" &&
 				!support.checkClone && rchecked.test( value ) ) ) {
 		return collection.each( function( index ) {
 			var self = collection.eq( index );
-			if ( isFunction ) {
+			if ( valueIsFunction ) {
 				args[ 0 ] = value.call( this, index, self.html() );
 			}
 			domManip( self, args, callback, ignored );
@@ -5772,14 +5752,14 @@ function domManip( collection, args, callback, ignored ) {
 						!dataPriv.access( node, "globalEval" ) &&
 						jQuery.contains( doc, node ) ) {
 
-						if ( node.src ) {
+						if ( node.src && ( node.type || "" ).toLowerCase()  !== "module" ) {
 
 							// Optional AJAX dependency, but won't run scripts if not present
 							if ( jQuery._evalUrl ) {
 								jQuery._evalUrl( node.src );
 							}
 						} else {
-							DOMEval( node.textContent.replace( rcleanScript, "" ), doc );
+							DOMEval( node.textContent.replace( rcleanScript, "" ), doc, node );
 						}
 					}
 				}
@@ -6059,8 +6039,6 @@ jQuery.each( {
 		return this.pushStack( ret );
 	};
 } );
-var rmargin = ( /^margin/ );
-
 var rnumnonpx = new RegExp( "^(" + pnum + ")(?!px)[a-z%]+$", "i" );
 
 var getStyles = function( elem ) {
@@ -6077,6 +6055,8 @@ var getStyles = function( elem ) {
 		return view.getComputedStyle( elem );
 	};
 
+var rboxStyle = new RegExp( cssExpand.join( "|" ), "i" );
+
 
 
 ( function() {
@@ -6090,25 +6070,33 @@ var getStyles = function( elem ) {
 			return;
 		}
 
+		container.style.cssText = "position:absolute;left:-11111px;width:60px;" +
+			"margin-top:1px;padding:0;border:0";
 		div.style.cssText =
-			"box-sizing:border-box;" +
-			"position:relative;display:block;" +
+			"position:relative;display:block;box-sizing:border-box;overflow:scroll;" +
 			"margin:auto;border:1px;padding:1px;" +
-			"top:1%;width:50%";
-		div.innerHTML = "";
-		documentElement.appendChild( container );
+			"width:60%;top:1%";
+		documentElement.appendChild( container ).appendChild( div );
 
 		var divStyle = window.getComputedStyle( div );
 		pixelPositionVal = divStyle.top !== "1%";
 
 		// Support: Android 4.0 - 4.3 only, Firefox <=3 - 44
-		reliableMarginLeftVal = divStyle.marginLeft === "2px";
-		boxSizingReliableVal = divStyle.width === "4px";
+		reliableMarginLeftVal = roundPixelMeasures( divStyle.marginLeft ) === 12;
 
-		// Support: Android 4.0 - 4.3 only
+		// Support: Android 4.0 - 4.3 only, Safari <=9.1 - 10.1, iOS <=7.0 - 9.3
 		// Some styles come back with percentage values, even though they shouldn't
-		div.style.marginRight = "50%";
-		pixelMarginRightVal = divStyle.marginRight === "4px";
+		div.style.right = "60%";
+		pixelBoxStylesVal = roundPixelMeasures( divStyle.right ) === 36;
+
+		// Support: IE 9 - 11 only
+		// Detect misreporting of content dimensions for box-sizing:border-box elements
+		boxSizingReliableVal = roundPixelMeasures( divStyle.width ) === 36;
+
+		// Support: IE 9 only
+		// Detect overflow:scroll screwiness (gh-3699)
+		div.style.position = "absolute";
+		scrollboxSizeVal = div.offsetWidth === 36 || "absolute";
 
 		documentElement.removeChild( container );
 
@@ -6117,7 +6105,12 @@ var getStyles = function( elem ) {
 		div = null;
 	}
 
-	var pixelPositionVal, boxSizingReliableVal, pixelMarginRightVal, reliableMarginLeftVal,
+	function roundPixelMeasures( measure ) {
+		return Math.round( parseFloat( measure ) );
+	}
+
+	var pixelPositionVal, boxSizingReliableVal, scrollboxSizeVal, pixelBoxStylesVal,
+		reliableMarginLeftVal,
 		container = document.createElement( "div" ),
 		div = document.createElement( "div" );
 
@@ -6132,26 +6125,26 @@ var getStyles = function( elem ) {
 	div.cloneNode( true ).style.backgroundClip = "";
 	support.clearCloneStyle = div.style.backgroundClip === "content-box";
 
-	container.style.cssText = "border:0;width:8px;height:0;top:0;left:-9999px;" +
-		"padding:0;margin-top:1px;position:absolute";
-	container.appendChild( div );
-
 	jQuery.extend( support, {
-		pixelPosition: function() {
-			computeStyleTests();
-			return pixelPositionVal;
-		},
 		boxSizingReliable: function() {
 			computeStyleTests();
 			return boxSizingReliableVal;
 		},
-		pixelMarginRight: function() {
+		pixelBoxStyles: function() {
 			computeStyleTests();
-			return pixelMarginRightVal;
+			return pixelBoxStylesVal;
+		},
+		pixelPosition: function() {
+			computeStyleTests();
+			return pixelPositionVal;
 		},
 		reliableMarginLeft: function() {
 			computeStyleTests();
 			return reliableMarginLeftVal;
+		},
+		scrollboxSize: function() {
+			computeStyleTests();
+			return scrollboxSizeVal;
 		}
 	} );
 } )();
@@ -6159,12 +6152,18 @@ var getStyles = function( elem ) {
 
 function curCSS( elem, name, computed ) {
 	var width, minWidth, maxWidth, ret,
+
+		// Support: Firefox 51+
+		// Retrieving style before computed somehow
+		// fixes an issue with getting wrong values
+		// on detached elements
 		style = elem.style;
 
 	computed = computed || getStyles( elem );
 
-	// Support: IE <=9 only
-	// getPropertyValue is only needed for .css('filter') (#12537)
+	// getPropertyValue is needed for:
+	//   .css('filter') (IE 9 only, #12537)
+	//   .css('--customProperty) (#3144)
 	if ( computed ) {
 		ret = computed.getPropertyValue( name ) || computed[ name ];
 
@@ -6177,7 +6176,7 @@ function curCSS( elem, name, computed ) {
 		// but width seems to be reliably pixels.
 		// This is against the CSSOM draft spec:
 		// https://drafts.csswg.org/cssom/#resolved-values
-		if ( !support.pixelMarginRight() && rnumnonpx.test( ret ) && rmargin.test( name ) ) {
+		if ( !support.pixelBoxStyles() && rnumnonpx.test( ret ) && rboxStyle.test( name ) ) {
 
 			// Remember the original values
 			width = style.width;
@@ -6230,6 +6229,7 @@ var
 	// except "table", "table-cell", or "table-caption"
 	// See here for display values: https://developer.mozilla.org/en-US/docs/CSS/display
 	rdisplayswap = /^(none|table(?!-c[ea]).+)/,
+	rcustomProp = /^--/,
 	cssShow = { position: "absolute", visibility: "hidden", display: "block" },
 	cssNormalTransform = {
 		letterSpacing: "0",
@@ -6259,6 +6259,16 @@ function vendorPropName( name ) {
 	}
 }
 
+// Return a property mapped along what jQuery.cssProps suggests or to
+// a vendor prefixed property.
+function finalPropName( name ) {
+	var ret = jQuery.cssProps[ name ];
+	if ( !ret ) {
+		ret = jQuery.cssProps[ name ] = vendorPropName( name ) || name;
+	}
+	return ret;
+}
+
 function setPositiveNumber( elem, value, subtract ) {
 
 	// Any relative (+/-) values have already been
@@ -6271,100 +6281,120 @@ function setPositiveNumber( elem, value, subtract ) {
 		value;
 }
 
-function augmentWidthOrHeight( elem, name, extra, isBorderBox, styles ) {
-	var i,
-		val = 0;
+function boxModelAdjustment( elem, dimension, box, isBorderBox, styles, computedVal ) {
+	var i = dimension === "width" ? 1 : 0,
+		extra = 0,
+		delta = 0;
 
-	// If we already have the right measurement, avoid augmentation
-	if ( extra === ( isBorderBox ? "border" : "content" ) ) {
-		i = 4;
-
-	// Otherwise initialize for horizontal or vertical properties
-	} else {
-		i = name === "width" ? 1 : 0;
+	// Adjustment may not be necessary
+	if ( box === ( isBorderBox ? "border" : "content" ) ) {
+		return 0;
 	}
 
 	for ( ; i < 4; i += 2 ) {
 
-		// Both box models exclude margin, so add it if we want it
-		if ( extra === "margin" ) {
-			val += jQuery.css( elem, extra + cssExpand[ i ], true, styles );
+		// Both box models exclude margin
+		if ( box === "margin" ) {
+			delta += jQuery.css( elem, box + cssExpand[ i ], true, styles );
 		}
 
-		if ( isBorderBox ) {
+		// If we get here with a content-box, we're seeking "padding" or "border" or "margin"
+		if ( !isBorderBox ) {
 
-			// border-box includes padding, so remove it if we want content
-			if ( extra === "content" ) {
-				val -= jQuery.css( elem, "padding" + cssExpand[ i ], true, styles );
+			// Add padding
+			delta += jQuery.css( elem, "padding" + cssExpand[ i ], true, styles );
+
+			// For "border" or "margin", add border
+			if ( box !== "padding" ) {
+				delta += jQuery.css( elem, "border" + cssExpand[ i ] + "Width", true, styles );
+
+			// But still keep track of it otherwise
+			} else {
+				extra += jQuery.css( elem, "border" + cssExpand[ i ] + "Width", true, styles );
 			}
 
-			// At this point, extra isn't border nor margin, so remove border
-			if ( extra !== "margin" ) {
-				val -= jQuery.css( elem, "border" + cssExpand[ i ] + "Width", true, styles );
-			}
+		// If we get here with a border-box (content + padding + border), we're seeking "content" or
+		// "padding" or "margin"
 		} else {
 
-			// At this point, extra isn't content, so add padding
-			val += jQuery.css( elem, "padding" + cssExpand[ i ], true, styles );
+			// For "content", subtract padding
+			if ( box === "content" ) {
+				delta -= jQuery.css( elem, "padding" + cssExpand[ i ], true, styles );
+			}
 
-			// At this point, extra isn't content nor padding, so add border
-			if ( extra !== "padding" ) {
-				val += jQuery.css( elem, "border" + cssExpand[ i ] + "Width", true, styles );
+			// For "content" or "padding", subtract border
+			if ( box !== "margin" ) {
+				delta -= jQuery.css( elem, "border" + cssExpand[ i ] + "Width", true, styles );
 			}
 		}
 	}
 
-	return val;
+	// Account for positive content-box scroll gutter when requested by providing computedVal
+	if ( !isBorderBox && computedVal >= 0 ) {
+
+		// offsetWidth/offsetHeight is a rounded sum of content, padding, scroll gutter, and border
+		// Assuming integer scroll gutter, subtract the rest and round down
+		delta += Math.max( 0, Math.ceil(
+			elem[ "offset" + dimension[ 0 ].toUpperCase() + dimension.slice( 1 ) ] -
+			computedVal -
+			delta -
+			extra -
+			0.5
+		) );
+	}
+
+	return delta;
 }
 
-function getWidthOrHeight( elem, name, extra ) {
+function getWidthOrHeight( elem, dimension, extra ) {
 
-	// Start with offset property, which is equivalent to the border-box value
-	var val,
-		valueIsBorderBox = true,
-		styles = getStyles( elem ),
-		isBorderBox = jQuery.css( elem, "boxSizing", false, styles ) === "border-box";
+	// Start with computed style
+	var styles = getStyles( elem ),
+		val = curCSS( elem, dimension, styles ),
+		isBorderBox = jQuery.css( elem, "boxSizing", false, styles ) === "border-box",
+		valueIsBorderBox = isBorderBox;
 
-	// Support: IE <=11 only
-	// Running getBoundingClientRect on a disconnected node
-	// in IE throws an error.
-	if ( elem.getClientRects().length ) {
-		val = elem.getBoundingClientRect()[ name ];
-	}
-
-	// Some non-html elements return undefined for offsetWidth, so check for null/undefined
-	// svg - https://bugzilla.mozilla.org/show_bug.cgi?id=649285
-	// MathML - https://bugzilla.mozilla.org/show_bug.cgi?id=491668
-	if ( val <= 0 || val == null ) {
-
-		// Fall back to computed then uncomputed css if necessary
-		val = curCSS( elem, name, styles );
-		if ( val < 0 || val == null ) {
-			val = elem.style[ name ];
-		}
-
-		// Computed unit is not pixels. Stop here and return.
-		if ( rnumnonpx.test( val ) ) {
+	// Support: Firefox <=54
+	// Return a confounding non-pixel value or feign ignorance, as appropriate.
+	if ( rnumnonpx.test( val ) ) {
+		if ( !extra ) {
 			return val;
 		}
-
-		// Check for style in case a browser which returns unreliable values
-		// for getComputedStyle silently falls back to the reliable elem.style
-		valueIsBorderBox = isBorderBox &&
-			( support.boxSizingReliable() || val === elem.style[ name ] );
-
-		// Normalize "", auto, and prepare for extra
-		val = parseFloat( val ) || 0;
+		val = "auto";
 	}
 
-	// Use the active box-sizing model to add/subtract irrelevant styles
+	// Check for style in case a browser which returns unreliable values
+	// for getComputedStyle silently falls back to the reliable elem.style
+	valueIsBorderBox = valueIsBorderBox &&
+		( support.boxSizingReliable() || val === elem.style[ dimension ] );
+
+	// Fall back to offsetWidth/offsetHeight when value is "auto"
+	// This happens for inline elements with no explicit setting (gh-3571)
+	// Support: Android <=4.1 - 4.3 only
+	// Also use offsetWidth/offsetHeight for misreported inline dimensions (gh-3602)
+	if ( val === "auto" ||
+		!parseFloat( val ) && jQuery.css( elem, "display", false, styles ) === "inline" ) {
+
+		val = elem[ "offset" + dimension[ 0 ].toUpperCase() + dimension.slice( 1 ) ];
+
+		// offsetWidth/offsetHeight provide border-box values
+		valueIsBorderBox = true;
+	}
+
+	// Normalize "" and auto
+	val = parseFloat( val ) || 0;
+
+	// Adjust for the element's box model
 	return ( val +
-		augmentWidthOrHeight(
+		boxModelAdjustment(
 			elem,
-			name,
+			dimension,
 			extra || ( isBorderBox ? "border" : "content" ),
 			valueIsBorderBox,
-			styles
+			styles,
+
+			// Provide the current computed size to request scroll gutter calculation (gh-3589)
+			val
 		)
 	) + "px";
 }
@@ -6405,9 +6435,7 @@ jQuery.extend( {
 
 	// Add in properties whose names you wish to fix before
 	// setting or getting the value
-	cssProps: {
-		"float": "cssFloat"
-	},
+	cssProps: {},
 
 	// Get and set the style property on a DOM Node
 	style: function( elem, name, value, extra ) {
@@ -6419,11 +6447,16 @@ jQuery.extend( {
 
 		// Make sure that we're working with the right name
 		var ret, type, hooks,
-			origName = jQuery.camelCase( name ),
+			origName = camelCase( name ),
+			isCustomProp = rcustomProp.test( name ),
 			style = elem.style;
 
-		name = jQuery.cssProps[ origName ] ||
-			( jQuery.cssProps[ origName ] = vendorPropName( origName ) || origName );
+		// Make sure that we're working with the right name. We don't
+		// want to query the value if it is a CSS custom property
+		// since they are user-defined.
+		if ( !isCustomProp ) {
+			name = finalPropName( origName );
+		}
 
 		// Gets hook for the prefixed version, then unprefixed version
 		hooks = jQuery.cssHooks[ name ] || jQuery.cssHooks[ origName ];
@@ -6459,7 +6492,11 @@ jQuery.extend( {
 			if ( !hooks || !( "set" in hooks ) ||
 				( value = hooks.set( elem, value, extra ) ) !== undefined ) {
 
-				style[ name ] = value;
+				if ( isCustomProp ) {
+					style.setProperty( name, value );
+				} else {
+					style[ name ] = value;
+				}
 			}
 
 		} else {
@@ -6478,11 +6515,15 @@ jQuery.extend( {
 
 	css: function( elem, name, extra, styles ) {
 		var val, num, hooks,
-			origName = jQuery.camelCase( name );
+			origName = camelCase( name ),
+			isCustomProp = rcustomProp.test( name );
 
-		// Make sure that we're working with the right name
-		name = jQuery.cssProps[ origName ] ||
-			( jQuery.cssProps[ origName ] = vendorPropName( origName ) || origName );
+		// Make sure that we're working with the right name. We don't
+		// want to modify the value if it is a CSS custom property
+		// since they are user-defined.
+		if ( !isCustomProp ) {
+			name = finalPropName( origName );
+		}
 
 		// Try prefixed name followed by the unprefixed name
 		hooks = jQuery.cssHooks[ name ] || jQuery.cssHooks[ origName ];
@@ -6507,12 +6548,13 @@ jQuery.extend( {
 			num = parseFloat( val );
 			return extra === true || isFinite( num ) ? num || 0 : val;
 		}
+
 		return val;
 	}
 } );
 
-jQuery.each( [ "height", "width" ], function( i, name ) {
-	jQuery.cssHooks[ name ] = {
+jQuery.each( [ "height", "width" ], function( i, dimension ) {
+	jQuery.cssHooks[ dimension ] = {
 		get: function( elem, computed, extra ) {
 			if ( computed ) {
 
@@ -6528,29 +6570,41 @@ jQuery.each( [ "height", "width" ], function( i, name ) {
 					// in IE throws an error.
 					( !elem.getClientRects().length || !elem.getBoundingClientRect().width ) ?
 						swap( elem, cssShow, function() {
-							return getWidthOrHeight( elem, name, extra );
+							return getWidthOrHeight( elem, dimension, extra );
 						} ) :
-						getWidthOrHeight( elem, name, extra );
+						getWidthOrHeight( elem, dimension, extra );
 			}
 		},
 
 		set: function( elem, value, extra ) {
 			var matches,
-				styles = extra && getStyles( elem ),
-				subtract = extra && augmentWidthOrHeight(
+				styles = getStyles( elem ),
+				isBorderBox = jQuery.css( elem, "boxSizing", false, styles ) === "border-box",
+				subtract = extra && boxModelAdjustment(
 					elem,
-					name,
+					dimension,
 					extra,
-					jQuery.css( elem, "boxSizing", false, styles ) === "border-box",
+					isBorderBox,
 					styles
 				);
+
+			// Account for unreliable border-box dimensions by comparing offset* to computed and
+			// faking a content-box to get border and padding (gh-3699)
+			if ( isBorderBox && support.scrollboxSize() === styles.position ) {
+				subtract -= Math.ceil(
+					elem[ "offset" + dimension[ 0 ].toUpperCase() + dimension.slice( 1 ) ] -
+					parseFloat( styles[ dimension ] ) -
+					boxModelAdjustment( elem, dimension, "border", false, styles ) -
+					0.5
+				);
+			}
 
 			// Convert to pixels if value adjustment is needed
 			if ( subtract && ( matches = rcssNum.exec( value ) ) &&
 				( matches[ 3 ] || "px" ) !== "px" ) {
 
-				elem.style[ name ] = value;
-				value = jQuery.css( elem, name );
+				elem.style[ dimension ] = value;
+				value = jQuery.css( elem, dimension );
 			}
 
 			return setPositiveNumber( elem, value, subtract );
@@ -6594,7 +6648,7 @@ jQuery.each( {
 		}
 	};
 
-	if ( !rmargin.test( prefix ) ) {
+	if ( prefix !== "margin" ) {
 		jQuery.cssHooks[ prefix + suffix ].set = setPositiveNumber;
 	}
 } );
@@ -6606,7 +6660,7 @@ jQuery.fn.extend( {
 				map = {},
 				i = 0;
 
-			if ( jQuery.isArray( name ) ) {
+			if ( Array.isArray( name ) ) {
 				styles = getStyles( elem );
 				len = name.length;
 
@@ -6730,7 +6784,7 @@ jQuery.extend( {
 		type: {
 			set: function( elem, value ) {
 				if ( !support.radioValue && value === "radio" &&
-					jQuery.nodeName( elem, "input" ) ) {
+					nodeName( elem, "input" ) ) {
 					var val = elem.value;
 					elem.setAttribute( "type", value );
 					if ( val ) {
@@ -6933,7 +6987,7 @@ jQuery.each( [
 
 
 	// Strip and collapse whitespace according to HTML spec
-	// https://html.spec.whatwg.org/multipage/infrastructure.html#strip-and-collapse-whitespace
+	// https://infra.spec.whatwg.org/#strip-and-collapse-ascii-whitespace
 	function stripAndCollapse( value ) {
 		var tokens = value.match( rnothtmlwhite ) || [];
 		return tokens.join( " " );
@@ -6944,20 +6998,30 @@ function getClass( elem ) {
 	return elem.getAttribute && elem.getAttribute( "class" ) || "";
 }
 
+function classesToArray( value ) {
+	if ( Array.isArray( value ) ) {
+		return value;
+	}
+	if ( typeof value === "string" ) {
+		return value.match( rnothtmlwhite ) || [];
+	}
+	return [];
+}
+
 jQuery.fn.extend( {
 	addClass: function( value ) {
 		var classes, elem, cur, curValue, clazz, j, finalValue,
 			i = 0;
 
-		if ( jQuery.isFunction( value ) ) {
+		if ( isFunction( value ) ) {
 			return this.each( function( j ) {
 				jQuery( this ).addClass( value.call( this, j, getClass( this ) ) );
 			} );
 		}
 
-		if ( typeof value === "string" && value ) {
-			classes = value.match( rnothtmlwhite ) || [];
+		classes = classesToArray( value );
 
+		if ( classes.length ) {
 			while ( ( elem = this[ i++ ] ) ) {
 				curValue = getClass( elem );
 				cur = elem.nodeType === 1 && ( " " + stripAndCollapse( curValue ) + " " );
@@ -6986,7 +7050,7 @@ jQuery.fn.extend( {
 		var classes, elem, cur, curValue, clazz, j, finalValue,
 			i = 0;
 
-		if ( jQuery.isFunction( value ) ) {
+		if ( isFunction( value ) ) {
 			return this.each( function( j ) {
 				jQuery( this ).removeClass( value.call( this, j, getClass( this ) ) );
 			} );
@@ -6996,9 +7060,9 @@ jQuery.fn.extend( {
 			return this.attr( "class", "" );
 		}
 
-		if ( typeof value === "string" && value ) {
-			classes = value.match( rnothtmlwhite ) || [];
+		classes = classesToArray( value );
 
+		if ( classes.length ) {
 			while ( ( elem = this[ i++ ] ) ) {
 				curValue = getClass( elem );
 
@@ -7028,13 +7092,14 @@ jQuery.fn.extend( {
 	},
 
 	toggleClass: function( value, stateVal ) {
-		var type = typeof value;
+		var type = typeof value,
+			isValidValue = type === "string" || Array.isArray( value );
 
-		if ( typeof stateVal === "boolean" && type === "string" ) {
+		if ( typeof stateVal === "boolean" && isValidValue ) {
 			return stateVal ? this.addClass( value ) : this.removeClass( value );
 		}
 
-		if ( jQuery.isFunction( value ) ) {
+		if ( isFunction( value ) ) {
 			return this.each( function( i ) {
 				jQuery( this ).toggleClass(
 					value.call( this, i, getClass( this ), stateVal ),
@@ -7046,12 +7111,12 @@ jQuery.fn.extend( {
 		return this.each( function() {
 			var className, i, self, classNames;
 
-			if ( type === "string" ) {
+			if ( isValidValue ) {
 
 				// Toggle individual class names
 				i = 0;
 				self = jQuery( this );
-				classNames = value.match( rnothtmlwhite ) || [];
+				classNames = classesToArray( value );
 
 				while ( ( className = classNames[ i++ ] ) ) {
 
@@ -7110,7 +7175,7 @@ var rreturn = /\r/g;
 
 jQuery.fn.extend( {
 	val: function( value ) {
-		var hooks, ret, isFunction,
+		var hooks, ret, valueIsFunction,
 			elem = this[ 0 ];
 
 		if ( !arguments.length ) {
@@ -7139,7 +7204,7 @@ jQuery.fn.extend( {
 			return;
 		}
 
-		isFunction = jQuery.isFunction( value );
+		valueIsFunction = isFunction( value );
 
 		return this.each( function( i ) {
 			var val;
@@ -7148,7 +7213,7 @@ jQuery.fn.extend( {
 				return;
 			}
 
-			if ( isFunction ) {
+			if ( valueIsFunction ) {
 				val = value.call( this, i, jQuery( this ).val() );
 			} else {
 				val = value;
@@ -7161,7 +7226,7 @@ jQuery.fn.extend( {
 			} else if ( typeof val === "number" ) {
 				val += "";
 
-			} else if ( jQuery.isArray( val ) ) {
+			} else if ( Array.isArray( val ) ) {
 				val = jQuery.map( val, function( value ) {
 					return value == null ? "" : value + "";
 				} );
@@ -7220,7 +7285,7 @@ jQuery.extend( {
 							// Don't return options that are disabled or in a disabled optgroup
 							!option.disabled &&
 							( !option.parentNode.disabled ||
-								!jQuery.nodeName( option.parentNode, "optgroup" ) ) ) {
+								!nodeName( option.parentNode, "optgroup" ) ) ) {
 
 						// Get the specific value for the option
 						value = jQuery( option ).val();
@@ -7272,7 +7337,7 @@ jQuery.extend( {
 jQuery.each( [ "radio", "checkbox" ], function() {
 	jQuery.valHooks[ this ] = {
 		set: function( elem, value ) {
-			if ( jQuery.isArray( value ) ) {
+			if ( Array.isArray( value ) ) {
 				return ( elem.checked = jQuery.inArray( jQuery( elem ).val(), value ) > -1 );
 			}
 		}
@@ -7290,18 +7355,24 @@ jQuery.each( [ "radio", "checkbox" ], function() {
 // Return jQuery for attributes-only inclusion
 
 
-var rfocusMorph = /^(?:focusinfocus|focusoutblur)$/;
+support.focusin = "onfocusin" in window;
+
+
+var rfocusMorph = /^(?:focusinfocus|focusoutblur)$/,
+	stopPropagationCallback = function( e ) {
+		e.stopPropagation();
+	};
 
 jQuery.extend( jQuery.event, {
 
 	trigger: function( event, data, elem, onlyHandlers ) {
 
-		var i, cur, tmp, bubbleType, ontype, handle, special,
+		var i, cur, tmp, bubbleType, ontype, handle, special, lastElement,
 			eventPath = [ elem || document ],
 			type = hasOwn.call( event, "type" ) ? event.type : event,
 			namespaces = hasOwn.call( event, "namespace" ) ? event.namespace.split( "." ) : [];
 
-		cur = tmp = elem = elem || document;
+		cur = lastElement = tmp = elem = elem || document;
 
 		// Don't do events on text and comment nodes
 		if ( elem.nodeType === 3 || elem.nodeType === 8 ) {
@@ -7353,7 +7424,7 @@ jQuery.extend( jQuery.event, {
 
 		// Determine event propagation path in advance, per W3C events spec (#9951)
 		// Bubble up to document, then to window; watch for a global ownerDocument var (#9724)
-		if ( !onlyHandlers && !special.noBubble && !jQuery.isWindow( elem ) ) {
+		if ( !onlyHandlers && !special.noBubble && !isWindow( elem ) ) {
 
 			bubbleType = special.delegateType || type;
 			if ( !rfocusMorph.test( bubbleType + type ) ) {
@@ -7373,7 +7444,7 @@ jQuery.extend( jQuery.event, {
 		// Fire handlers on the event path
 		i = 0;
 		while ( ( cur = eventPath[ i++ ] ) && !event.isPropagationStopped() ) {
-
+			lastElement = cur;
 			event.type = i > 1 ?
 				bubbleType :
 				special.bindType || type;
@@ -7405,7 +7476,7 @@ jQuery.extend( jQuery.event, {
 
 				// Call a native DOM method on the target with the same name as the event.
 				// Don't do default actions on window, that's where global variables be (#6170)
-				if ( ontype && jQuery.isFunction( elem[ type ] ) && !jQuery.isWindow( elem ) ) {
+				if ( ontype && isFunction( elem[ type ] ) && !isWindow( elem ) ) {
 
 					// Don't re-trigger an onFOO event when we call its FOO() method
 					tmp = elem[ ontype ];
@@ -7416,7 +7487,17 @@ jQuery.extend( jQuery.event, {
 
 					// Prevent re-triggering of the same event, since we already bubbled it above
 					jQuery.event.triggered = type;
+
+					if ( event.isPropagationStopped() ) {
+						lastElement.addEventListener( type, stopPropagationCallback );
+					}
+
 					elem[ type ]();
+
+					if ( event.isPropagationStopped() ) {
+						lastElement.removeEventListener( type, stopPropagationCallback );
+					}
+
 					jQuery.event.triggered = undefined;
 
 					if ( tmp ) {
@@ -7460,31 +7541,6 @@ jQuery.fn.extend( {
 		}
 	}
 } );
-
-
-jQuery.each( ( "blur focus focusin focusout resize scroll click dblclick " +
-	"mousedown mouseup mousemove mouseover mouseout mouseenter mouseleave " +
-	"change select submit keydown keypress keyup contextmenu" ).split( " " ),
-	function( i, name ) {
-
-	// Handle event binding
-	jQuery.fn[ name ] = function( data, fn ) {
-		return arguments.length > 0 ?
-			this.on( name, null, data, fn ) :
-			this.trigger( name );
-	};
-} );
-
-jQuery.fn.extend( {
-	hover: function( fnOver, fnOut ) {
-		return this.mouseenter( fnOver ).mouseleave( fnOut || fnOver );
-	}
-} );
-
-
-
-
-support.focusin = "onfocusin" in window;
 
 
 // Support: Firefox <=44
@@ -7539,7 +7595,7 @@ var
 function buildParams( prefix, obj, traditional, add ) {
 	var name;
 
-	if ( jQuery.isArray( obj ) ) {
+	if ( Array.isArray( obj ) ) {
 
 		// Serialize array item.
 		jQuery.each( obj, function( i, v ) {
@@ -7560,7 +7616,7 @@ function buildParams( prefix, obj, traditional, add ) {
 			}
 		} );
 
-	} else if ( !traditional && jQuery.type( obj ) === "object" ) {
+	} else if ( !traditional && toType( obj ) === "object" ) {
 
 		// Serialize object item.
 		for ( name in obj ) {
@@ -7582,7 +7638,7 @@ jQuery.param = function( a, traditional ) {
 		add = function( key, valueOrFunction ) {
 
 			// If value is a function, invoke it and use its return value
-			var value = jQuery.isFunction( valueOrFunction ) ?
+			var value = isFunction( valueOrFunction ) ?
 				valueOrFunction() :
 				valueOrFunction;
 
@@ -7591,7 +7647,7 @@ jQuery.param = function( a, traditional ) {
 		};
 
 	// If an array was passed in, assume that it is an array of form elements.
-	if ( jQuery.isArray( a ) || ( a.jquery && !jQuery.isPlainObject( a ) ) ) {
+	if ( Array.isArray( a ) || ( a.jquery && !jQuery.isPlainObject( a ) ) ) {
 
 		// Serialize the form elements
 		jQuery.each( a, function() {
@@ -7637,7 +7693,7 @@ jQuery.fn.extend( {
 				return null;
 			}
 
-			if ( jQuery.isArray( val ) ) {
+			if ( Array.isArray( val ) ) {
 				return jQuery.map( val, function( val ) {
 					return { name: elem.name, value: val.replace( rCRLF, "\r\n" ) };
 				} );
@@ -7654,7 +7710,7 @@ jQuery.fn.extend( {
 		var wrap;
 
 		if ( this[ 0 ] ) {
-			if ( jQuery.isFunction( html ) ) {
+			if ( isFunction( html ) ) {
 				html = html.call( this[ 0 ] );
 			}
 
@@ -7680,7 +7736,7 @@ jQuery.fn.extend( {
 	},
 
 	wrapInner: function( html ) {
-		if ( jQuery.isFunction( html ) ) {
+		if ( isFunction( html ) ) {
 			return this.each( function( i ) {
 				jQuery( this ).wrapInner( html.call( this, i ) );
 			} );
@@ -7700,10 +7756,10 @@ jQuery.fn.extend( {
 	},
 
 	wrap: function( html ) {
-		var isFunction = jQuery.isFunction( html );
+		var htmlIsFunction = isFunction( html );
 
 		return this.each( function( i ) {
-			jQuery( this ).wrapAll( isFunction ? html.call( this, i ) : html );
+			jQuery( this ).wrapAll( htmlIsFunction ? html.call( this, i ) : html );
 		} );
 	},
 
@@ -7789,13 +7845,6 @@ jQuery.parseHTML = function( data, context, keepScripts ) {
 };
 
 
-/**
- * Gets a window from an element
- */
-function getWindow( elem ) {
-	return jQuery.isWindow( elem ) ? elem : elem.nodeType === 9 && elem.defaultView;
-}
-
 jQuery.offset = {
 	setOffset: function( elem, options, i ) {
 		var curPosition, curLeft, curCSSTop, curTop, curOffset, curCSSLeft, calculatePosition,
@@ -7826,7 +7875,7 @@ jQuery.offset = {
 			curLeft = parseFloat( curCSSLeft ) || 0;
 		}
 
-		if ( jQuery.isFunction( options ) ) {
+		if ( isFunction( options ) ) {
 
 			// Use jQuery.extend here to allow modification of coordinates argument (gh-1848)
 			options = options.call( elem, i, jQuery.extend( {}, curOffset ) );
@@ -7849,6 +7898,8 @@ jQuery.offset = {
 };
 
 jQuery.fn.extend( {
+
+	// offset() relates an element's border box to the document origin
 	offset: function( options ) {
 
 		// Preserve chaining for setter
@@ -7860,13 +7911,14 @@ jQuery.fn.extend( {
 				} );
 		}
 
-		var docElem, win, rect, doc,
+		var rect, win,
 			elem = this[ 0 ];
 
 		if ( !elem ) {
 			return;
 		}
 
+		// Return zeros for disconnected and hidden (display: none) elements (gh-2310)
 		// Support: IE <=11 only
 		// Running getBoundingClientRect on a
 		// disconnected node in IE throws an error
@@ -7874,56 +7926,52 @@ jQuery.fn.extend( {
 			return { top: 0, left: 0 };
 		}
 
+		// Get document-relative position by adding viewport scroll to viewport-relative gBCR
 		rect = elem.getBoundingClientRect();
-
-		// Make sure element is not hidden (display: none)
-		if ( rect.width || rect.height ) {
-			doc = elem.ownerDocument;
-			win = getWindow( doc );
-			docElem = doc.documentElement;
-
-			return {
-				top: rect.top + win.pageYOffset - docElem.clientTop,
-				left: rect.left + win.pageXOffset - docElem.clientLeft
-			};
-		}
-
-		// Return zeros for disconnected and hidden elements (gh-2310)
-		return rect;
+		win = elem.ownerDocument.defaultView;
+		return {
+			top: rect.top + win.pageYOffset,
+			left: rect.left + win.pageXOffset
+		};
 	},
 
+	// position() relates an element's margin box to its offset parent's padding box
+	// This corresponds to the behavior of CSS absolute positioning
 	position: function() {
 		if ( !this[ 0 ] ) {
 			return;
 		}
 
-		var offsetParent, offset,
+		var offsetParent, offset, doc,
 			elem = this[ 0 ],
 			parentOffset = { top: 0, left: 0 };
 
-		// Fixed elements are offset from window (parentOffset = {top:0, left: 0},
-		// because it is its only offset parent
+		// position:fixed elements are offset from the viewport, which itself always has zero offset
 		if ( jQuery.css( elem, "position" ) === "fixed" ) {
 
-			// Assume getBoundingClientRect is there when computed position is fixed
+			// Assume position:fixed implies availability of getBoundingClientRect
 			offset = elem.getBoundingClientRect();
 
 		} else {
-
-			// Get *real* offsetParent
-			offsetParent = this.offsetParent();
-
-			// Get correct offsets
 			offset = this.offset();
-			if ( !jQuery.nodeName( offsetParent[ 0 ], "html" ) ) {
-				parentOffset = offsetParent.offset();
-			}
 
-			// Add offsetParent borders
-			parentOffset = {
-				top: parentOffset.top + jQuery.css( offsetParent[ 0 ], "borderTopWidth", true ),
-				left: parentOffset.left + jQuery.css( offsetParent[ 0 ], "borderLeftWidth", true )
-			};
+			// Account for the *real* offset parent, which can be the document or its root element
+			// when a statically positioned element is identified
+			doc = elem.ownerDocument;
+			offsetParent = elem.offsetParent || doc.documentElement;
+			while ( offsetParent &&
+				( offsetParent === doc.body || offsetParent === doc.documentElement ) &&
+				jQuery.css( offsetParent, "position" ) === "static" ) {
+
+				offsetParent = offsetParent.parentNode;
+			}
+			if ( offsetParent && offsetParent !== elem && offsetParent.nodeType === 1 ) {
+
+				// Incorporate borders into its offset, since they are outside its content origin
+				parentOffset = jQuery( offsetParent ).offset();
+				parentOffset.top += jQuery.css( offsetParent, "borderTopWidth", true );
+				parentOffset.left += jQuery.css( offsetParent, "borderLeftWidth", true );
+			}
 		}
 
 		// Subtract parent offsets and element margins
@@ -7962,7 +8010,14 @@ jQuery.each( { scrollLeft: "pageXOffset", scrollTop: "pageYOffset" }, function( 
 
 	jQuery.fn[ method ] = function( val ) {
 		return access( this, function( elem, method, val ) {
-			var win = getWindow( elem );
+
+			// Coalesce documents and windows
+			var win;
+			if ( isWindow( elem ) ) {
+				win = elem;
+			} else if ( elem.nodeType === 9 ) {
+				win = elem.defaultView;
+			}
 
 			if ( val === undefined ) {
 				return win ? win[ prop ] : elem[ method ];
@@ -8016,7 +8071,7 @@ jQuery.each( { Height: "height", Width: "width" }, function( name, type ) {
 			return access( this, function( elem, type, value ) {
 				var doc;
 
-				if ( jQuery.isWindow( elem ) ) {
+				if ( isWindow( elem ) ) {
 
 					// $( window ).outerWidth/Height return w/h including scrollbars (gh-1729)
 					return funcName.indexOf( "outer" ) === 0 ?
@@ -8048,6 +8103,114 @@ jQuery.each( { Height: "height", Width: "width" }, function( name, type ) {
 		};
 	} );
 } );
+
+
+jQuery.each( ( "blur focus focusin focusout resize scroll click dblclick " +
+	"mousedown mouseup mousemove mouseover mouseout mouseenter mouseleave " +
+	"change select submit keydown keypress keyup contextmenu" ).split( " " ),
+	function( i, name ) {
+
+	// Handle event binding
+	jQuery.fn[ name ] = function( data, fn ) {
+		return arguments.length > 0 ?
+			this.on( name, null, data, fn ) :
+			this.trigger( name );
+	};
+} );
+
+jQuery.fn.extend( {
+	hover: function( fnOver, fnOut ) {
+		return this.mouseenter( fnOver ).mouseleave( fnOut || fnOver );
+	}
+} );
+
+
+
+
+jQuery.fn.extend( {
+
+	bind: function( types, data, fn ) {
+		return this.on( types, null, data, fn );
+	},
+	unbind: function( types, fn ) {
+		return this.off( types, null, fn );
+	},
+
+	delegate: function( selector, types, data, fn ) {
+		return this.on( types, selector, data, fn );
+	},
+	undelegate: function( selector, types, fn ) {
+
+		// ( namespace ) or ( selector, types [, fn] )
+		return arguments.length === 1 ?
+			this.off( selector, "**" ) :
+			this.off( types, selector || "**", fn );
+	}
+} );
+
+// Bind a function to a context, optionally partially applying any
+// arguments.
+// jQuery.proxy is deprecated to promote standards (specifically Function#bind)
+// However, it is not slated for removal any time soon
+jQuery.proxy = function( fn, context ) {
+	var tmp, args, proxy;
+
+	if ( typeof context === "string" ) {
+		tmp = fn[ context ];
+		context = fn;
+		fn = tmp;
+	}
+
+	// Quick check to determine if target is callable, in the spec
+	// this throws a TypeError, but we will just return undefined.
+	if ( !isFunction( fn ) ) {
+		return undefined;
+	}
+
+	// Simulated bind
+	args = slice.call( arguments, 2 );
+	proxy = function() {
+		return fn.apply( context || this, args.concat( slice.call( arguments ) ) );
+	};
+
+	// Set the guid of unique handler to the same of original handler, so it can be removed
+	proxy.guid = fn.guid = fn.guid || jQuery.guid++;
+
+	return proxy;
+};
+
+jQuery.holdReady = function( hold ) {
+	if ( hold ) {
+		jQuery.readyWait++;
+	} else {
+		jQuery.ready( true );
+	}
+};
+jQuery.isArray = Array.isArray;
+jQuery.parseJSON = JSON.parse;
+jQuery.nodeName = nodeName;
+jQuery.isFunction = isFunction;
+jQuery.isWindow = isWindow;
+jQuery.camelCase = camelCase;
+jQuery.type = toType;
+
+jQuery.now = Date.now;
+
+jQuery.isNumeric = function( obj ) {
+
+	// As of jQuery 3.0, isNumeric is limited to
+	// strings and numbers (primitives or objects)
+	// that can be coerced to finite numbers (gh-2662)
+	var type = jQuery.type( obj );
+	return ( type === "number" || type === "string" ) &&
+
+		// parseFloat NaNs numeric-cast false positives ("")
+		// ...but misinterprets leading-number strings, particularly hex literals ("0x...")
+		// subtraction forces infinities to NaN
+		!isNaN( obj - parseFloat( obj ) );
+};
+
+
 
 
 // Register as a named AMD module, since jQuery can be concatenated with other
@@ -8102,21 +8265,20 @@ if ( !noGlobal ) {
 
 
 
-
 return jQuery;
 } );
 
 /*!
- * @copyright Copyright (c) 2016 IcoMoon.io
+ * @copyright Copyright (c) 2017 IcoMoon.io
  * @license   Licensed under MIT license
  *            See https://github.com/Keyamoon/svgxuse
- * @version   1.1.23
+ * @version   1.2.6
  */
 /*jslint browser: true */
 /*global XDomainRequest, MutationObserver, window */
 (function () {
-    'use strict';
-    if (window && window.addEventListener) {
+    "use strict";
+    if (typeof window !== "undefined" && window.addEventListener) {
         var cache = Object.create(null); // holds xhr objects to prevent multiple requests
         var checkUseElems;
         var tid; // timeout id
@@ -8129,8 +8291,8 @@ return jQuery;
         };
         var observeChanges = function () {
             var observer;
-            window.addEventListener('resize', debouncedCheck, false);
-            window.addEventListener('orientationchange', debouncedCheck, false);
+            window.addEventListener("resize", debouncedCheck, false);
+            window.addEventListener("orientationchange", debouncedCheck, false);
             if (window.MutationObserver) {
                 observer = new MutationObserver(debouncedCheck);
                 observer.observe(document.documentElement, {
@@ -8141,16 +8303,16 @@ return jQuery;
                 unobserveChanges = function () {
                     try {
                         observer.disconnect();
-                        window.removeEventListener('resize', debouncedCheck, false);
-                        window.removeEventListener('orientationchange', debouncedCheck, false);
+                        window.removeEventListener("resize", debouncedCheck, false);
+                        window.removeEventListener("orientationchange", debouncedCheck, false);
                     } catch (ignore) {}
                 };
             } else {
-                document.documentElement.addEventListener('DOMSubtreeModified', debouncedCheck, false);
+                document.documentElement.addEventListener("DOMSubtreeModified", debouncedCheck, false);
                 unobserveChanges = function () {
-                    document.documentElement.removeEventListener('DOMSubtreeModified', debouncedCheck, false);
-                    window.removeEventListener('resize', debouncedCheck, false);
-                    window.removeEventListener('orientationchange', debouncedCheck, false);
+                    document.documentElement.removeEventListener("DOMSubtreeModified", debouncedCheck, false);
+                    window.removeEventListener("resize", debouncedCheck, false);
+                    window.removeEventListener("orientationchange", debouncedCheck, false);
                 };
             }
         };
@@ -8163,10 +8325,10 @@ return jQuery;
                 if (loc.protocol !== undefined) {
                     a = loc;
                 } else {
-                    a = document.createElement('a');
+                    a = document.createElement("a");
                     a.href = loc;
                 }
-                return a.protocol.replace(/:/g, '') + a.host;
+                return a.protocol.replace(/:/g, "") + a.host;
             }
             var Request;
             var origin;
@@ -8175,7 +8337,7 @@ return jQuery;
                 Request = new XMLHttpRequest();
                 origin = getOrigin(location);
                 origin2 = getOrigin(url);
-                if (Request.withCredentials === undefined && origin2 !== '' && origin2 !== origin) {
+                if (Request.withCredentials === undefined && origin2 !== "" && origin2 !== origin) {
                     Request = XDomainRequest || undefined;
                 } else {
                     Request = XMLHttpRequest;
@@ -8183,11 +8345,11 @@ return jQuery;
             }
             return Request;
         };
-        var xlinkNS = 'http://www.w3.org/1999/xlink';
+        var xlinkNS = "http://www.w3.org/1999/xlink";
         checkUseElems = function () {
             var base;
             var bcr;
-            var fallback = ''; // optional fallback URL in case no base path to SVG file was given and no symbol definition was found.
+            var fallback = ""; // optional fallback URL in case no base path to SVG file was given and no symbol definition was found.
             var hash;
             var href;
             var i;
@@ -8208,24 +8370,27 @@ return jQuery;
             function attrUpdateFunc(spec) {
                 return function () {
                     if (cache[spec.base] !== true) {
-                        spec.useEl.setAttributeNS(xlinkNS, 'xlink:href', '#' + spec.hash);
+                        spec.useEl.setAttributeNS(xlinkNS, "xlink:href", "#" + spec.hash);
+                        if (spec.useEl.hasAttribute("href")) {
+                            spec.useEl.setAttribute("href", "#" + spec.hash);
+                        }
                     }
                 };
             }
             function onloadFunc(xhr) {
                 return function () {
                     var body = document.body;
-                    var x = document.createElement('x');
+                    var x = document.createElement("x");
                     var svg;
                     xhr.onload = null;
                     x.innerHTML = xhr.responseText;
-                    svg = x.getElementsByTagName('svg')[0];
+                    svg = x.getElementsByTagName("svg")[0];
                     if (svg) {
-                        svg.setAttribute('aria-hidden', 'true');
-                        svg.style.position = 'absolute';
+                        svg.setAttribute("aria-hidden", "true");
+                        svg.style.position = "absolute";
                         svg.style.width = 0;
                         svg.style.height = 0;
-                        svg.style.overflow = 'hidden';
+                        svg.style.overflow = "hidden";
                         body.insertBefore(svg, body.firstChild);
                     }
                     observeIfDone();
@@ -8240,7 +8405,7 @@ return jQuery;
             }
             unobserveChanges(); // stop watching for changes to DOM
             // find all use elements
-            uses = document.getElementsByTagName('use');
+            uses = document.getElementsByTagName("use");
             for (i = 0; i < uses.length; i += 1) {
                 try {
                     bcr = uses[i].getBoundingClientRect();
@@ -8248,9 +8413,11 @@ return jQuery;
                     // failed to get bounding rectangle of the use element
                     bcr = false;
                 }
-                href = uses[i].getAttributeNS(xlinkNS, 'href');
+                href = uses[i].getAttribute("href")
+                        || uses[i].getAttributeNS(xlinkNS, "href")
+                        || uses[i].getAttribute("xlink:href");
                 if (href && href.split) {
-                    url = href.split('#');
+                    url = href.split("#");
                 } else {
                     url = ["", ""];
                 }
@@ -8263,6 +8430,9 @@ return jQuery;
                     // use the optional fallback URL if there is no reference to an external SVG
                     if (fallback && !base.length && hash && !document.getElementById(hash)) {
                         base = fallback;
+                    }
+                    if (uses[i].hasAttribute("href")) {
+                        uses[i].setAttributeNS(xlinkNS, "xlink:href", href);
                     }
                     if (base.length) {
                         // schedule updating xlink:href
@@ -8283,7 +8453,7 @@ return jQuery;
                                 xhr.onload = onloadFunc(xhr);
                                 xhr.onerror = onErrorTimeout(xhr);
                                 xhr.ontimeout = onErrorTimeout(xhr);
-                                xhr.open('GET', base);
+                                xhr.open("GET", base);
                                 xhr.send();
                                 inProgressCount += 1;
                             }
@@ -8302,2268 +8472,40 @@ return jQuery;
                             cache[base] = true;
                         }
                     } else if (base.length && cache[base]) {
-                        attrUpdateFunc({
+                        setTimeout(attrUpdateFunc({
                             useEl: uses[i],
                             base: base,
                             hash: hash
-                        })();
+                        }), 0);
                     }
                 }
             }
-            uses = '';
+            uses = "";
             inProgressCount += 1;
             observeIfDone();
         };
-        // The load event fires when all resources have finished loading, which allows detecting whether SVG use elements are empty.
-        window.addEventListener('load', function winLoad() {
-            window.removeEventListener('load', winLoad, false); // to prevent memory leaks
+        var winLoad;
+        winLoad = function () {
+            window.removeEventListener("load", winLoad, false); // to prevent memory leaks
             tid = setTimeout(checkUseElems, 0);
-        }, false);
+        };
+        if (document.readyState !== "complete") {
+            // The load event fires when all resources have finished loading, which allows detecting whether SVG use elements are empty.
+            window.addEventListener("load", winLoad, false);
+        } else {
+            // No need to add a listener if the document is already loaded, initialize immediately.
+            winLoad();
+        }
     }
 }());
-
-/*! picturefill - v3.0.2 - 2016-02-12
- * https://scottjehl.github.io/picturefill/
- * Copyright (c) 2016 https://github.com/scottjehl/picturefill/blob/master/Authors.txt; Licensed MIT
- */
-/*! Gecko-Picture - v1.0
- * https://github.com/scottjehl/picturefill/tree/3.0/src/plugins/gecko-picture
- * Firefox's early picture implementation (prior to FF41) is static and does
- * not react to viewport changes. This tiny module fixes this.
- */
-(function(window) {
-	/*jshint eqnull:true */
-	var ua = navigator.userAgent;
-
-	if ( window.HTMLPictureElement && ((/ecko/).test(ua) && ua.match(/rv\:(\d+)/) && RegExp.$1 < 45) ) {
-		addEventListener("resize", (function() {
-			var timer;
-
-			var dummySrc = document.createElement("source");
-
-			var fixRespimg = function(img) {
-				var source, sizes;
-				var picture = img.parentNode;
-
-				if (picture.nodeName.toUpperCase() === "PICTURE") {
-					source = dummySrc.cloneNode();
-
-					picture.insertBefore(source, picture.firstElementChild);
-					setTimeout(function() {
-						picture.removeChild(source);
-					});
-				} else if (!img._pfLastSize || img.offsetWidth > img._pfLastSize) {
-					img._pfLastSize = img.offsetWidth;
-					sizes = img.sizes;
-					img.sizes += ",100vw";
-					setTimeout(function() {
-						img.sizes = sizes;
-					});
-				}
-			};
-
-			var findPictureImgs = function() {
-				var i;
-				var imgs = document.querySelectorAll("picture > img, img[srcset][sizes]");
-				for (i = 0; i < imgs.length; i++) {
-					fixRespimg(imgs[i]);
-				}
-			};
-			var onResize = function() {
-				clearTimeout(timer);
-				timer = setTimeout(findPictureImgs, 99);
-			};
-			var mq = window.matchMedia && matchMedia("(orientation: landscape)");
-			var init = function() {
-				onResize();
-
-				if (mq && mq.addListener) {
-					mq.addListener(onResize);
-				}
-			};
-
-			dummySrc.srcset = "data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==";
-
-			if (/^[c|i]|d$/.test(document.readyState || "")) {
-				init();
-			} else {
-				document.addEventListener("DOMContentLoaded", init);
-			}
-
-			return onResize;
-		})());
-	}
-})(window);
-
-/*! Picturefill - v3.0.2
- * http://scottjehl.github.io/picturefill
- * Copyright (c) 2015 https://github.com/scottjehl/picturefill/blob/master/Authors.txt;
- *  License: MIT
- */
-
-(function( window, document, undefined ) {
-	// Enable strict mode
-	"use strict";
-
-	// HTML shim|v it for old IE (IE9 will still need the HTML video tag workaround)
-	document.createElement( "picture" );
-
-	var warn, eminpx, alwaysCheckWDescriptor, evalId;
-	// local object for method references and testing exposure
-	var pf = {};
-	var isSupportTestReady = false;
-	var noop = function() {};
-	var image = document.createElement( "img" );
-	var getImgAttr = image.getAttribute;
-	var setImgAttr = image.setAttribute;
-	var removeImgAttr = image.removeAttribute;
-	var docElem = document.documentElement;
-	var types = {};
-	var cfg = {
-		//resource selection:
-		algorithm: ""
-	};
-	var srcAttr = "data-pfsrc";
-	var srcsetAttr = srcAttr + "set";
-	// ua sniffing is done for undetectable img loading features,
-	// to do some non crucial perf optimizations
-	var ua = navigator.userAgent;
-	var supportAbort = (/rident/).test(ua) || ((/ecko/).test(ua) && ua.match(/rv\:(\d+)/) && RegExp.$1 > 35 );
-	var curSrcProp = "currentSrc";
-	var regWDesc = /\s+\+?\d+(e\d+)?w/;
-	var regSize = /(\([^)]+\))?\s*(.+)/;
-	var setOptions = window.picturefillCFG;
-	/**
-	 * Shortcut property for https://w3c.github.io/webappsec/specs/mixedcontent/#restricts-mixed-content ( for easy overriding in tests )
-	 */
-	// baseStyle also used by getEmValue (i.e.: width: 1em is important)
-	var baseStyle = "position:absolute;left:0;visibility:hidden;display:block;padding:0;border:none;font-size:1em;width:1em;overflow:hidden;clip:rect(0px, 0px, 0px, 0px)";
-	var fsCss = "font-size:100%!important;";
-	var isVwDirty = true;
-
-	var cssCache = {};
-	var sizeLengthCache = {};
-	var DPR = window.devicePixelRatio;
-	var units = {
-		px: 1,
-		"in": 96
-	};
-	var anchor = document.createElement( "a" );
-	/**
-	 * alreadyRun flag used for setOptions. is it true setOptions will reevaluate
-	 * @type {boolean}
-	 */
-	var alreadyRun = false;
-
-	// Reusable, non-"g" Regexes
-
-	// (Don't use \s, to avoid matching non-breaking space.)
-	var regexLeadingSpaces = /^[ \t\n\r\u000c]+/,
-	    regexLeadingCommasOrSpaces = /^[, \t\n\r\u000c]+/,
-	    regexLeadingNotSpaces = /^[^ \t\n\r\u000c]+/,
-	    regexTrailingCommas = /[,]+$/,
-	    regexNonNegativeInteger = /^\d+$/,
-
-	    // ( Positive or negative or unsigned integers or decimals, without or without exponents.
-	    // Must include at least one digit.
-	    // According to spec tests any decimal point must be followed by a digit.
-	    // No leading plus sign is allowed.)
-	    // https://html.spec.whatwg.org/multipage/infrastructure.html#valid-floating-point-number
-	    regexFloatingPoint = /^-?(?:[0-9]+|[0-9]*\.[0-9]+)(?:[eE][+-]?[0-9]+)?$/;
-
-	var on = function(obj, evt, fn, capture) {
-		if ( obj.addEventListener ) {
-			obj.addEventListener(evt, fn, capture || false);
-		} else if ( obj.attachEvent ) {
-			obj.attachEvent( "on" + evt, fn);
-		}
-	};
-
-	/**
-	 * simple memoize function:
-	 */
-
-	var memoize = function(fn) {
-		var cache = {};
-		return function(input) {
-			if ( !(input in cache) ) {
-				cache[ input ] = fn(input);
-			}
-			return cache[ input ];
-		};
-	};
-
-	// UTILITY FUNCTIONS
-
-	// Manual is faster than RegEx
-	// http://jsperf.com/whitespace-character/5
-	function isSpace(c) {
-		return (c === "\u0020" || // space
-		        c === "\u0009" || // horizontal tab
-		        c === "\u000A" || // new line
-		        c === "\u000C" || // form feed
-		        c === "\u000D");  // carriage return
-	}
-
-	/**
-	 * gets a mediaquery and returns a boolean or gets a css length and returns a number
-	 * @param css mediaqueries or css length
-	 * @returns {boolean|number}
-	 *
-	 * based on: https://gist.github.com/jonathantneal/db4f77009b155f083738
-	 */
-	var evalCSS = (function() {
-
-		var regLength = /^([\d\.]+)(em|vw|px)$/;
-		var replace = function() {
-			var args = arguments, index = 0, string = args[0];
-			while (++index in args) {
-				string = string.replace(args[index], args[++index]);
-			}
-			return string;
-		};
-
-		var buildStr = memoize(function(css) {
-
-			return "return " + replace((css || "").toLowerCase(),
-				// interpret `and`
-				/\band\b/g, "&&",
-
-				// interpret `,`
-				/,/g, "||",
-
-				// interpret `min-` as >=
-				/min-([a-z-\s]+):/g, "e.$1>=",
-
-				// interpret `max-` as <=
-				/max-([a-z-\s]+):/g, "e.$1<=",
-
-				//calc value
-				/calc([^)]+)/g, "($1)",
-
-				// interpret css values
-				/(\d+[\.]*[\d]*)([a-z]+)/g, "($1 * e.$2)",
-				//make eval less evil
-				/^(?!(e.[a-z]|[0-9\.&=|><\+\-\*\(\)\/])).*/ig, ""
-			) + ";";
-		});
-
-		return function(css, length) {
-			var parsedLength;
-			if (!(css in cssCache)) {
-				cssCache[css] = false;
-				if (length && (parsedLength = css.match( regLength ))) {
-					cssCache[css] = parsedLength[ 1 ] * units[parsedLength[ 2 ]];
-				} else {
-					/*jshint evil:true */
-					try{
-						cssCache[css] = new Function("e", buildStr(css))(units);
-					} catch(e) {}
-					/*jshint evil:false */
-				}
-			}
-			return cssCache[css];
-		};
-	})();
-
-	var setResolution = function( candidate, sizesattr ) {
-		if ( candidate.w ) { // h = means height: || descriptor.type === 'h' do not handle yet...
-			candidate.cWidth = pf.calcListLength( sizesattr || "100vw" );
-			candidate.res = candidate.w / candidate.cWidth ;
-		} else {
-			candidate.res = candidate.d;
-		}
-		return candidate;
-	};
-
-	/**
-	 *
-	 * @param opt
-	 */
-	var picturefill = function( opt ) {
-
-		if (!isSupportTestReady) {return;}
-
-		var elements, i, plen;
-
-		var options = opt || {};
-
-		if ( options.elements && options.elements.nodeType === 1 ) {
-			if ( options.elements.nodeName.toUpperCase() === "IMG" ) {
-				options.elements =  [ options.elements ];
-			} else {
-				options.context = options.elements;
-				options.elements =  null;
-			}
-		}
-
-		elements = options.elements || pf.qsa( (options.context || document), ( options.reevaluate || options.reselect ) ? pf.sel : pf.selShort );
-
-		if ( (plen = elements.length) ) {
-
-			pf.setupRun( options );
-			alreadyRun = true;
-
-			// Loop through all elements
-			for ( i = 0; i < plen; i++ ) {
-				pf.fillImg(elements[ i ], options);
-			}
-
-			pf.teardownRun( options );
-		}
-	};
-
-	/**
-	 * outputs a warning for the developer
-	 * @param {message}
-	 * @type {Function}
-	 */
-	warn = ( window.console && console.warn ) ?
-		function( message ) {
-			console.warn( message );
-		} :
-		noop
-	;
-
-	if ( !(curSrcProp in image) ) {
-		curSrcProp = "src";
-	}
-
-	// Add support for standard mime types.
-	types[ "image/jpeg" ] = true;
-	types[ "image/gif" ] = true;
-	types[ "image/png" ] = true;
-
-	function detectTypeSupport( type, typeUri ) {
-		// based on Modernizr's lossless img-webp test
-		// note: asynchronous
-		var image = new window.Image();
-		image.onerror = function() {
-			types[ type ] = false;
-			picturefill();
-		};
-		image.onload = function() {
-			types[ type ] = image.width === 1;
-			picturefill();
-		};
-		image.src = typeUri;
-		return "pending";
-	}
-
-	// test svg support
-	types[ "image/svg+xml" ] = document.implementation.hasFeature( "http://www.w3.org/TR/SVG11/feature#Image", "1.1" );
-
-	/**
-	 * updates the internal vW property with the current viewport width in px
-	 */
-	function updateMetrics() {
-
-		isVwDirty = false;
-		DPR = window.devicePixelRatio;
-		cssCache = {};
-		sizeLengthCache = {};
-
-		pf.DPR = DPR || 1;
-
-		units.width = Math.max(window.innerWidth || 0, docElem.clientWidth);
-		units.height = Math.max(window.innerHeight || 0, docElem.clientHeight);
-
-		units.vw = units.width / 100;
-		units.vh = units.height / 100;
-
-		evalId = [ units.height, units.width, DPR ].join("-");
-
-		units.em = pf.getEmValue();
-		units.rem = units.em;
-	}
-
-	function chooseLowRes( lowerValue, higherValue, dprValue, isCached ) {
-		var bonusFactor, tooMuch, bonus, meanDensity;
-
-		//experimental
-		if (cfg.algorithm === "saveData" ){
-			if ( lowerValue > 2.7 ) {
-				meanDensity = dprValue + 1;
-			} else {
-				tooMuch = higherValue - dprValue;
-				bonusFactor = Math.pow(lowerValue - 0.6, 1.5);
-
-				bonus = tooMuch * bonusFactor;
-
-				if (isCached) {
-					bonus += 0.1 * bonusFactor;
-				}
-
-				meanDensity = lowerValue + bonus;
-			}
-		} else {
-			meanDensity = (dprValue > 1) ?
-				Math.sqrt(lowerValue * higherValue) :
-				lowerValue;
-		}
-
-		return meanDensity > dprValue;
-	}
-
-	function applyBestCandidate( img ) {
-		var srcSetCandidates;
-		var matchingSet = pf.getSet( img );
-		var evaluated = false;
-		if ( matchingSet !== "pending" ) {
-			evaluated = evalId;
-			if ( matchingSet ) {
-				srcSetCandidates = pf.setRes( matchingSet );
-				pf.applySetCandidate( srcSetCandidates, img );
-			}
-		}
-		img[ pf.ns ].evaled = evaluated;
-	}
-
-	function ascendingSort( a, b ) {
-		return a.res - b.res;
-	}
-
-	function setSrcToCur( img, src, set ) {
-		var candidate;
-		if ( !set && src ) {
-			set = img[ pf.ns ].sets;
-			set = set && set[set.length - 1];
-		}
-
-		candidate = getCandidateForSrc(src, set);
-
-		if ( candidate ) {
-			src = pf.makeUrl(src);
-			img[ pf.ns ].curSrc = src;
-			img[ pf.ns ].curCan = candidate;
-
-			if ( !candidate.res ) {
-				setResolution( candidate, candidate.set.sizes );
-			}
-		}
-		return candidate;
-	}
-
-	function getCandidateForSrc( src, set ) {
-		var i, candidate, candidates;
-		if ( src && set ) {
-			candidates = pf.parseSet( set );
-			src = pf.makeUrl(src);
-			for ( i = 0; i < candidates.length; i++ ) {
-				if ( src === pf.makeUrl(candidates[ i ].url) ) {
-					candidate = candidates[ i ];
-					break;
-				}
-			}
-		}
-		return candidate;
-	}
-
-	function getAllSourceElements( picture, candidates ) {
-		var i, len, source, srcset;
-
-		// SPEC mismatch intended for size and perf:
-		// actually only source elements preceding the img should be used
-		// also note: don't use qsa here, because IE8 sometimes doesn't like source as the key part in a selector
-		var sources = picture.getElementsByTagName( "source" );
-
-		for ( i = 0, len = sources.length; i < len; i++ ) {
-			source = sources[ i ];
-			source[ pf.ns ] = true;
-			srcset = source.getAttribute( "srcset" );
-
-			// if source does not have a srcset attribute, skip
-			if ( srcset ) {
-				candidates.push( {
-					srcset: srcset,
-					media: source.getAttribute( "media" ),
-					type: source.getAttribute( "type" ),
-					sizes: source.getAttribute( "sizes" )
-				} );
-			}
-		}
-	}
-
-	/**
-	 * Srcset Parser
-	 * By Alex Bell |  MIT License
-	 *
-	 * @returns Array [{url: _, d: _, w: _, h:_, set:_(????)}, ...]
-	 *
-	 * Based super duper closely on the reference algorithm at:
-	 * https://html.spec.whatwg.org/multipage/embedded-content.html#parse-a-srcset-attribute
-	 */
-
-	// 1. Let input be the value passed to this algorithm.
-	// (TO-DO : Explain what "set" argument is here. Maybe choose a more
-	// descriptive & more searchable name.  Since passing the "set" in really has
-	// nothing to do with parsing proper, I would prefer this assignment eventually
-	// go in an external fn.)
-	function parseSrcset(input, set) {
-
-		function collectCharacters(regEx) {
-			var chars,
-			    match = regEx.exec(input.substring(pos));
-			if (match) {
-				chars = match[ 0 ];
-				pos += chars.length;
-				return chars;
-			}
-		}
-
-		var inputLength = input.length,
-		    url,
-		    descriptors,
-		    currentDescriptor,
-		    state,
-		    c,
-
-		    // 2. Let position be a pointer into input, initially pointing at the start
-		    //    of the string.
-		    pos = 0,
-
-		    // 3. Let candidates be an initially empty source set.
-		    candidates = [];
-
-		/**
-		* Adds descriptor properties to a candidate, pushes to the candidates array
-		* @return undefined
-		*/
-		// (Declared outside of the while loop so that it's only created once.
-		// (This fn is defined before it is used, in order to pass JSHINT.
-		// Unfortunately this breaks the sequencing of the spec comments. :/ )
-		function parseDescriptors() {
-
-			// 9. Descriptor parser: Let error be no.
-			var pError = false,
-
-			// 10. Let width be absent.
-			// 11. Let density be absent.
-			// 12. Let future-compat-h be absent. (We're implementing it now as h)
-			    w, d, h, i,
-			    candidate = {},
-			    desc, lastChar, value, intVal, floatVal;
-
-			// 13. For each descriptor in descriptors, run the appropriate set of steps
-			// from the following list:
-			for (i = 0 ; i < descriptors.length; i++) {
-				desc = descriptors[ i ];
-
-				lastChar = desc[ desc.length - 1 ];
-				value = desc.substring(0, desc.length - 1);
-				intVal = parseInt(value, 10);
-				floatVal = parseFloat(value);
-
-				// If the descriptor consists of a valid non-negative integer followed by
-				// a U+0077 LATIN SMALL LETTER W character
-				if (regexNonNegativeInteger.test(value) && (lastChar === "w")) {
-
-					// If width and density are not both absent, then let error be yes.
-					if (w || d) {pError = true;}
-
-					// Apply the rules for parsing non-negative integers to the descriptor.
-					// If the result is zero, let error be yes.
-					// Otherwise, let width be the result.
-					if (intVal === 0) {pError = true;} else {w = intVal;}
-
-				// If the descriptor consists of a valid floating-point number followed by
-				// a U+0078 LATIN SMALL LETTER X character
-				} else if (regexFloatingPoint.test(value) && (lastChar === "x")) {
-
-					// If width, density and future-compat-h are not all absent, then let error
-					// be yes.
-					if (w || d || h) {pError = true;}
-
-					// Apply the rules for parsing floating-point number values to the descriptor.
-					// If the result is less than zero, let error be yes. Otherwise, let density
-					// be the result.
-					if (floatVal < 0) {pError = true;} else {d = floatVal;}
-
-				// If the descriptor consists of a valid non-negative integer followed by
-				// a U+0068 LATIN SMALL LETTER H character
-				} else if (regexNonNegativeInteger.test(value) && (lastChar === "h")) {
-
-					// If height and density are not both absent, then let error be yes.
-					if (h || d) {pError = true;}
-
-					// Apply the rules for parsing non-negative integers to the descriptor.
-					// If the result is zero, let error be yes. Otherwise, let future-compat-h
-					// be the result.
-					if (intVal === 0) {pError = true;} else {h = intVal;}
-
-				// Anything else, Let error be yes.
-				} else {pError = true;}
-			} // (close step 13 for loop)
-
-			// 15. If error is still no, then append a new image source to candidates whose
-			// URL is url, associated with a width width if not absent and a pixel
-			// density density if not absent. Otherwise, there is a parse error.
-			if (!pError) {
-				candidate.url = url;
-
-				if (w) { candidate.w = w;}
-				if (d) { candidate.d = d;}
-				if (h) { candidate.h = h;}
-				if (!h && !d && !w) {candidate.d = 1;}
-				if (candidate.d === 1) {set.has1x = true;}
-				candidate.set = set;
-
-				candidates.push(candidate);
-			}
-		} // (close parseDescriptors fn)
-
-		/**
-		* Tokenizes descriptor properties prior to parsing
-		* Returns undefined.
-		* (Again, this fn is defined before it is used, in order to pass JSHINT.
-		* Unfortunately this breaks the logical sequencing of the spec comments. :/ )
-		*/
-		function tokenize() {
-
-			// 8.1. Descriptor tokeniser: Skip whitespace
-			collectCharacters(regexLeadingSpaces);
-
-			// 8.2. Let current descriptor be the empty string.
-			currentDescriptor = "";
-
-			// 8.3. Let state be in descriptor.
-			state = "in descriptor";
-
-			while (true) {
-
-				// 8.4. Let c be the character at position.
-				c = input.charAt(pos);
-
-				//  Do the following depending on the value of state.
-				//  For the purpose of this step, "EOF" is a special character representing
-				//  that position is past the end of input.
-
-				// In descriptor
-				if (state === "in descriptor") {
-					// Do the following, depending on the value of c:
-
-				  // Space character
-				  // If current descriptor is not empty, append current descriptor to
-				  // descriptors and let current descriptor be the empty string.
-				  // Set state to after descriptor.
-					if (isSpace(c)) {
-						if (currentDescriptor) {
-							descriptors.push(currentDescriptor);
-							currentDescriptor = "";
-							state = "after descriptor";
-						}
-
-					// U+002C COMMA (,)
-					// Advance position to the next character in input. If current descriptor
-					// is not empty, append current descriptor to descriptors. Jump to the step
-					// labeled descriptor parser.
-					} else if (c === ",") {
-						pos += 1;
-						if (currentDescriptor) {
-							descriptors.push(currentDescriptor);
-						}
-						parseDescriptors();
-						return;
-
-					// U+0028 LEFT PARENTHESIS (()
-					// Append c to current descriptor. Set state to in parens.
-					} else if (c === "\u0028") {
-						currentDescriptor = currentDescriptor + c;
-						state = "in parens";
-
-					// EOF
-					// If current descriptor is not empty, append current descriptor to
-					// descriptors. Jump to the step labeled descriptor parser.
-					} else if (c === "") {
-						if (currentDescriptor) {
-							descriptors.push(currentDescriptor);
-						}
-						parseDescriptors();
-						return;
-
-					// Anything else
-					// Append c to current descriptor.
-					} else {
-						currentDescriptor = currentDescriptor + c;
-					}
-				// (end "in descriptor"
-
-				// In parens
-				} else if (state === "in parens") {
-
-					// U+0029 RIGHT PARENTHESIS ())
-					// Append c to current descriptor. Set state to in descriptor.
-					if (c === ")") {
-						currentDescriptor = currentDescriptor + c;
-						state = "in descriptor";
-
-					// EOF
-					// Append current descriptor to descriptors. Jump to the step labeled
-					// descriptor parser.
-					} else if (c === "") {
-						descriptors.push(currentDescriptor);
-						parseDescriptors();
-						return;
-
-					// Anything else
-					// Append c to current descriptor.
-					} else {
-						currentDescriptor = currentDescriptor + c;
-					}
-
-				// After descriptor
-				} else if (state === "after descriptor") {
-
-					// Do the following, depending on the value of c:
-					// Space character: Stay in this state.
-					if (isSpace(c)) {
-
-					// EOF: Jump to the step labeled descriptor parser.
-					} else if (c === "") {
-						parseDescriptors();
-						return;
-
-					// Anything else
-					// Set state to in descriptor. Set position to the previous character in input.
-					} else {
-						state = "in descriptor";
-						pos -= 1;
-
-					}
-				}
-
-				// Advance position to the next character in input.
-				pos += 1;
-
-			// Repeat this step.
-			} // (close while true loop)
-		}
-
-		// 4. Splitting loop: Collect a sequence of characters that are space
-		//    characters or U+002C COMMA characters. If any U+002C COMMA characters
-		//    were collected, that is a parse error.
-		while (true) {
-			collectCharacters(regexLeadingCommasOrSpaces);
-
-			// 5. If position is past the end of input, return candidates and abort these steps.
-			if (pos >= inputLength) {
-				return candidates; // (we're done, this is the sole return path)
-			}
-
-			// 6. Collect a sequence of characters that are not space characters,
-			//    and let that be url.
-			url = collectCharacters(regexLeadingNotSpaces);
-
-			// 7. Let descriptors be a new empty list.
-			descriptors = [];
-
-			// 8. If url ends with a U+002C COMMA character (,), follow these substeps:
-			//		(1). Remove all trailing U+002C COMMA characters from url. If this removed
-			//         more than one character, that is a parse error.
-			if (url.slice(-1) === ",") {
-				url = url.replace(regexTrailingCommas, "");
-				// (Jump ahead to step 9 to skip tokenization and just push the candidate).
-				parseDescriptors();
-
-			//	Otherwise, follow these substeps:
-			} else {
-				tokenize();
-			} // (close else of step 8)
-
-		// 16. Return to the step labeled splitting loop.
-		} // (Close of big while loop.)
-	}
-
-	/*
-	 * Sizes Parser
-	 *
-	 * By Alex Bell |  MIT License
-	 *
-	 * Non-strict but accurate and lightweight JS Parser for the string value <img sizes="here">
-	 *
-	 * Reference algorithm at:
-	 * https://html.spec.whatwg.org/multipage/embedded-content.html#parse-a-sizes-attribute
-	 *
-	 * Most comments are copied in directly from the spec
-	 * (except for comments in parens).
-	 *
-	 * Grammar is:
-	 * <source-size-list> = <source-size># [ , <source-size-value> ]? | <source-size-value>
-	 * <source-size> = <media-condition> <source-size-value>
-	 * <source-size-value> = <length>
-	 * http://www.w3.org/html/wg/drafts/html/master/embedded-content.html#attr-img-sizes
-	 *
-	 * E.g. "(max-width: 30em) 100vw, (max-width: 50em) 70vw, 100vw"
-	 * or "(min-width: 30em), calc(30vw - 15px)" or just "30vw"
-	 *
-	 * Returns the first valid <css-length> with a media condition that evaluates to true,
-	 * or "100vw" if all valid media conditions evaluate to false.
-	 *
-	 */
-
-	function parseSizes(strValue) {
-
-		// (Percentage CSS lengths are not allowed in this case, to avoid confusion:
-		// https://html.spec.whatwg.org/multipage/embedded-content.html#valid-source-size-list
-		// CSS allows a single optional plus or minus sign:
-		// http://www.w3.org/TR/CSS2/syndata.html#numbers
-		// CSS is ASCII case-insensitive:
-		// http://www.w3.org/TR/CSS2/syndata.html#characters )
-		// Spec allows exponential notation for <number> type:
-		// http://dev.w3.org/csswg/css-values/#numbers
-		var regexCssLengthWithUnits = /^(?:[+-]?[0-9]+|[0-9]*\.[0-9]+)(?:[eE][+-]?[0-9]+)?(?:ch|cm|em|ex|in|mm|pc|pt|px|rem|vh|vmin|vmax|vw)$/i;
-
-		// (This is a quick and lenient test. Because of optional unlimited-depth internal
-		// grouping parens and strict spacing rules, this could get very complicated.)
-		var regexCssCalc = /^calc\((?:[0-9a-z \.\+\-\*\/\(\)]+)\)$/i;
-
-		var i;
-		var unparsedSizesList;
-		var unparsedSizesListLength;
-		var unparsedSize;
-		var lastComponentValue;
-		var size;
-
-		// UTILITY FUNCTIONS
-
-		//  (Toy CSS parser. The goals here are:
-		//  1) expansive test coverage without the weight of a full CSS parser.
-		//  2) Avoiding regex wherever convenient.
-		//  Quick tests: http://jsfiddle.net/gtntL4gr/3/
-		//  Returns an array of arrays.)
-		function parseComponentValues(str) {
-			var chrctr;
-			var component = "";
-			var componentArray = [];
-			var listArray = [];
-			var parenDepth = 0;
-			var pos = 0;
-			var inComment = false;
-
-			function pushComponent() {
-				if (component) {
-					componentArray.push(component);
-					component = "";
-				}
-			}
-
-			function pushComponentArray() {
-				if (componentArray[0]) {
-					listArray.push(componentArray);
-					componentArray = [];
-				}
-			}
-
-			// (Loop forwards from the beginning of the string.)
-			while (true) {
-				chrctr = str.charAt(pos);
-
-				if (chrctr === "") { // ( End of string reached.)
-					pushComponent();
-					pushComponentArray();
-					return listArray;
-				} else if (inComment) {
-					if ((chrctr === "*") && (str[pos + 1] === "/")) { // (At end of a comment.)
-						inComment = false;
-						pos += 2;
-						pushComponent();
-						continue;
-					} else {
-						pos += 1; // (Skip all characters inside comments.)
-						continue;
-					}
-				} else if (isSpace(chrctr)) {
-					// (If previous character in loop was also a space, or if
-					// at the beginning of the string, do not add space char to
-					// component.)
-					if ( (str.charAt(pos - 1) && isSpace( str.charAt(pos - 1) ) ) || !component ) {
-						pos += 1;
-						continue;
-					} else if (parenDepth === 0) {
-						pushComponent();
-						pos +=1;
-						continue;
-					} else {
-						// (Replace any space character with a plain space for legibility.)
-						chrctr = " ";
-					}
-				} else if (chrctr === "(") {
-					parenDepth += 1;
-				} else if (chrctr === ")") {
-					parenDepth -= 1;
-				} else if (chrctr === ",") {
-					pushComponent();
-					pushComponentArray();
-					pos += 1;
-					continue;
-				} else if ( (chrctr === "/") && (str.charAt(pos + 1) === "*") ) {
-					inComment = true;
-					pos += 2;
-					continue;
-				}
-
-				component = component + chrctr;
-				pos += 1;
-			}
-		}
-
-		function isValidNonNegativeSourceSizeValue(s) {
-			if (regexCssLengthWithUnits.test(s) && (parseFloat(s) >= 0)) {return true;}
-			if (regexCssCalc.test(s)) {return true;}
-			// ( http://www.w3.org/TR/CSS2/syndata.html#numbers says:
-			// "-0 is equivalent to 0 and is not a negative number." which means that
-			// unitless zero and unitless negative zero must be accepted as special cases.)
-			if ((s === "0") || (s === "-0") || (s === "+0")) {return true;}
-			return false;
-		}
-
-		// When asked to parse a sizes attribute from an element, parse a
-		// comma-separated list of component values from the value of the element's
-		// sizes attribute (or the empty string, if the attribute is absent), and let
-		// unparsed sizes list be the result.
-		// http://dev.w3.org/csswg/css-syntax/#parse-comma-separated-list-of-component-values
-
-		unparsedSizesList = parseComponentValues(strValue);
-		unparsedSizesListLength = unparsedSizesList.length;
-
-		// For each unparsed size in unparsed sizes list:
-		for (i = 0; i < unparsedSizesListLength; i++) {
-			unparsedSize = unparsedSizesList[i];
-
-			// 1. Remove all consecutive <whitespace-token>s from the end of unparsed size.
-			// ( parseComponentValues() already omits spaces outside of parens. )
-
-			// If unparsed size is now empty, that is a parse error; continue to the next
-			// iteration of this algorithm.
-			// ( parseComponentValues() won't push an empty array. )
-
-			// 2. If the last component value in unparsed size is a valid non-negative
-			// <source-size-value>, let size be its value and remove the component value
-			// from unparsed size. Any CSS function other than the calc() function is
-			// invalid. Otherwise, there is a parse error; continue to the next iteration
-			// of this algorithm.
-			// http://dev.w3.org/csswg/css-syntax/#parse-component-value
-			lastComponentValue = unparsedSize[unparsedSize.length - 1];
-
-			if (isValidNonNegativeSourceSizeValue(lastComponentValue)) {
-				size = lastComponentValue;
-				unparsedSize.pop();
-			} else {
-				continue;
-			}
-
-			// 3. Remove all consecutive <whitespace-token>s from the end of unparsed
-			// size. If unparsed size is now empty, return size and exit this algorithm.
-			// If this was not the last item in unparsed sizes list, that is a parse error.
-			if (unparsedSize.length === 0) {
-				return size;
-			}
-
-			// 4. Parse the remaining component values in unparsed size as a
-			// <media-condition>. If it does not parse correctly, or it does parse
-			// correctly but the <media-condition> evaluates to false, continue to the
-			// next iteration of this algorithm.
-			// (Parsing all possible compound media conditions in JS is heavy, complicated,
-			// and the payoff is unclear. Is there ever an situation where the
-			// media condition parses incorrectly but still somehow evaluates to true?
-			// Can we just rely on the browser/polyfill to do it?)
-			unparsedSize = unparsedSize.join(" ");
-			if (!(pf.matchesMedia( unparsedSize ) ) ) {
-				continue;
-			}
-
-			// 5. Return size and exit this algorithm.
-			return size;
-		}
-
-		// If the above algorithm exhausts unparsed sizes list without returning a
-		// size value, return 100vw.
-		return "100vw";
-	}
-
-	// namespace
-	pf.ns = ("pf" + new Date().getTime()).substr(0, 9);
-
-	// srcset support test
-	pf.supSrcset = "srcset" in image;
-	pf.supSizes = "sizes" in image;
-	pf.supPicture = !!window.HTMLPictureElement;
-
-	// UC browser does claim to support srcset and picture, but not sizes,
-	// this extended test reveals the browser does support nothing
-	if (pf.supSrcset && pf.supPicture && !pf.supSizes) {
-		(function(image2) {
-			image.srcset = "data:,a";
-			image2.src = "data:,a";
-			pf.supSrcset = image.complete === image2.complete;
-			pf.supPicture = pf.supSrcset && pf.supPicture;
-		})(document.createElement("img"));
-	}
-
-	// Safari9 has basic support for sizes, but does't expose the `sizes` idl attribute
-	if (pf.supSrcset && !pf.supSizes) {
-
-		(function() {
-			var width2 = "data:image/gif;base64,R0lGODlhAgABAPAAAP///wAAACH5BAAAAAAALAAAAAACAAEAAAICBAoAOw==";
-			var width1 = "data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==";
-			var img = document.createElement("img");
-			var test = function() {
-				var width = img.width;
-
-				if (width === 2) {
-					pf.supSizes = true;
-				}
-
-				alwaysCheckWDescriptor = pf.supSrcset && !pf.supSizes;
-
-				isSupportTestReady = true;
-				// force async
-				setTimeout(picturefill);
-			};
-
-			img.onload = test;
-			img.onerror = test;
-			img.setAttribute("sizes", "9px");
-
-			img.srcset = width1 + " 1w," + width2 + " 9w";
-			img.src = width1;
-		})();
-
-	} else {
-		isSupportTestReady = true;
-	}
-
-	// using pf.qsa instead of dom traversing does scale much better,
-	// especially on sites mixing responsive and non-responsive images
-	pf.selShort = "picture>img,img[srcset]";
-	pf.sel = pf.selShort;
-	pf.cfg = cfg;
-
-	/**
-	 * Shortcut property for `devicePixelRatio` ( for easy overriding in tests )
-	 */
-	pf.DPR = (DPR  || 1 );
-	pf.u = units;
-
-	// container of supported mime types that one might need to qualify before using
-	pf.types =  types;
-
-	pf.setSize = noop;
-
-	/**
-	 * Gets a string and returns the absolute URL
-	 * @param src
-	 * @returns {String} absolute URL
-	 */
-
-	pf.makeUrl = memoize(function(src) {
-		anchor.href = src;
-		return anchor.href;
-	});
-
-	/**
-	 * Gets a DOM element or document and a selctor and returns the found matches
-	 * Can be extended with jQuery/Sizzle for IE7 support
-	 * @param context
-	 * @param sel
-	 * @returns {NodeList|Array}
-	 */
-	pf.qsa = function(context, sel) {
-		return ( "querySelector" in context ) ? context.querySelectorAll(sel) : [];
-	};
-
-	/**
-	 * Shortcut method for matchMedia ( for easy overriding in tests )
-	 * wether native or pf.mMQ is used will be decided lazy on first call
-	 * @returns {boolean}
-	 */
-	pf.matchesMedia = function() {
-		if ( window.matchMedia && (matchMedia( "(min-width: 0.1em)" ) || {}).matches ) {
-			pf.matchesMedia = function( media ) {
-				return !media || ( matchMedia( media ).matches );
-			};
-		} else {
-			pf.matchesMedia = pf.mMQ;
-		}
-
-		return pf.matchesMedia.apply( this, arguments );
-	};
-
-	/**
-	 * A simplified matchMedia implementation for IE8 and IE9
-	 * handles only min-width/max-width with px or em values
-	 * @param media
-	 * @returns {boolean}
-	 */
-	pf.mMQ = function( media ) {
-		return media ? evalCSS(media) : true;
-	};
-
-	/**
-	 * Returns the calculated length in css pixel from the given sourceSizeValue
-	 * http://dev.w3.org/csswg/css-values-3/#length-value
-	 * intended Spec mismatches:
-	 * * Does not check for invalid use of CSS functions
-	 * * Does handle a computed length of 0 the same as a negative and therefore invalid value
-	 * @param sourceSizeValue
-	 * @returns {Number}
-	 */
-	pf.calcLength = function( sourceSizeValue ) {
-
-		var value = evalCSS(sourceSizeValue, true) || false;
-		if (value < 0) {
-			value = false;
-		}
-
-		return value;
-	};
-
-	/**
-	 * Takes a type string and checks if its supported
-	 */
-
-	pf.supportsType = function( type ) {
-		return ( type ) ? types[ type ] : true;
-	};
-
-	/**
-	 * Parses a sourceSize into mediaCondition (media) and sourceSizeValue (length)
-	 * @param sourceSizeStr
-	 * @returns {*}
-	 */
-	pf.parseSize = memoize(function( sourceSizeStr ) {
-		var match = ( sourceSizeStr || "" ).match(regSize);
-		return {
-			media: match && match[1],
-			length: match && match[2]
-		};
-	});
-
-	pf.parseSet = function( set ) {
-		if ( !set.cands ) {
-			set.cands = parseSrcset(set.srcset, set);
-		}
-		return set.cands;
-	};
-
-	/**
-	 * returns 1em in css px for html/body default size
-	 * function taken from respondjs
-	 * @returns {*|number}
-	 */
-	pf.getEmValue = function() {
-		var body;
-		if ( !eminpx && (body = document.body) ) {
-			var div = document.createElement( "div" ),
-				originalHTMLCSS = docElem.style.cssText,
-				originalBodyCSS = body.style.cssText;
-
-			div.style.cssText = baseStyle;
-
-			// 1em in a media query is the value of the default font size of the browser
-			// reset docElem and body to ensure the correct value is returned
-			docElem.style.cssText = fsCss;
-			body.style.cssText = fsCss;
-
-			body.appendChild( div );
-			eminpx = div.offsetWidth;
-			body.removeChild( div );
-
-			//also update eminpx before returning
-			eminpx = parseFloat( eminpx, 10 );
-
-			// restore the original values
-			docElem.style.cssText = originalHTMLCSS;
-			body.style.cssText = originalBodyCSS;
-
-		}
-		return eminpx || 16;
-	};
-
-	/**
-	 * Takes a string of sizes and returns the width in pixels as a number
-	 */
-	pf.calcListLength = function( sourceSizeListStr ) {
-		// Split up source size list, ie ( max-width: 30em ) 100%, ( max-width: 50em ) 50%, 33%
-		//
-		//                           or (min-width:30em) calc(30% - 15px)
-		if ( !(sourceSizeListStr in sizeLengthCache) || cfg.uT ) {
-			var winningLength = pf.calcLength( parseSizes( sourceSizeListStr ) );
-
-			sizeLengthCache[ sourceSizeListStr ] = !winningLength ? units.width : winningLength;
-		}
-
-		return sizeLengthCache[ sourceSizeListStr ];
-	};
-
-	/**
-	 * Takes a candidate object with a srcset property in the form of url/
-	 * ex. "images/pic-medium.png 1x, images/pic-medium-2x.png 2x" or
-	 *     "images/pic-medium.png 400w, images/pic-medium-2x.png 800w" or
-	 *     "images/pic-small.png"
-	 * Get an array of image candidates in the form of
-	 *      {url: "/foo/bar.png", resolution: 1}
-	 * where resolution is http://dev.w3.org/csswg/css-values-3/#resolution-value
-	 * If sizes is specified, res is calculated
-	 */
-	pf.setRes = function( set ) {
-		var candidates;
-		if ( set ) {
-
-			candidates = pf.parseSet( set );
-
-			for ( var i = 0, len = candidates.length; i < len; i++ ) {
-				setResolution( candidates[ i ], set.sizes );
-			}
-		}
-		return candidates;
-	};
-
-	pf.setRes.res = setResolution;
-
-	pf.applySetCandidate = function( candidates, img ) {
-		if ( !candidates.length ) {return;}
-		var candidate,
-			i,
-			j,
-			length,
-			bestCandidate,
-			curSrc,
-			curCan,
-			candidateSrc,
-			abortCurSrc;
-
-		var imageData = img[ pf.ns ];
-		var dpr = pf.DPR;
-
-		curSrc = imageData.curSrc || img[curSrcProp];
-
-		curCan = imageData.curCan || setSrcToCur(img, curSrc, candidates[0].set);
-
-		// if we have a current source, we might either become lazy or give this source some advantage
-		if ( curCan && curCan.set === candidates[ 0 ].set ) {
-
-			// if browser can abort image request and the image has a higher pixel density than needed
-			// and this image isn't downloaded yet, we skip next part and try to save bandwidth
-			abortCurSrc = (supportAbort && !img.complete && curCan.res - 0.1 > dpr);
-
-			if ( !abortCurSrc ) {
-				curCan.cached = true;
-
-				// if current candidate is "best", "better" or "okay",
-				// set it to bestCandidate
-				if ( curCan.res >= dpr ) {
-					bestCandidate = curCan;
-				}
-			}
-		}
-
-		if ( !bestCandidate ) {
-
-			candidates.sort( ascendingSort );
-
-			length = candidates.length;
-			bestCandidate = candidates[ length - 1 ];
-
-			for ( i = 0; i < length; i++ ) {
-				candidate = candidates[ i ];
-				if ( candidate.res >= dpr ) {
-					j = i - 1;
-
-					// we have found the perfect candidate,
-					// but let's improve this a little bit with some assumptions ;-)
-					if (candidates[ j ] &&
-						(abortCurSrc || curSrc !== pf.makeUrl( candidate.url )) &&
-						chooseLowRes(candidates[ j ].res, candidate.res, dpr, candidates[ j ].cached)) {
-
-						bestCandidate = candidates[ j ];
-
-					} else {
-						bestCandidate = candidate;
-					}
-					break;
-				}
-			}
-		}
-
-		if ( bestCandidate ) {
-
-			candidateSrc = pf.makeUrl( bestCandidate.url );
-
-			imageData.curSrc = candidateSrc;
-			imageData.curCan = bestCandidate;
-
-			if ( candidateSrc !== curSrc ) {
-				pf.setSrc( img, bestCandidate );
-			}
-			pf.setSize( img );
-		}
-	};
-
-	pf.setSrc = function( img, bestCandidate ) {
-		var origWidth;
-		img.src = bestCandidate.url;
-
-		// although this is a specific Safari issue, we don't want to take too much different code paths
-		if ( bestCandidate.set.type === "image/svg+xml" ) {
-			origWidth = img.style.width;
-			img.style.width = (img.offsetWidth + 1) + "px";
-
-			// next line only should trigger a repaint
-			// if... is only done to trick dead code removal
-			if ( img.offsetWidth + 1 ) {
-				img.style.width = origWidth;
-			}
-		}
-	};
-
-	pf.getSet = function( img ) {
-		var i, set, supportsType;
-		var match = false;
-		var sets = img [ pf.ns ].sets;
-
-		for ( i = 0; i < sets.length && !match; i++ ) {
-			set = sets[i];
-
-			if ( !set.srcset || !pf.matchesMedia( set.media ) || !(supportsType = pf.supportsType( set.type )) ) {
-				continue;
-			}
-
-			if ( supportsType === "pending" ) {
-				set = supportsType;
-			}
-
-			match = set;
-			break;
-		}
-
-		return match;
-	};
-
-	pf.parseSets = function( element, parent, options ) {
-		var srcsetAttribute, imageSet, isWDescripor, srcsetParsed;
-
-		var hasPicture = parent && parent.nodeName.toUpperCase() === "PICTURE";
-		var imageData = element[ pf.ns ];
-
-		if ( imageData.src === undefined || options.src ) {
-			imageData.src = getImgAttr.call( element, "src" );
-			if ( imageData.src ) {
-				setImgAttr.call( element, srcAttr, imageData.src );
-			} else {
-				removeImgAttr.call( element, srcAttr );
-			}
-		}
-
-		if ( imageData.srcset === undefined || options.srcset || !pf.supSrcset || element.srcset ) {
-			srcsetAttribute = getImgAttr.call( element, "srcset" );
-			imageData.srcset = srcsetAttribute;
-			srcsetParsed = true;
-		}
-
-		imageData.sets = [];
-
-		if ( hasPicture ) {
-			imageData.pic = true;
-			getAllSourceElements( parent, imageData.sets );
-		}
-
-		if ( imageData.srcset ) {
-			imageSet = {
-				srcset: imageData.srcset,
-				sizes: getImgAttr.call( element, "sizes" )
-			};
-
-			imageData.sets.push( imageSet );
-
-			isWDescripor = (alwaysCheckWDescriptor || imageData.src) && regWDesc.test(imageData.srcset || "");
-
-			// add normal src as candidate, if source has no w descriptor
-			if ( !isWDescripor && imageData.src && !getCandidateForSrc(imageData.src, imageSet) && !imageSet.has1x ) {
-				imageSet.srcset += ", " + imageData.src;
-				imageSet.cands.push({
-					url: imageData.src,
-					d: 1,
-					set: imageSet
-				});
-			}
-
-		} else if ( imageData.src ) {
-			imageData.sets.push( {
-				srcset: imageData.src,
-				sizes: null
-			} );
-		}
-
-		imageData.curCan = null;
-		imageData.curSrc = undefined;
-
-		// if img has picture or the srcset was removed or has a srcset and does not support srcset at all
-		// or has a w descriptor (and does not support sizes) set support to false to evaluate
-		imageData.supported = !( hasPicture || ( imageSet && !pf.supSrcset ) || (isWDescripor && !pf.supSizes) );
-
-		if ( srcsetParsed && pf.supSrcset && !imageData.supported ) {
-			if ( srcsetAttribute ) {
-				setImgAttr.call( element, srcsetAttr, srcsetAttribute );
-				element.srcset = "";
-			} else {
-				removeImgAttr.call( element, srcsetAttr );
-			}
-		}
-
-		if (imageData.supported && !imageData.srcset && ((!imageData.src && element.src) ||  element.src !== pf.makeUrl(imageData.src))) {
-			if (imageData.src === null) {
-				element.removeAttribute("src");
-			} else {
-				element.src = imageData.src;
-			}
-		}
-
-		imageData.parsed = true;
-	};
-
-	pf.fillImg = function(element, options) {
-		var imageData;
-		var extreme = options.reselect || options.reevaluate;
-
-		// expando for caching data on the img
-		if ( !element[ pf.ns ] ) {
-			element[ pf.ns ] = {};
-		}
-
-		imageData = element[ pf.ns ];
-
-		// if the element has already been evaluated, skip it
-		// unless `options.reevaluate` is set to true ( this, for example,
-		// is set to true when running `picturefill` on `resize` ).
-		if ( !extreme && imageData.evaled === evalId ) {
-			return;
-		}
-
-		if ( !imageData.parsed || options.reevaluate ) {
-			pf.parseSets( element, element.parentNode, options );
-		}
-
-		if ( !imageData.supported ) {
-			applyBestCandidate( element );
-		} else {
-			imageData.evaled = evalId;
-		}
-	};
-
-	pf.setupRun = function() {
-		if ( !alreadyRun || isVwDirty || (DPR !== window.devicePixelRatio) ) {
-			updateMetrics();
-		}
-	};
-
-	// If picture is supported, well, that's awesome.
-	if ( pf.supPicture ) {
-		picturefill = noop;
-		pf.fillImg = noop;
-	} else {
-
-		 // Set up picture polyfill by polling the document
-		(function() {
-			var isDomReady;
-			var regReady = window.attachEvent ? /d$|^c/ : /d$|^c|^i/;
-
-			var run = function() {
-				var readyState = document.readyState || "";
-
-				timerId = setTimeout(run, readyState === "loading" ? 200 :  999);
-				if ( document.body ) {
-					pf.fillImgs();
-					isDomReady = isDomReady || regReady.test(readyState);
-					if ( isDomReady ) {
-						clearTimeout( timerId );
-					}
-
-				}
-			};
-
-			var timerId = setTimeout(run, document.body ? 9 : 99);
-
-			// Also attach picturefill on resize and readystatechange
-			// http://modernjavascript.blogspot.com/2013/08/building-better-debounce.html
-			var debounce = function(func, wait) {
-				var timeout, timestamp;
-				var later = function() {
-					var last = (new Date()) - timestamp;
-
-					if (last < wait) {
-						timeout = setTimeout(later, wait - last);
-					} else {
-						timeout = null;
-						func();
-					}
-				};
-
-				return function() {
-					timestamp = new Date();
-
-					if (!timeout) {
-						timeout = setTimeout(later, wait);
-					}
-				};
-			};
-			var lastClientWidth = docElem.clientHeight;
-			var onResize = function() {
-				isVwDirty = Math.max(window.innerWidth || 0, docElem.clientWidth) !== units.width || docElem.clientHeight !== lastClientWidth;
-				lastClientWidth = docElem.clientHeight;
-				if ( isVwDirty ) {
-					pf.fillImgs();
-				}
-			};
-
-			on( window, "resize", debounce(onResize, 99 ) );
-			on( document, "readystatechange", run );
-		})();
-	}
-
-	pf.picturefill = picturefill;
-	//use this internally for easy monkey patching/performance testing
-	pf.fillImgs = picturefill;
-	pf.teardownRun = noop;
-
-	/* expose methods for testing */
-	picturefill._ = pf;
-
-	window.picturefillCFG = {
-		pf: pf,
-		push: function(args) {
-			var name = args.shift();
-			if (typeof pf[name] === "function") {
-				pf[name].apply(pf, args);
-			} else {
-				cfg[name] = args[0];
-				if (alreadyRun) {
-					pf.fillImgs( { reselect: true } );
-				}
-			}
-		}
-	};
-
-	while (setOptions && setOptions.length) {
-		window.picturefillCFG.push(setOptions.shift());
-	}
-
-	/* expose picturefill */
-	window.picturefill = picturefill;
-
-	/* expose picturefill */
-	if ( typeof module === "object" && typeof module.exports === "object" ) {
-		// CommonJS, just export
-		module.exports = picturefill;
-	} else if ( typeof define === "function" && define.amd ) {
-		// AMD support
-		define( "picturefill", function() { return picturefill; } );
-	}
-
-	// IE8 evals this sync, so it must be the last thing we do
-	if ( !pf.supPicture ) {
-		types[ "image/webp" ] = detectTypeSupport("image/webp", "data:image/webp;base64,UklGRkoAAABXRUJQVlA4WAoAAAAQAAAAAAAAAAAAQUxQSAwAAAABBxAR/Q9ERP8DAABWUDggGAAAADABAJ0BKgEAAQADADQlpAADcAD++/1QAA==" );
-	}
-
-} )( window, document );
-
-(function(window, factory) {
-	var lazySizes = factory(window, window.document);
-	window.lazySizes = lazySizes;
-	if(typeof module == 'object' && module.exports){
-		module.exports = lazySizes;
-	}
-}(window, function l(window, document) {
-	'use strict';
-	/*jshint eqnull:true */
-	if(!document.getElementsByClassName){return;}
-
-	var lazySizesConfig;
-
-	var docElem = document.documentElement;
-
-	var Date = window.Date;
-
-	var supportPicture = window.HTMLPictureElement;
-
-	var _addEventListener = 'addEventListener';
-
-	var _getAttribute = 'getAttribute';
-
-	var addEventListener = window[_addEventListener];
-
-	var setTimeout = window.setTimeout;
-
-	var requestAnimationFrame = window.requestAnimationFrame || setTimeout;
-
-	var requestIdleCallback = window.requestIdleCallback;
-
-	var regPicture = /^picture$/i;
-
-	var loadEvents = ['load', 'error', 'lazyincluded', '_lazyloaded'];
-
-	var regClassCache = {};
-
-	var forEach = Array.prototype.forEach;
-
-	var hasClass = function(ele, cls) {
-		if(!regClassCache[cls]){
-			regClassCache[cls] = new RegExp('(\\s|^)'+cls+'(\\s|$)');
-		}
-		return regClassCache[cls].test(ele[_getAttribute]('class') || '') && regClassCache[cls];
-	};
-
-	var addClass = function(ele, cls) {
-		if (!hasClass(ele, cls)){
-			ele.setAttribute('class', (ele[_getAttribute]('class') || '').trim() + ' ' + cls);
-		}
-	};
-
-	var removeClass = function(ele, cls) {
-		var reg;
-		if ((reg = hasClass(ele,cls))) {
-			ele.setAttribute('class', (ele[_getAttribute]('class') || '').replace(reg, ' '));
-		}
-	};
-
-	var addRemoveLoadEvents = function(dom, fn, add){
-		var action = add ? _addEventListener : 'removeEventListener';
-		if(add){
-			addRemoveLoadEvents(dom, fn);
-		}
-		loadEvents.forEach(function(evt){
-			dom[action](evt, fn);
-		});
-	};
-
-	var triggerEvent = function(elem, name, detail, noBubbles, noCancelable){
-		var event = document.createEvent('CustomEvent');
-
-		event.initCustomEvent(name, !noBubbles, !noCancelable, detail || {});
-
-		elem.dispatchEvent(event);
-		return event;
-	};
-
-	var updatePolyfill = function (el, full){
-		var polyfill;
-		if( !supportPicture && ( polyfill = (window.picturefill || lazySizesConfig.pf) ) ){
-			polyfill({reevaluate: true, elements: [el]});
-		} else if(full && full.src){
-			el.src = full.src;
-		}
-	};
-
-	var getCSS = function (elem, style){
-		return (getComputedStyle(elem, null) || {})[style];
-	};
-
-	var getWidth = function(elem, parent, width){
-		width = width || elem.offsetWidth;
-
-		while(width < lazySizesConfig.minSize && parent && !elem._lazysizesWidth){
-			width =  parent.offsetWidth;
-			parent = parent.parentNode;
-		}
-
-		return width;
-	};
-
-	var rAF = (function(){
-		var running, waiting;
-		var fns = [];
-		var secondFns = [];
-
-		var run = function(){
-			var runFns = fns;
-
-			fns = secondFns;
-
-			running = true;
-			waiting = false;
-
-			while(runFns.length){
-				runFns.shift()();
-			}
-
-			running = false;
-		};
-
-		var rafBatch = function(fn, queue){
-			if(running && !queue){
-				fn.apply(this, arguments);
-			} else {
-				fns.push(fn);
-
-				if(!waiting){
-					waiting = true;
-					(document.hidden ? setTimeout : requestAnimationFrame)(run);
-				}
-			}
-		};
-
-		rafBatch._lsFlush = run;
-
-		return rafBatch;
-	})();
-
-	var rAFIt = function(fn, simple){
-		return simple ?
-			function() {
-				rAF(fn);
-			} :
-			function(){
-				var that = this;
-				var args = arguments;
-				rAF(function(){
-					fn.apply(that, args);
-				});
-			}
-		;
-	};
-
-	var throttle = function(fn){
-		var running;
-		var lastTime = 0;
-		var gDelay = 125;
-		var RIC_DEFAULT_TIMEOUT = 666;
-		var rICTimeout = RIC_DEFAULT_TIMEOUT;
-		var run = function(){
-			running = false;
-			lastTime = Date.now();
-			fn();
-		};
-		var idleCallback = requestIdleCallback ?
-			function(){
-				requestIdleCallback(run, {timeout: rICTimeout});
-				if(rICTimeout !== RIC_DEFAULT_TIMEOUT){
-					rICTimeout = RIC_DEFAULT_TIMEOUT;
-				}
-			}:
-			rAFIt(function(){
-				setTimeout(run);
-			}, true)
-		;
-
-		return function(isPriority){
-			var delay;
-			if((isPriority = isPriority === true)){
-				rICTimeout = 44;
-			}
-
-			if(running){
-				return;
-			}
-
-			running =  true;
-
-			delay = gDelay - (Date.now() - lastTime);
-
-			if(delay < 0){
-				delay = 0;
-			}
-
-			if(isPriority || (delay < 9 && requestIdleCallback)){
-				idleCallback();
-			} else {
-				setTimeout(idleCallback, delay);
-			}
-		};
-	};
-
-	//based on http://modernjavascript.blogspot.de/2013/08/building-better-debounce.html
-	var debounce = function(func) {
-		var timeout, timestamp;
-		var wait = 99;
-		var run = function(){
-			timeout = null;
-			func();
-		};
-		var later = function() {
-			var last = Date.now() - timestamp;
-
-			if (last < wait) {
-				setTimeout(later, wait - last);
-			} else {
-				(requestIdleCallback || run)(run);
-			}
-		};
-
-		return function() {
-			timestamp = Date.now();
-
-			if (!timeout) {
-				timeout = setTimeout(later, wait);
-			}
-		};
-	};
-
-
-	var loader = (function(){
-		var lazyloadElems, preloadElems, isCompleted, resetPreloadingTimer, loadMode, started;
-
-		var eLvW, elvH, eLtop, eLleft, eLright, eLbottom;
-
-		var defaultExpand, preloadExpand, hFac;
-
-		var regImg = /^img$/i;
-		var regIframe = /^iframe$/i;
-
-		var supportScroll = ('onscroll' in window) && !(/glebot/.test(navigator.userAgent));
-
-		var shrinkExpand = 0;
-		var currentExpand = 0;
-
-		var isLoading = 0;
-		var lowRuns = -1;
-
-		var resetPreloading = function(e){
-			isLoading--;
-			if(e && e.target){
-				addRemoveLoadEvents(e.target, resetPreloading);
-			}
-
-			if(!e || isLoading < 0 || !e.target){
-				isLoading = 0;
-			}
-		};
-
-		var isNestedVisible = function(elem, elemExpand){
-			var outerRect;
-			var parent = elem;
-			var visible = getCSS(document.body, 'visibility') == 'hidden' || getCSS(elem, 'visibility') != 'hidden';
-
-			eLtop -= elemExpand;
-			eLbottom += elemExpand;
-			eLleft -= elemExpand;
-			eLright += elemExpand;
-
-			while(visible && (parent = parent.offsetParent) && parent != document.body && parent != docElem){
-				visible = ((getCSS(parent, 'opacity') || 1) > 0);
-
-				if(visible && getCSS(parent, 'overflow') != 'visible'){
-					outerRect = parent.getBoundingClientRect();
-					visible = eLright > outerRect.left &&
-						eLleft < outerRect.right &&
-						eLbottom > outerRect.top - 1 &&
-						eLtop < outerRect.bottom + 1
-					;
-				}
-			}
-
-			return visible;
-		};
-
-		var checkElements = function() {
-			var eLlen, i, rect, autoLoadElem, loadedSomething, elemExpand, elemNegativeExpand, elemExpandVal, beforeExpandVal;
-
-			if((loadMode = lazySizesConfig.loadMode) && isLoading < 8 && (eLlen = lazyloadElems.length)){
-
-				i = 0;
-
-				lowRuns++;
-
-				if(preloadExpand == null){
-					if(!('expand' in lazySizesConfig)){
-						lazySizesConfig.expand = docElem.clientHeight > 500 && docElem.clientWidth > 500 ? 500 : 370;
-					}
-
-					defaultExpand = lazySizesConfig.expand;
-					preloadExpand = defaultExpand * lazySizesConfig.expFactor;
-				}
-
-				if(currentExpand < preloadExpand && isLoading < 1 && lowRuns > 2 && loadMode > 2 && !document.hidden){
-					currentExpand = preloadExpand;
-					lowRuns = 0;
-				} else if(loadMode > 1 && lowRuns > 1 && isLoading < 6){
-					currentExpand = defaultExpand;
-				} else {
-					currentExpand = shrinkExpand;
-				}
-
-				for(; i < eLlen; i++){
-
-					if(!lazyloadElems[i] || lazyloadElems[i]._lazyRace){continue;}
-
-					if(!supportScroll){unveilElement(lazyloadElems[i]);continue;}
-
-					if(!(elemExpandVal = lazyloadElems[i][_getAttribute]('data-expand')) || !(elemExpand = elemExpandVal * 1)){
-						elemExpand = currentExpand;
-					}
-
-					if(beforeExpandVal !== elemExpand){
-						eLvW = innerWidth + (elemExpand * hFac);
-						elvH = innerHeight + elemExpand;
-						elemNegativeExpand = elemExpand * -1;
-						beforeExpandVal = elemExpand;
-					}
-
-					rect = lazyloadElems[i].getBoundingClientRect();
-
-					if ((eLbottom = rect.bottom) >= elemNegativeExpand &&
-						(eLtop = rect.top) <= elvH &&
-						(eLright = rect.right) >= elemNegativeExpand * hFac &&
-						(eLleft = rect.left) <= eLvW &&
-						(eLbottom || eLright || eLleft || eLtop) &&
-						((isCompleted && isLoading < 3 && !elemExpandVal && (loadMode < 3 || lowRuns < 4)) || isNestedVisible(lazyloadElems[i], elemExpand))){
-						unveilElement(lazyloadElems[i]);
-						loadedSomething = true;
-						if(isLoading > 9){break;}
-					} else if(!loadedSomething && isCompleted && !autoLoadElem &&
-						isLoading < 4 && lowRuns < 4 && loadMode > 2 &&
-						(preloadElems[0] || lazySizesConfig.preloadAfterLoad) &&
-						(preloadElems[0] || (!elemExpandVal && ((eLbottom || eLright || eLleft || eLtop) || lazyloadElems[i][_getAttribute](lazySizesConfig.sizesAttr) != 'auto')))){
-						autoLoadElem = preloadElems[0] || lazyloadElems[i];
-					}
-				}
-
-				if(autoLoadElem && !loadedSomething){
-					unveilElement(autoLoadElem);
-				}
-			}
-		};
-
-		var throttledCheckElements = throttle(checkElements);
-
-		var switchLoadingClass = function(e){
-			addClass(e.target, lazySizesConfig.loadedClass);
-			removeClass(e.target, lazySizesConfig.loadingClass);
-			addRemoveLoadEvents(e.target, rafSwitchLoadingClass);
-		};
-		var rafedSwitchLoadingClass = rAFIt(switchLoadingClass);
-		var rafSwitchLoadingClass = function(e){
-			rafedSwitchLoadingClass({target: e.target});
-		};
-
-		var changeIframeSrc = function(elem, src){
-			try {
-				elem.contentWindow.location.replace(src);
-			} catch(e){
-				elem.src = src;
-			}
-		};
-
-		var handleSources = function(source){
-			var customMedia, parent;
-
-			var sourceSrcset = source[_getAttribute](lazySizesConfig.srcsetAttr);
-
-			if( (customMedia = lazySizesConfig.customMedia[source[_getAttribute]('data-media') || source[_getAttribute]('media')]) ){
-				source.setAttribute('media', customMedia);
-			}
-
-			if(sourceSrcset){
-				source.setAttribute('srcset', sourceSrcset);
-			}
-
-			//https://bugzilla.mozilla.org/show_bug.cgi?id=1170572
-			if(customMedia){
-				parent = source.parentNode;
-				parent.insertBefore(source.cloneNode(), source);
-				parent.removeChild(source);
-			}
-		};
-
-		var lazyUnveil = rAFIt(function (elem, detail, isAuto, sizes, isImg){
-			var src, srcset, parent, isPicture, event, firesLoad;
-
-			if(!(event = triggerEvent(elem, 'lazybeforeunveil', detail)).defaultPrevented){
-
-				if(sizes){
-					if(isAuto){
-						addClass(elem, lazySizesConfig.autosizesClass);
-					} else {
-						elem.setAttribute('sizes', sizes);
-					}
-				}
-
-				srcset = elem[_getAttribute](lazySizesConfig.srcsetAttr);
-				src = elem[_getAttribute](lazySizesConfig.srcAttr);
-
-				if(isImg) {
-					parent = elem.parentNode;
-					isPicture = parent && regPicture.test(parent.nodeName || '');
-				}
-
-				firesLoad = detail.firesLoad || (('src' in elem) && (srcset || src || isPicture));
-
-				event = {target: elem};
-
-				if(firesLoad){
-					addRemoveLoadEvents(elem, resetPreloading, true);
-					clearTimeout(resetPreloadingTimer);
-					resetPreloadingTimer = setTimeout(resetPreloading, 2500);
-
-					addClass(elem, lazySizesConfig.loadingClass);
-					addRemoveLoadEvents(elem, rafSwitchLoadingClass, true);
-				}
-
-				if(isPicture){
-					forEach.call(parent.getElementsByTagName('source'), handleSources);
-				}
-
-				if(srcset){
-					elem.setAttribute('srcset', srcset);
-				} else if(src && !isPicture){
-					if(regIframe.test(elem.nodeName)){
-						changeIframeSrc(elem, src);
-					} else {
-						elem.src = src;
-					}
-				}
-
-				if(srcset || isPicture){
-					updatePolyfill(elem, {src: src});
-				}
-			}
-
-			if(elem._lazyRace){
-				delete elem._lazyRace;
-			}
-			removeClass(elem, lazySizesConfig.lazyClass);
-
-			rAF(function(){
-				if( !firesLoad || elem.complete ){
-					if(firesLoad){
-						resetPreloading(event);
-					} else {
-						isLoading--;
-					}
-					switchLoadingClass(event);
-				}
-			}, true);
-		});
-
-		var unveilElement = function (elem){
-			var detail;
-
-			var isImg = regImg.test(elem.nodeName);
-
-			//allow using sizes="auto", but don't use. it's invalid. Use data-sizes="auto" or a valid value for sizes instead (i.e.: sizes="80vw")
-			var sizes = isImg && (elem[_getAttribute](lazySizesConfig.sizesAttr) || elem[_getAttribute]('sizes'));
-			var isAuto = sizes == 'auto';
-
-			if( (isAuto || !isCompleted) && isImg && (elem.src || elem.srcset) && !elem.complete && !hasClass(elem, lazySizesConfig.errorClass)){return;}
-
-			detail = triggerEvent(elem, 'lazyunveilread').detail;
-
-			if(isAuto){
-				 autoSizer.updateElem(elem, true, elem.offsetWidth);
-			}
-
-			elem._lazyRace = true;
-			isLoading++;
-
-			lazyUnveil(elem, detail, isAuto, sizes, isImg);
-		};
-
-		var onload = function(){
-			if(isCompleted){return;}
-			if(Date.now() - started < 999){
-				setTimeout(onload, 999);
-				return;
-			}
-			var afterScroll = debounce(function(){
-				lazySizesConfig.loadMode = 3;
-				throttledCheckElements();
-			});
-
-			isCompleted = true;
-
-			lazySizesConfig.loadMode = 3;
-
-			throttledCheckElements();
-
-			addEventListener('scroll', function(){
-				if(lazySizesConfig.loadMode == 3){
-					lazySizesConfig.loadMode = 2;
-				}
-				afterScroll();
-			}, true);
-		};
-
-		return {
-			_: function(){
-				started = Date.now();
-
-				lazyloadElems = document.getElementsByClassName(lazySizesConfig.lazyClass);
-				preloadElems = document.getElementsByClassName(lazySizesConfig.lazyClass + ' ' + lazySizesConfig.preloadClass);
-				hFac = lazySizesConfig.hFac;
-
-				addEventListener('scroll', throttledCheckElements, true);
-
-				addEventListener('resize', throttledCheckElements, true);
-
-				if(window.MutationObserver){
-					new MutationObserver( throttledCheckElements ).observe( docElem, {childList: true, subtree: true, attributes: true} );
-				} else {
-					docElem[_addEventListener]('DOMNodeInserted', throttledCheckElements, true);
-					docElem[_addEventListener]('DOMAttrModified', throttledCheckElements, true);
-					setInterval(throttledCheckElements, 999);
-				}
-
-				addEventListener('hashchange', throttledCheckElements, true);
-
-				//, 'fullscreenchange'
-				['focus', 'mouseover', 'click', 'load', 'transitionend', 'animationend', 'webkitAnimationEnd'].forEach(function(name){
-					document[_addEventListener](name, throttledCheckElements, true);
-				});
-
-				if((/d$|^c/.test(document.readyState))){
-					onload();
-				} else {
-					addEventListener('load', onload);
-					document[_addEventListener]('DOMContentLoaded', throttledCheckElements);
-					setTimeout(onload, 20000);
-				}
-
-				if(lazyloadElems.length){
-					checkElements();
-					rAF._lsFlush();
-				} else {
-					throttledCheckElements();
-				}
-			},
-			checkElems: throttledCheckElements,
-			unveil: unveilElement
-		};
-	})();
-
-
-	var autoSizer = (function(){
-		var autosizesElems;
-
-		var sizeElement = rAFIt(function(elem, parent, event, width){
-			var sources, i, len;
-			elem._lazysizesWidth = width;
-			width += 'px';
-
-			elem.setAttribute('sizes', width);
-
-			if(regPicture.test(parent.nodeName || '')){
-				sources = parent.getElementsByTagName('source');
-				for(i = 0, len = sources.length; i < len; i++){
-					sources[i].setAttribute('sizes', width);
-				}
-			}
-
-			if(!event.detail.dataAttr){
-				updatePolyfill(elem, event.detail);
-			}
-		});
-		var getSizeElement = function (elem, dataAttr, width){
-			var event;
-			var parent = elem.parentNode;
-
-			if(parent){
-				width = getWidth(elem, parent, width);
-				event = triggerEvent(elem, 'lazybeforesizes', {width: width, dataAttr: !!dataAttr});
-
-				if(!event.defaultPrevented){
-					width = event.detail.width;
-
-					if(width && width !== elem._lazysizesWidth){
-						sizeElement(elem, parent, event, width);
-					}
-				}
-			}
-		};
-
-		var updateElementsSizes = function(){
-			var i;
-			var len = autosizesElems.length;
-			if(len){
-				i = 0;
-
-				for(; i < len; i++){
-					getSizeElement(autosizesElems[i]);
-				}
-			}
-		};
-
-		var debouncedUpdateElementsSizes = debounce(updateElementsSizes);
-
-		return {
-			_: function(){
-				autosizesElems = document.getElementsByClassName(lazySizesConfig.autosizesClass);
-				addEventListener('resize', debouncedUpdateElementsSizes);
-			},
-			checkElems: debouncedUpdateElementsSizes,
-			updateElem: getSizeElement
-		};
-	})();
-
-	var init = function(){
-		if(!init.i){
-			init.i = true;
-			autoSizer._();
-			loader._();
-		}
-	};
-
-	(function(){
-		var prop;
-
-		var lazySizesDefaults = {
-			lazyClass: 'lazyload',
-			loadedClass: 'lazyloaded',
-			loadingClass: 'lazyloading',
-			preloadClass: 'lazypreload',
-			errorClass: 'lazyerror',
-			//strictClass: 'lazystrict',
-			autosizesClass: 'lazyautosizes',
-			srcAttr: 'data-src',
-			srcsetAttr: 'data-srcset',
-			sizesAttr: 'data-sizes',
-			//preloadAfterLoad: false,
-			minSize: 40,
-			customMedia: {},
-			init: true,
-			expFactor: 1.5,
-			hFac: 0.8,
-			loadMode: 2
-		};
-
-		lazySizesConfig = window.lazySizesConfig || window.lazysizesConfig || {};
-
-		for(prop in lazySizesDefaults){
-			if(!(prop in lazySizesConfig)){
-				lazySizesConfig[prop] = lazySizesDefaults[prop];
-			}
-		}
-
-		window.lazySizesConfig = lazySizesConfig;
-
-		setTimeout(function(){
-			if(lazySizesConfig.init){
-				init();
-			}
-		});
-	})();
-
-	return {
-		cfg: lazySizesConfig,
-		autoSizer: autoSizer,
-		loader: loader,
-		init: init,
-		uP: updatePolyfill,
-		aC: addClass,
-		rC: removeClass,
-		hC: hasClass,
-		fire: triggerEvent,
-		gW: getWidth,
-		rAF: rAF,
-	};
-}
-));
 
 /* ==========================================================================
    #Mobilenav
    ========================================================================== */
 
-var html = $('html');
-var button = $('.js-nav-toggle');
-var navigation = $('.js-nav');
+const html = $('html');
+const button = $('.js-nav-toggle');
+const navigation = $('.js-nav');
 
 function toggleNav(e) {
   button.toggleClass('is-active');

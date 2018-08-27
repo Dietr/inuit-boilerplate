@@ -6,25 +6,16 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  {% comment %}
-  Stylesheets
-  1/ on DEV environment the unminified CSS is loaded with Sourcemaps
-  2/ on PROD environment the critical CSS is inserted in the head. The minified CSS is loaded with https://github.com/filamentgroup/loadCSS/.
-  {% endcomment %}
   <title>{% if page.title %}{{ site.title }} – {{ page.title }}{% else %}{{ site.title }}{% endif %}</title>
   <meta name="description" content="{% if page.description %}{{ page.description }}{% else %}{{ site.description }}{% endif %}">
 
   {% comment %}
   Stylesheets
-  1/ on DEV environment the unminified CSS is loaded with Sourcemaps
-  2/ on PROD environment the critical CSS is inserted in the head. The minified CSS is loaded with https://github.com/filamentgroup/loadCSS/.
   {% endcomment %}
   {% if jekyll.environment == "production" %}
-  <style>{% include atom.critical.css %}</style>
-  <link rel="preload" href="{{ "/css/screen.min.css" | prepend: site.github.url }}" as="style" onload="this.rel='stylesheet'">
-  <noscript><link rel="stylesheet" href="{{ "/css/screen.min.css" | prepend: site.github.url }}"></noscript>
+  <link rel="stylesheet" href="/assets/css/screen.min.css">
   {% else %}
-  <link rel="stylesheet" href="{{ "/css/screen.css" | prepend: site.github.url }}">
+  <link rel="stylesheet" href="/assets/css/screen.css">
   {% endif %}
 
   {% comment %}

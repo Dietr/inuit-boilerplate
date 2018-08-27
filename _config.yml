@@ -34,3 +34,14 @@ google_analytics: none
 navigation:
   - title: Base
     url: base/
+collections:
+  pages:
+    title: Pages
+    output: true
+defaults:
+-
+  scope:
+    path: ""
+    type: pages
+  values:
+    is_page: true

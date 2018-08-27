@@ -8,9 +8,9 @@ You are free to copy, modify, and distribute Inuit boilerplate, even for commerc
 
 ### Dependencies
 Inuit boilerplate needs the following tools to be installed properly:
-- [Ruby](https://www.ruby-lang.org/en/) (v2.3.0) or [RVM](https://rvm.io/)
+- [Ruby](https://www.ruby-lang.org/en/) (v2.5.1) or [RVM](https://rvm.io/)
 - [Bundler](https://bundler.io/)
-- [Node.js](https://nodejs.org/en/) (v7.2.1) or [NVM](https://github.com/creationix/nvm)
+- [Node.js](https://nodejs.org/en/) (v10.9.0) or [NVM](https://github.com/creationix/nvm)
 - [Gulp](http://gulpjs.com/)
 
 #### Install

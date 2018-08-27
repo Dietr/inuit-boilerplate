@@ -2,9 +2,9 @@
    #Mobilenav
    ========================================================================== */
 
-var html = $('html');
-var button = $('.js-nav-toggle');
-var navigation = $('.js-nav');
+const html = $('html');
+const button = $('.js-nav-toggle');
+const navigation = $('.js-nav');
 
 function toggleNav(e) {
   button.toggleClass('is-active');
