@@ -8,7 +8,6 @@
 
 // Plugins
 const gulp = require("gulp");
-const plumber = require("gulp-plumber");
 const cp = require("child_process");
 const gnf = require("gulp-npm-files");
 const browsersync = require("browser-sync").create();
@@ -80,11 +79,11 @@ const paths = {
   jsJekyllDist: './_site/assets/js/',
   iconsSrc: './_artwork/icons/*.svg',
   iconsDist: './assets/img/svg/',
-  imagesSrc: './assets/img/',
+  imagesSrc: './assets/img/**/*',
   imagesDist: './_site/assets/img/',
   cssWatch: './assets/_scss/**/*.scss',
   jsWatch: './assets/js/_scripts/**/*.js',
-  iconsWatch: './_artwork/symbols/*.svg',
+  iconsWatch: './_artwork/icons/*.svg',
   imageWatch: './assets/img/**/*',
   siteWatch: [
     './assets/img/**/*.png',
@@ -157,12 +156,12 @@ function images() {
   return gulp
     .src(paths.imagesSrc)
     .pipe(newer(paths.imagesDist))
-    .pipe(
-      imagemin({
-        progressive: true,
-        svgoPlugins: [{ removeViewBox: false }]
-      })
-    )
+    // .pipe(
+    //   imagemin({
+    //     progressive: true,
+    //     svgoPlugins: []
+    //   })
+    // )
     .pipe(gulp.dest(paths.imagesDist));
 }
 
@@ -184,7 +183,6 @@ function icons() {
 function css() {
   return gulp
     .src(paths.scssSrc)
-    .pipe(plumber())
     .pipe(sass({ outputStyle: "expanded" }))
     .pipe(gulp.dest(paths.cssSrc))
     .pipe(gulp.dest(paths.cssDist))
@@ -201,7 +199,6 @@ function css() {
 function scripts() {
   return gulp
     .src(paths.jsSrc)
-    .pipe(plumber())
     .pipe(concat(config.jsConcat))
     .pipe(gulp.dest(paths.jsDist))
     .pipe(gulp.dest(paths.jsJekyllDist))
@@ -242,9 +239,9 @@ gulp.task(
   "default",
   gulp.series(
     "install",
-    clean,
+    jekyll,
     icons,
-    gulp.parallel(css, scripts, images, jekyllBuild)
+    gulp.parallel(css, scripts, images)
   )
 );
 
@@ -253,11 +250,17 @@ gulp.task(
   "build",
   gulp.series(
     "install",
-    clean,
+    jekyllBuild,
     icons,
-    gulp.parallel(css, scripts, images, jekyllBuild)
+    gulp.parallel(css, scripts, images)
   )
 );
 
 // Watch
-gulp.task("watch", gulp.parallel(watchFiles, browserSync));
+gulp.task(
+  "watch",
+  gulp.series(
+    "default",
+    gulp.parallel(watchFiles, browserSync)
+  )
+);

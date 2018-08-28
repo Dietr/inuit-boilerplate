@@ -24,6 +24,7 @@
  * Font-size............A mixin which guarantees baseline-friendly line-heights.
  * Clearfix.............Micro clearfix mixin.
  * Hidden...............Mixin for hiding elements.
+ * Aliases..............Custom (and shorter) aliases for Inuit variables.
  * Sass MQ..............inuitcss’ default media query manager.
  *
  * GENERIC
@@ -700,11 +701,17 @@ table {
 }
 
 /* ==========================================================================
-   #WRAPPER
+   #WRAPPERS
+   ---
+   NOTICE: Adapted from https://github.com/inuitcss/inuitcss/blob/develop/objects/_objects.wrapper.scss
    ========================================================================== */
 /**
  * Page-level constraining and wrapping elements.
  */
+/* stylelint-disable */
+/* stylelint-enable */
+/* Default classes.
+   ========================================================================== */
 .o-wrapper {
   padding-right: 24px;
   padding-left: 24px;
@@ -713,14 +720,102 @@ table {
   max-width: 960px;
 }
 
-.o-wrapper:after {
-  content: "" !important;
-  display: block !important;
-  clear: both !important;
+@media (min-width: 56.25em) {
+  .o-wrapper {
+    padding-right: 48px;
+    padding-left: 48px;
+  }
+}
+
+/* Size variants.
+   ========================================================================== */
+.o-wrapper--tiny {
+  max-width: 320px;
+}
+
+.o-wrapper--small {
+  max-width: 720px;
+}
+
+.o-wrapper--large {
+  max-width: 1200px;
+}
+
+.o-wrapper--huge {
+  max-width: 1420px;
 }
 
 /* ==========================================================================
-   #LAYOUT
+   #ROW
+   ========================================================================== */
+/**
+ * Creates even spaced responsive rows using the default InuitCSS spacing variables.
+ *
+ *   <div class="o-row">
+ *     <div class="o-wrapper">
+ *     </div>
+ *   </div>
+ *
+ */
+/* Default classes.
+   ========================================================================== */
+.o-row {
+  padding-top: 24px;
+  padding-bottom: 24px;
+}
+
+@media (min-width: 56.25em) {
+  .o-row {
+    padding-top: 48px;
+    padding-bottom: 48px;
+  }
+}
+
+.o-row-tiny {
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
+
+@media (min-width: 56.25em) {
+  .o-row-tiny {
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
+}
+
+.o-row-small {
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+
+@media (min-width: 56.25em) {
+  .o-row-small {
+    padding-top: 24px;
+    padding-bottom: 24px;
+  }
+}
+
+.o-row-large {
+  padding-top: 48px;
+  padding-bottom: 48px;
+}
+
+@media (min-width: 56.25em) {
+  .o-row-large {
+    padding-top: 96px;
+    padding-bottom: 96px;
+  }
+}
+
+.o-row-huge {
+  padding-top: 96px;
+  padding-bottom: 96px;
+}
+
+/* ==========================================================================
+   #FLEXBOX LAYOUT
+   ---
+   NOTICE: Adapted from https://github.com/inuitcss/inuitcss/blob/develop/objects/_objects.layout.scss
    ========================================================================== */
 /**
  * Grid-like layout system.
@@ -769,17 +864,21 @@ table {
  *
  * There are plenty more options available to us: explore them below.
  */
-/* Default/mandatory classes
+/* Default/mandatory classes.
    ========================================================================== */
 /**
  * 1. Allows us to use the layout object on any type of element.
  * 2. We need to defensively reset any box-model properties.
- * 3. Use the negative margin trick for multi-row grids:
- *    http://csswizardry.com/2011/08/building-better-grid-systems/
+ * 3. Define flexbox settings to allow grid-like behaviour
+ * 4. Use the negative margin trick for multi-row grids:
  */
 .o-layout {
-  display: block;
-  /* [1] */
+  display: flex;
+  /* [3] */
+  align-items: stretch;
+  /* [3] */
+  flex-wrap: wrap;
+  /* [3] */
   margin: 0;
   /* [2] */
   padding: 0;
@@ -787,175 +886,113 @@ table {
   list-style: none;
   /* [1] */
   margin-left: -24px;
-  /* [3] */
-  font-size: 0;
+  /* [4] */
+  margin-right: -24px;
+  /* [4] */
 }
 
 /**
-   * 1. Required in order to combine fluid widths with fixed gutters.
-   * 2. Allows us to manipulate grids vertically, with text-level properties,
-   *    etc.
-   * 3. Default item alignment is with the tops of each other, like most
-   *    traditional grid/layout systems.
-   * 4. By default, all layout items are full-width (mobile first).
-   * 5. Gutters provided by left padding:
-   *    http://csswizardry.com/2011/08/building-better-grid-systems/
-   * 6. Fallback for old IEs not supporting `rem` values.
+   * 1. By default, all layout items are full-width (mobile first).
+   * 2. Gutters provided by left padding:
    */
 .o-layout__item {
-  box-sizing: border-box;
-  /* [1] */
-  display: inline-block;
-  /* [2] */
-  vertical-align: top;
-  /* [3] */
   width: 100%;
-  /* [4] */
+  /* [1] */
   padding-left: 24px;
-  /* [5] */
-  font-size: 16px;
-  /* [6] */
-  font-size: 1rem;
+  /* [2] */
+  padding-right: 24px;
+  /* [2] */
 }
 
-/* Gutter size modifiers
+/* Gutter size modifiers.
    ========================================================================== */
-.o-layout--flush {
-  margin-left: 0;
-}
-
-.o-layout--flush > .o-layout__item {
-  padding-left: 0;
-}
-
 .o-layout--tiny {
   margin-left: -6px;
+  margin-right: -6px;
 }
 
 .o-layout--tiny > .o-layout__item {
   padding-left: 6px;
+  padding-right: 6px;
 }
 
 .o-layout--small {
   margin-left: -12px;
+  margin-right: -12px;
 }
 
 .o-layout--small > .o-layout__item {
   padding-left: 12px;
+  padding-right: 12px;
 }
 
 .o-layout--large {
   margin-left: -48px;
+  margin-right: -48px;
 }
 
 .o-layout--large > .o-layout__item {
   padding-left: 48px;
+  padding-right: 48px;
 }
 
 .o-layout--huge {
   margin-left: -96px;
+  margin-right: -96px;
 }
 
 .o-layout--huge > .o-layout__item {
   padding-left: 96px;
+  padding-right: 96px;
 }
 
-/* Vertical alignment modifiers
+.o-layout--flush {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.o-layout--flush > .o-layout__item {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+/* Vertical alignment modifiers.
    ========================================================================== */
 /**
  * Align all grid items to the middles of each other.
  */
 .o-layout--middle > .o-layout__item {
-  vertical-align: middle;
+  align-self: center;
 }
 
 /**
  * Align all grid items to the bottoms of each other.
  */
 .o-layout--bottom > .o-layout__item {
-  vertical-align: bottom;
+  align-self: flex-end;
 }
 
-/**
- * Stretch all grid items of each row to have an equal-height.
- * Please be aware that this modifier class doesn’t take any effect in IE9 and
- * below and other older browsers due to the lack of `display: flex` support.
- */
-.o-layout--stretch {
-  display: flex;
-  flex-wrap: wrap;
-}
-
-.o-layout--stretch > .o-layout__item {
-  display: flex;
-}
-
-.o-layout--stretch.o-layout--center {
-  justify-content: center;
-}
-
-.o-layout--stretch.o-layout--right {
-  justify-content: flex-end;
-}
-
-.o-layout--stretch.o-layout--left {
-  justify-content: flex-start;
-}
-
-/* Fill order modifiers
+/* Fill order modifiers.
    ========================================================================== */
 /**
  * Fill up the layout system from the centre.
  */
 .o-layout--center {
-  text-align: center;
-}
-
-.o-layout--center > .o-layout__item {
-  text-align: left;
+  justify-content: center;
 }
 
 /**
  * Fill up the layout system from the right-hand side.
  */
 .o-layout--right {
-  text-align: right;
-}
-
-.o-layout--right > .o-layout__item {
-  text-align: left;
-}
-
-/**
- * Fill up the layout system from the left-hand side. This will likely only be
- * needed when using in conjunction with `.o-layout--reverse`.
- */
-.o-layout--left {
-  text-align: left;
-}
-
-.o-layout--left > .o-layout__item {
-  text-align: left;
+  justify-content: flex-end;
 }
 
 /**
  * Reverse the rendered order of the grid system.
  */
 .o-layout--reverse {
-  direction: rtl;
-}
-
-.o-layout--reverse > .o-layout__item {
-  direction: ltr;
-}
-
-/* Auto-widths modifier
-   ========================================================================== */
-/**
- * Cause layout items to take up a non-explicit amount of width.
- */
-.o-layout--auto > .o-layout__item {
-  width: auto;
+  flex-direction: row-reverse;
 }
 
 /* ==========================================================================
@@ -1681,6 +1718,201 @@ table {
 }
 
 /* ==========================================================================
+   #COLOR
+   ========================================================================== */
+.c-color-primary {
+  color: #FFFFFF;
+  background-color: #F44336;
+}
+
+.c-color-secondary {
+  color: #FFFFFF;
+  background-color: #3F51B5;
+}
+
+.c-color-tertiary {
+  color: #FFFFFF;
+  background-color: #FFEB3B;
+}
+
+.c-color-white {
+  color: #232C37;
+  background-color: #FFFFFF;
+}
+
+.c-color-neutral {
+  color: #232C37;
+  background-color: #607D8B;
+}
+
+.c-color-black {
+  color: #FFFFFF;
+  background-color: #232C37;
+}
+
+/* ==========================================================================
+   #BRAND
+   ========================================================================== */
+.c-brand {
+  font-family: sans-serif;
+}
+
+.c-brand-mark,
+.c-brand-mark > .c-brand-mark__link {
+  color: #F44336;
+  font-weight: 700;
+  text-decoration: none;
+  margin-bottom: 0;
+}
+
+/* ==========================================================================
+   #NAVIGATION
+   ========================================================================== */
+.c-navigation {
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  padding-left: 24px;
+  padding-right: 24px;
+  background-color: rgba(96, 125, 139, 0.95);
+  transform: translateX(-100%);
+  transition: 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.c-navigation.is-active {
+  display: block;
+  transform: translateX(0);
+}
+
+@media (min-width: 37.5em) {
+  .c-navigation {
+    position: relative;
+    padding: 0;
+    transform: translateX(0);
+    background-color: transparent;
+    transition: none;
+  }
+}
+
+.has-nav {
+  overflow: hidden;
+}
+
+.c-navigation-list {
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+  margin-bottom: 0;
+  text-align: center;
+}
+
+@media (min-width: 37.5em) {
+  .c-navigation-list {
+    text-align: left;
+    top: 0;
+    transform: translateY(0);
+  }
+}
+
+.c-navigation-list__item + .c-navigation-list__item {
+  margin-top: 24px;
+}
+
+@media (min-width: 37.5em) {
+  .c-navigation-list__item {
+    display: inline-block;
+  }
+  .c-navigation-list__item + .c-navigation-list__item {
+    margin-top: 0;
+    margin-left: 24px;
+  }
+}
+
+.c-navigation-toggle {
+  position: absolute;
+  z-index: 1;
+  right: 24px;
+  border: 0;
+  color: #F44336;
+  background-color: transparent;
+  transition: 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.c-navigation-toggle:focus {
+  outline: 0;
+}
+
+@media (min-width: 37.5em) {
+  .c-navigation-toggle {
+    display: none;
+  }
+}
+
+/* ==========================================================================
+   #UI
+   ========================================================================== */
+.c-ui {
+  display: flex;
+  justify-content: space-between;
+}
+
+.c-ui--header {
+  align-items: center;
+}
+
+.c-ui--footer {
+  flex-direction: column;
+}
+
+@media (min-width: 37.5em) {
+  .c-ui--footer {
+    flex-direction: row;
+  }
+}
+
+@media (min-width: 75em) {
+  .c-ui--footer {
+    align-items: center;
+  }
+}
+
+.c-ui-list {
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 56.25em) {
+  .c-ui-list {
+    flex-direction: row;
+    margin-bottom: 0;
+  }
+}
+
+.c-ui-list__item + .c-ui-list__item {
+  margin-top: 12px;
+}
+
+@media (min-width: 56.25em) {
+  .c-ui-list__item + .c-ui-list__item {
+    margin-top: 0;
+    margin-left: 24px;
+  }
+}
+
+/* ==========================================================================
+   #TYPOGRAPHY
+   ========================================================================== */
+.c-lead {
+  font-size: 21px;
+  font-size: 1.3125rem;
+  line-height: 1.5;
+  margin-bottom: 48px;
+}
+
+/* ==========================================================================
    #BUTTONS
    ========================================================================== */
 /**
@@ -1693,7 +1925,6 @@ table {
  * 3. Make buttons inherit font styles (often necessary when styling `input`s as
  *    buttons).
  * 4. Reset/normalize some styles.
- * 5. Force all button-styled elements to appear clickable.
  */
 .c-btn {
   display: inline-block;
@@ -1706,64 +1937,65 @@ table {
   /* [4] */
   margin: 0;
   /* [4] */
-  cursor: pointer;
-  /* [5] */
   padding: 12px 24px;
   transition: 0.5s cubic-bezier(0.19, 1, 0.22, 1);
   border-radius: 4px;
 }
 
+/* Size variants
+   ========================================================================== */
+.c-btn--small {
+  padding: inuit-rem(6px) inuit-rem(12px);
+}
+
+.c-btn--large {
+  padding: inuit-rem(24px) inuit-rem(48px);
+}
+
+.c-btn--block {
+  display: block;
+}
+
 /* Style variants
    ========================================================================== */
 .c-btn--primary {
-  background-color: #4a8ec2;
+  background-color: #F44336;
 }
 
 .c-btn--primary, .c-btn--primary:hover, .c-btn--primary:active, .c-btn--primary:focus {
   text-decoration: none;
   /* [4] */
-  color: #fff;
+  color: #FFFFFF;
 }
 
 .c-btn--primary:hover, .c-btn--primary:focus {
-  background-color: #3774a2;
+  background-color: #f6695e;
 }
 
 .c-btn--secondary {
-  background-color: #2f4054;
+  background-color: #3F51B5;
 }
 
 .c-btn--secondary, .c-btn--secondary:hover, .c-btn--secondary:active, .c-btn--secondary:focus {
   text-decoration: none;
-  color: #fff;
+  color: #FFFFFF;
 }
 
 .c-btn--secondary:hover, .c-btn--secondary:focus {
-  background-color: #1d2733;
+  background-color: #6574c4;
 }
 
 .c-btn--tertiary {
-  background-color: #fff;
-  color: #4a8ec2;
+  background-color: #FFEB3B;
 }
 
 .c-btn--tertiary, .c-btn--tertiary:hover, .c-btn--tertiary:active, .c-btn--tertiary:focus {
   text-decoration: none;
-  color: #4a8ec2;
+  color: #FFFFFF;
 }
 
 .c-btn--tertiary:hover, .c-btn--tertiary:focus {
-  color: #3774a2;
-}
-
-/* Size variants
-   ========================================================================== */
-.c-btn--small {
-  padding: 6px 12px;
-}
-
-.c-btn--large {
-  padding: 24px 48px;
+  background-color: #ffef62;
 }
 
 /* Ghost buttons
@@ -1772,8 +2004,8 @@ table {
  * Ghost buttons have see-through backgrounds and are bordered.
  */
 .c-btn--ghost {
-  border: 2px solid currentColor;
-  padding: 10px 22px;
+  border: 1px solid currentColor;
+  padding: 11px 23px;
 }
 
 .c-btn--ghost, .c-btn--ghost:hover, .c-btn--ghost:active, .c-btn--ghost:focus {
@@ -1781,35 +2013,109 @@ table {
 }
 
 .c-btn--ghost.c-btn--small {
-  padding: 4px 10px;
+  padding: 5px 11px;
 }
 
 .c-btn--ghost.c-btn--large {
-  padding: 22px 46px;
+  padding: 23px 47px;
 }
 
 .c-btn--ghost.c-btn--primary {
-  color: #4a8ec2;
+  color: #F44336;
 }
 
 .c-btn--ghost.c-btn--primary:hover, .c-btn--ghost.c-btn--primary:focus {
-  color: #3774a2;
+  color: #f6695e;
 }
 
 .c-btn--ghost.c-btn--secondary {
-  color: #2f4054;
+  color: #3F51B5;
 }
 
 .c-btn--ghost.c-btn--secondary:hover, .c-btn--ghost.c-btn--secondary:focus {
-  color: #1d2733;
+  color: #6574c4;
 }
 
 .c-btn--ghost.c-btn--tertiary {
-  color: #fff;
+  color: #FFEB3B;
 }
 
 .c-btn--ghost.c-btn--tertiary:hover, .c-btn--ghost.c-btn--tertiary:focus {
-  color: #fff;
+  color: #ffef62;
+}
+
+/* Button groups
+   ========================================================================== */
+.c-btn-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.c-btn-group .c-btn {
+  margin-right: 24px;
+}
+
+.c-btn-group .c-link {
+  margin: 24px 0;
+}
+
+/* ==========================================================================
+   #LINKS
+   ========================================================================== */
+.c-link {
+  transition: 0.5s cubic-bezier(0.19, 1, 0.22, 1) ease-in-out;
+}
+
+.c-link, .c-link:visited {
+  color: #F44336;
+}
+
+.c-link:hover, .c-link:focus {
+  color: #f6695e;
+}
+
+.is-active > .c-link {
+  color: #c3362b;
+}
+
+.c-link--bare, .c-link--bare:visited, .c-link--bare:hover, .c-link--bare:focus {
+  text-decoration: none;
+}
+
+/* ==========================================================================
+   #ICONS
+   ========================================================================== */
+.c-icon {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  bottom: .2ex;
+  position: relative;
+  vertical-align: middle;
+  stroke-width: 0;
+  stroke: currentColor;
+  fill: currentColor;
+}
+
+/* ==========================================================================
+   #CARDS
+   ========================================================================== */
+.c-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.c-card--shadow {
+  border: 1px solid #A8A8A8;
+  box-shadow: 0 0 20px rgba(35, 44, 55, 0.1);
+}
+
+.c-card--match {
+  height: 100%;
 }
 
 /* ==========================================================================

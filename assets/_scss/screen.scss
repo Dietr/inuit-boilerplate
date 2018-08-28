@@ -26,6 +26,7 @@
  * Font-size............A mixin which guarantees baseline-friendly line-heights.
  * Clearfix.............Micro clearfix mixin.
  * Hidden...............Mixin for hiding elements.
+ * Aliases..............Custom (and shorter) aliases for Inuit variables.
  * Sass MQ..............inuitcss’ default media query manager.
  *
  * GENERIC
@@ -118,8 +119,9 @@
 // OBJECTS
 //
 // Uncomment and add to this section as necessary.
-@import "./_vendor/inuitcss/objects/objects.wrapper";
-@import "./_vendor/inuitcss/objects/objects.layout";
+@import "./_vendor/inuitcss-plugin-responsive-wrapper/objects.responsive-wrapper";
+@import "./_vendor/inuitcss-plugin-row/objects.row";
+@import "./_vendor/inuitcss-plugin-flexlayout/objects.flexlayout";
 @import "./_vendor/inuitcss/objects/objects.media";
 @import "./_vendor/inuitcss/objects/objects.flag";
 @import "./_vendor/inuitcss/objects/objects.list-bare";
@@ -138,7 +140,20 @@
 // COMPONENTS
 //
 // Build and include your project’s UI components here.
-@import "./_vendor/inuitcss/components/example.components.buttons";
+@import "_components/components.theme";
+
+@import "_components/components.brand";
+@import "_components/components.navigation";
+@import "_components/components.ui";
+
+@import "_components/components.typography";
+@import "_components/components.buttons";
+@import "_components/components.links";
+@import "_components/components.icons";
+
+@import "_components/components.cards";
+
+@import "_components/components.syntax";
 
 
 
