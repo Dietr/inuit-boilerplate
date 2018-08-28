@@ -12,8 +12,6 @@ const cp = require("child_process");
 const gnf = require("gulp-npm-files");
 const browsersync = require("browser-sync").create();
 const del = require("del");
-const imagemin = require("gulp-imagemin");
-const newer = require("gulp-newer");
 const rename = require("gulp-rename");
 const sass = require("gulp-sass");
 const postcss = require("gulp-postcss");
@@ -79,8 +77,6 @@ const paths = {
   jsJekyllDist: './_site/assets/js/',
   iconsSrc: './_artwork/icons/*.svg',
   iconsDist: './assets/img/svg/',
-  imagesSrc: './assets/img/**/*',
-  imagesDist: './_site/assets/img/',
   cssWatch: './assets/_scss/**/*.scss',
   jsWatch: './assets/js/_scripts/**/*.js',
   iconsWatch: './_artwork/icons/*.svg',
@@ -90,8 +86,8 @@ const paths = {
     './assets/img/**/*.jpg',
     './assets/img/**/*.svg',
     './**/*.html',
-    './_pages/**/*.md',
-    './_posts/*.md',
+    './_pages/**/*.markdown',
+    './_posts/*.markdown',
     './_data/*.yml',
     './_config.yml',
     '!_site/**/*.*'
@@ -137,7 +133,7 @@ function jekyll() {
   return cp.spawn("bundle", ["exec", "jekyll", "build","--incremental"], { stdio: "inherit" });
 }
 
-// Production build
+// Production build @TODO env does not work
 function jekyllBuild() {
   return cp.spawn("bundle", ["exec", "jekyll", "build", "JEKYLL_ENV=production"], { stdio: "inherit" });
 }
@@ -146,23 +142,7 @@ function jekyllBuild() {
 // ---
 // Clean assets
 function clean() {
-  return del(["./_site/assets/"]);
-}
-
-// Images
-// ---
-// Optimize Images
-function images() {
-  return gulp
-    .src(paths.imagesSrc)
-    .pipe(newer(paths.imagesDist))
-    // .pipe(
-    //   imagemin({
-    //     progressive: true,
-    //     svgoPlugins: []
-    //   })
-    // )
-    .pipe(gulp.dest(paths.imagesDist));
+  return del(["./_site/"]);
 }
 
 // Icons
@@ -216,7 +196,6 @@ function watchFiles() {
   gulp.watch(paths.jsWatch, scripts);
   gulp.watch(paths.jsWatch, scripts);
   gulp.watch(paths.iconsWatch, icons);
-  gulp.watch(paths.imageWatch, images);
   gulp.watch(
     paths.siteWatch,
     gulp.series(jekyll, browserSyncReload)
@@ -229,7 +208,6 @@ gulp.task("install", gulp.series(copyNpmDependencies, copyVendorDependencies, de
 gulp.task("jekyll", jekyll);
 gulp.task("jekyllBuild", jekyllBuild);
 gulp.task("icons", icons);
-gulp.task("images", images);
 gulp.task("css", css);
 gulp.task("scripts", scripts);
 gulp.task("clean", clean);
@@ -239,9 +217,10 @@ gulp.task(
   "default",
   gulp.series(
     "install",
+    clean,
     jekyll,
     icons,
-    gulp.parallel(css, scripts, images)
+    gulp.parallel(css, scripts)
   )
 );
 
@@ -250,9 +229,10 @@ gulp.task(
   "build",
   gulp.series(
     "install",
+    clean,
     jekyllBuild,
     icons,
-    gulp.parallel(css, scripts, images)
+    gulp.parallel(css, scripts)
   )
 );
 

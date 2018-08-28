@@ -4,16 +4,18 @@
     <!-- Define your site navigation in _config.yml -->
     {% for item in site.navigation %}
     <li class="c-navigation-list__item {% if page.url contains item.url %} is-active{% endif %}">
-      <a href="{{ site.github.url }}/{{ item.url }}" class="c-link c-link--bare">{{ item.title | capitalize }}</a>
+      <a href="/{{ item.url }}" class="c-link c-link--bare">{{ item.title | capitalize }}</a>
     </li>
     {% endfor %}
 
-    <!-- External link -->
+    <!-- Navigation CTA -->
+    {% for item in site.navigation-cta %}
     <li class="c-navigation-list__item">
-      <a href="#!" alt="Contact" class="c-btn c-btn--primary c-btn--ghost c-btn--small">
-        {% include atom.icon.html value="github" %} Github
+      <a href="/{{ item.url }}" alt="Contact" class="c-btn c-btn--primary c-btn--ghost c-btn--small">
+        {{ item.title | capitalize }} {% include atom.icon.html value="arrow" %}
       </a>
     </li>
+    {% endfor %}
 
   </ul>
 </nav>

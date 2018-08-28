@@ -18,29 +18,35 @@ author: Dieter Peirs
 title: Inuit boilerplate
 description: A Jekyll boilerplate.
 url: none
+navigation:
+  - title: Base
+    url: base/
+navigation-cta:
+  - title: Contact
+    url: contact/
+social:
+  twitter_username: DieterPeirs
+  github_username: dietr
+  dribbble_username: DieterPeirs
+  medium_username: "@DieterPeirs"
 legal:
+  year: '2018'
   company: Roaring and Gentle Comm.V
   email: hello@dieterpeirs.com
   address: 'Henri Dunantlaan 18/402'
   city: '9000 Ghent'
   phone: '+32 (0) 479 79 76 74'
   btw: 'BE0663.754.370'
-social:
-  twitter_username: DieterPeirs
-  github_username: dietr
-  dribbble_username: DieterPeirs
-  medium_username: "@DieterPeirs"
-google_analytics: none
-navigation:
-  - title: Base
-    url: base/
+labels:
+  legal: Algemene voorwaarden
+  cookies: Cookies
+  privacy: Privacy
 collections:
   pages:
     title: Pages
     output: true
 defaults:
--
-  scope:
+- scope:
     path: ""
     type: pages
   values:
