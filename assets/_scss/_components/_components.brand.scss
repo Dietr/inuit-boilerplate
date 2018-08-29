@@ -1,6 +1,6 @@
-/* ==========================================================================
+/* ==================================
    #BRAND
-   ========================================================================== */
+   ================================== */
 
 // Set global font style @TODO: should this be in elements.page?
 .c-brand {
@@ -11,6 +11,7 @@
 .c-brand-mark {
   &,
   & > .c-brand-mark__link {
+    position: relative;
     color: $color-primary;
     font-weight: $inuit-font-weight-bold;
     text-decoration: none;

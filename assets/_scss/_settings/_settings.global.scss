@@ -1,6 +1,6 @@
-///* ========================================================================
-//   #GLOBAL
-//   ======================================================================== */
+// ==================================
+// #GLOBAL
+// ==================================
 
 // The global settings file contains any project-wide variables; things that
 // need to be made available to the entire codebase.
@@ -69,7 +69,7 @@ $global-radius: 4px;
 $global-duration: (1/2) + s;
 $global-easing: cubic-bezier(0.190,  1.000, 0.220, 1.000);
 $global-transition: $global-duration $global-easing;
-$btn-ghost-border-width: 1px;
+$btn-ghost-border-width: 2px;
 
 
 

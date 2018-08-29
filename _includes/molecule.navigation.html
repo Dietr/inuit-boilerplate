@@ -1,25 +1,22 @@
-<nav class="c-navigation js-nav">
-  <ul class="o-list-bare c-navigation-list">
+<nav>
+  {% include atom.hamburger.html %}
 
+  <ul class="o-list-bare c-navigation js-nav">
     <!-- Define your site navigation in _config.yml -->
     {% for item in site.navigation %}
-    <li class="c-navigation-list__item {% if page.url contains item.url %} is-active{% endif %}">
+    <li class="c-navigation__item {% if page.url contains item.url %} is-active{% endif %}">
       <a href="/{{ item.url }}" class="c-link c-link--bare">{{ item.title | capitalize }}</a>
     </li>
     {% endfor %}
 
     <!-- Navigation CTA -->
     {% for item in site.navigation-cta %}
-    <li class="c-navigation-list__item">
+    <li class="c-navigation__item">
       <a href="/{{ item.url }}" alt="Contact" class="c-btn c-btn--primary c-btn--ghost c-btn--small">
         {{ item.title | capitalize }} {% include atom.icon.html value="arrow" %}
       </a>
     </li>
     {% endfor %}
-
   </ul>
 </nav>
 
-<button class="c-navigation-toggle js-nav-toggle">
-  Menu
-</button>

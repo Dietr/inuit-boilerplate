@@ -1,6 +1,6 @@
-///* ========================================================================
-//   #ALIASES
-//   Map Inuit aliases to project aliases ======================================================================== */
+// ==================================
+// #ALIASES
+// ==================================
 
 // Mixins
 @mixin font-size($font-size, $line-height: auto, $modifier: 0, $important: false) {
@@ -15,19 +15,25 @@ $unit-large: $inuit-global-spacing-unit-large;
 $unit-huge: $inuit-global-spacing-unit-huge;
 
 // Font size
-$font-huge: $inuit-font-size-huge;
-$font-large: $inuit-font-size-large;
-$font-h1: $inuit-font-size-h1;
-$font-h2: $inuit-font-size-h2;
-$font-h3: $inuit-font-size-h3;
-$font-h4: $inuit-font-size-h4;
-$font-h5: $inuit-font-size-h5;
-$font-h6: $inuit-font-size-h6;
-$font-small: $inuit-font-size-small;
-$font-tiny: $inuit-font-size-tiny;
+$huge: $inuit-font-size-huge;
+$large: $inuit-font-size-large;
+$h1: $inuit-font-size-h1;
+$h2: $inuit-font-size-h2;
+$h3: $inuit-font-size-h3;
+$h4: $inuit-font-size-h4;
+$h5: $inuit-font-size-h5;
+$h6: $inuit-font-size-h6;
+$small: $inuit-font-size-small;
+$tiny: $inuit-font-size-tiny;
 
 // Font settings
-$font-primary: $inuit-font-family-primary;
-$font-regular: $inuit-font-weight-regular;
-$font-medium: $inuit-font-weight-medium;
-$font-bold: $inuit-font-weight-bold;
+$font: $inuit-font-family-primary;
+$regular: $inuit-font-weight-regular;
+$medium: $inuit-font-weight-medium;
+$bold: $inuit-font-weight-bold;
+
+// UI
+$radius: $global-radius;
+$duration: $global-duration;
+$easing: $global-easing;
+$transition: $global-transition;

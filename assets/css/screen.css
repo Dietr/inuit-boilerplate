@@ -1,7 +1,7 @@
 @charset "UTF-8";
-/* ==========================================================================
-   INUITCSS
-   ========================================================================== */
+/* ==================================
+   #INUITCSS
+   ================================== */
 /**
  * inuitcss, by @csswizardry
  *
@@ -876,11 +876,19 @@ table {
  * 4. Use the negative margin trick for multi-row grids:
  */
 .o-layout {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
   display: flex;
   /* [3] */
-  align-items: stretch;
+  -webkit-box-align: stretch;
+  -webkit-align-items: stretch;
+      -ms-flex-align: stretch;
+          align-items: stretch;
   /* [3] */
-  flex-wrap: wrap;
+  -webkit-flex-wrap: wrap;
+      -ms-flex-wrap: wrap;
+          flex-wrap: wrap;
   /* [3] */
   margin: 0;
   /* [2] */
@@ -965,14 +973,19 @@ table {
  * Align all grid items to the middles of each other.
  */
 .o-layout--middle > .o-layout__item {
-  align-self: center;
+  -webkit-align-self: center;
+      -ms-flex-item-align: center;
+              -ms-grid-row-align: center;
+          align-self: center;
 }
 
 /**
  * Align all grid items to the bottoms of each other.
  */
 .o-layout--bottom > .o-layout__item {
-  align-self: flex-end;
+  -webkit-align-self: flex-end;
+      -ms-flex-item-align: end;
+          align-self: flex-end;
 }
 
 /* Fill order modifiers.
@@ -981,21 +994,31 @@ table {
  * Fill up the layout system from the centre.
  */
 .o-layout--center {
-  justify-content: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+      -ms-flex-pack: center;
+          justify-content: center;
 }
 
 /**
  * Fill up the layout system from the right-hand side.
  */
 .o-layout--right {
-  justify-content: flex-end;
+  -webkit-box-pack: end;
+  -webkit-justify-content: flex-end;
+      -ms-flex-pack: end;
+          justify-content: flex-end;
 }
 
 /**
  * Reverse the rendered order of the grid system.
  */
 .o-layout--reverse {
-  flex-direction: row-reverse;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: reverse;
+  -webkit-flex-direction: row-reverse;
+      -ms-flex-direction: row-reverse;
+          flex-direction: row-reverse;
 }
 
 /* ==========================================================================
@@ -1507,7 +1530,9 @@ table {
 
 .o-crop__content--left-center {
   top: 50%;
-  transform: translateY(-50%);
+  -webkit-transform: translateY(-50%);
+      -ms-transform: translateY(-50%);
+          transform: translateY(-50%);
 }
 
 .o-crop__content--left-bottom {
@@ -1524,7 +1549,9 @@ table {
   top: 50%;
   right: 0;
   left: auto;
-  transform: translateY(-50%);
+  -webkit-transform: translateY(-50%);
+      -ms-transform: translateY(-50%);
+          transform: translateY(-50%);
 }
 
 .o-crop__content--right-bottom {
@@ -1536,21 +1563,27 @@ table {
 
 .o-crop__content--center-top {
   left: 50%;
-  transform: translateX(-50%);
+  -webkit-transform: translateX(-50%);
+      -ms-transform: translateX(-50%);
+          transform: translateX(-50%);
 }
 
 .o-crop__content--center,
 .o-crop__content--center-center {
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
+  -webkit-transform: translate(-50%, -50%);
+      -ms-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
 }
 
 .o-crop__content--center-bottom {
   top: auto;
   bottom: 0;
   left: 50%;
-  transform: translateX(-50%);
+  -webkit-transform: translateX(-50%);
+      -ms-transform: translateX(-50%);
+          transform: translateX(-50%);
 }
 
 /* Crop-ratio variants
@@ -1720,94 +1753,80 @@ table {
   direction: ltr;
 }
 
-/* ==========================================================================
+/* ==================================
    #BRAND
-   ========================================================================== */
+   ================================== */
 .c-brand {
   font-family: sans-serif;
 }
 
 .c-brand-mark,
 .c-brand-mark > .c-brand-mark__link {
-  color: #F44336;
+  position: relative;
+  color: #FF4136;
   font-weight: 700;
   text-decoration: none;
   margin-bottom: 0;
 }
 
-/* ==========================================================================
+/* ==================================
    #NAVIGATION
-   ========================================================================== */
-.c-navigation {
-  position: fixed;
-  z-index: 1;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  padding-left: 24px;
-  padding-right: 24px;
-  background-color: rgba(96, 125, 139, 0.95);
-  transform: translateX(-100%);
-  transition: 0.5s cubic-bezier(0.19, 1, 0.22, 1);
-}
-
-.c-navigation.is-active {
-  display: block;
-  transform: translateX(0);
-}
-
-@media (min-width: 37.5em) {
-  .c-navigation {
-    position: relative;
-    padding: 0;
-    transform: translateX(0);
-    background-color: transparent;
-    transition: none;
-  }
-}
-
+   ================================== */
 .has-nav {
   overflow: hidden;
 }
 
-.c-navigation-list {
-  position: relative;
-  top: 50%;
-  transform: translateY(-50%);
+.c-navigation {
   margin-bottom: 0;
-  text-align: center;
+  position: relative;
+  display: block;
 }
 
-@media (min-width: 37.5em) {
-  .c-navigation-list {
-    text-align: left;
+@media (max-width: 37.49em) {
+  .c-navigation {
+    position: fixed;
+    z-index: 1;
+    overflow: scroll;
+    background-color: #ffd9d7;
     top: 0;
-    transform: translateY(0);
+    right: 0;
+    bottom: 0;
+    left: 0;
+    padding: 96px 24px;
+    -webkit-transform: scale(0);
+        -ms-transform: scale(0);
+            transform: scale(0);
+  }
+  .c-navigation.is-visible {
+    -webkit-transform: scale(1);
+        -ms-transform: scale(1);
+            transform: scale(1);
+    -webkit-transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+    transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
   }
 }
 
-.c-navigation-list__item + .c-navigation-list__item {
+.c-navigation__item + .c-navigation__item {
   margin-top: 24px;
 }
 
 @media (min-width: 37.5em) {
-  .c-navigation-list__item {
+  .c-navigation__item {
     display: inline-block;
   }
-  .c-navigation-list__item + .c-navigation-list__item {
+  .c-navigation__item + .c-navigation__item {
     margin-top: 0;
     margin-left: 24px;
   }
 }
 
 .c-navigation-toggle {
-  position: absolute;
-  z-index: 1;
-  right: 24px;
+  position: relative;
+  z-index: 2;
   border: 0;
-  color: #F44336;
+  color: #FF4136;
   background-color: transparent;
+  -webkit-transition: 0.5s cubic-bezier(0.19, 1, 0.22, 1);
   transition: 0.5s cubic-bezier(0.19, 1, 0.22, 1);
 }
 
@@ -1821,42 +1840,110 @@ table {
   }
 }
 
-/* ==========================================================================
-   #UI
-   ========================================================================== */
+.c-hamburger {
+  stroke: currentColor;
+  stroke-width: 6px;
+  stroke-linecap: round;
+}
+
+.c-hamburger__line {
+  -webkit-transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+  transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+  -webkit-transform-origin: center;
+      -ms-transform-origin: center;
+          transform-origin: center;
+}
+
+.c-hamburger__line:nth-child(3) {
+  opacity: 0;
+}
+
+[aria-expanded='true'] .c-hamburger__line:nth-child(2) {
+  -webkit-transform: rotate(45deg);
+      -ms-transform: rotate(45deg);
+          transform: rotate(45deg);
+}
+
+[aria-expanded='true'] .c-hamburger__line:nth-child(3) {
+  -webkit-transform: rotate(-45deg);
+      -ms-transform: rotate(-45deg);
+          transform: rotate(-45deg);
+  opacity: 1;
+}
+
+[aria-expanded='true'] .c-hamburger__line:first-child, [aria-expanded='true'] .c-hamburger__line:last-child {
+  -webkit-transform: scale(0);
+      -ms-transform: scale(0);
+          transform: scale(0);
+}
+
+/* ==================================
+   #HEADER
+   ================================== */
 .c-ui {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
   display: flex;
-  justify-content: space-between;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
 }
 
 .c-ui--header {
-  align-items: center;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
 }
 
 .c-ui--footer {
-  flex-direction: column;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: column;
+      -ms-flex-direction: column;
+          flex-direction: column;
 }
 
 @media (min-width: 37.5em) {
   .c-ui--footer {
-    flex-direction: row;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: row;
+        -ms-flex-direction: row;
+            flex-direction: row;
   }
 }
 
 @media (min-width: 75em) {
   .c-ui--footer {
-    align-items: center;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+        -ms-flex-align: center;
+            align-items: center;
   }
 }
 
 .c-ui-list {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
   display: flex;
-  flex-direction: column;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: column;
+      -ms-flex-direction: column;
+          flex-direction: column;
 }
 
 @media (min-width: 56.25em) {
   .c-ui-list {
-    flex-direction: row;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: row;
+        -ms-flex-direction: row;
+            flex-direction: row;
     margin-bottom: 0;
   }
 }
@@ -1872,37 +1959,57 @@ table {
   }
 }
 
-/* ==========================================================================
-   #UI
-   ========================================================================== */
+/* ==================================
+   #FOOTER
+   ================================== */
 .c-ui {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
   display: flex;
-  justify-content: space-between;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
 }
 
 .c-ui--header {
-  align-items: center;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
 }
 
 .c-ui--footer {
-  flex-direction: column;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: column;
+      -ms-flex-direction: column;
+          flex-direction: column;
 }
 
 @media (min-width: 37.5em) {
   .c-ui--footer {
-    flex-direction: row;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: row;
+        -ms-flex-direction: row;
+            flex-direction: row;
   }
 }
 
 @media (min-width: 75em) {
   .c-ui--footer {
-    align-items: center;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+        -ms-flex-align: center;
+            align-items: center;
   }
 }
 
-/* ==========================================================================
+/* ==================================
    #TYPOGRAPHY
-   ========================================================================== */
+   ================================== */
 .c-lead {
   font-size: 21px;
   font-size: 1.3125rem;
@@ -1910,44 +2017,45 @@ table {
   margin-bottom: 48px;
 }
 
-/* ==========================================================================
+/* ==================================
    #BUTTONS
-   ========================================================================== */
-/**
- * This is an example component. Extend inuitcss by building your own components
- * that make up your UI. Component classes are prefixed with a `c-`.
- */
-/**
- * 1. Allow us to style box model properties.
- * 2. Line different sized buttons up a little nicer.
- * 3. Make buttons inherit font styles (often necessary when styling `input`s as
- *    buttons).
- * 4. Reset/normalize some styles.
- */
+   ================================== */
 .c-btn {
   display: inline-block;
-  /* [1] */
   vertical-align: middle;
-  /* [2] */
   font: inherit;
-  /* [3] */
   text-align: center;
-  /* [4] */
   margin: 0;
-  /* [4] */
   padding: 12px 24px;
+  -webkit-transition: 0.5s cubic-bezier(0.19, 1, 0.22, 1);
   transition: 0.5s cubic-bezier(0.19, 1, 0.22, 1);
   border-radius: 4px;
+  border: 0;
 }
 
 /* Size variants
-   ========================================================================== */
+   ================================== */
 .c-btn--small {
-  padding: inuit-rem(6px) inuit-rem(12px);
+  font-size: 14px;
+  font-size: 0.875rem;
+  line-height: 1.71429;
+  padding: 6px 12px;
 }
 
 .c-btn--large {
-  padding: inuit-rem(24px) inuit-rem(48px);
+  font-size: 18px;
+  font-size: 1.125rem;
+  line-height: 1.33333;
+  padding: 12px 24px;
+}
+
+@media (min-width: 56.25em) {
+  .c-btn--large {
+    font-size: 18px;
+    font-size: 1.125rem;
+    line-height: 1.33333;
+    padding: 18px 36px;
+  }
 }
 
 .c-btn--block {
@@ -1955,9 +2063,9 @@ table {
 }
 
 /* Style variants
-   ========================================================================== */
+   ================================== */
 .c-btn--primary {
-  background-color: #F44336;
+  background-color: #FF4136;
 }
 
 .c-btn--primary, .c-btn--primary:hover, .c-btn--primary:active, .c-btn--primary:focus {
@@ -1967,11 +2075,11 @@ table {
 }
 
 .c-btn--primary:hover, .c-btn--primary:focus {
-  background-color: #f6695e;
+  background-color: #ff675e;
 }
 
 .c-btn--secondary {
-  background-color: #3F51B5;
+  background-color: #0074D9;
 }
 
 .c-btn--secondary, .c-btn--secondary:hover, .c-btn--secondary:active, .c-btn--secondary:focus {
@@ -1980,30 +2088,17 @@ table {
 }
 
 .c-btn--secondary:hover, .c-btn--secondary:focus {
-  background-color: #6574c4;
-}
-
-.c-btn--tertiary {
-  background-color: #FFEB3B;
-}
-
-.c-btn--tertiary, .c-btn--tertiary:hover, .c-btn--tertiary:active, .c-btn--tertiary:focus {
-  text-decoration: none;
-  color: #FFFFFF;
-}
-
-.c-btn--tertiary:hover, .c-btn--tertiary:focus {
-  background-color: #ffef62;
+  background-color: #3390e1;
 }
 
 /* Ghost buttons
-   ========================================================================== */
+   ================================== */
 /**
  * Ghost buttons have see-through backgrounds and are bordered.
  */
 .c-btn--ghost {
-  border: 1px solid currentColor;
-  padding: 11px 23px;
+  border: 2px solid currentColor;
+  padding: 10px 22px;
 }
 
 .c-btn--ghost, .c-btn--ghost:hover, .c-btn--ghost:active, .c-btn--ghost:focus {
@@ -2011,43 +2106,43 @@ table {
 }
 
 .c-btn--ghost.c-btn--small {
-  padding: 5px 11px;
+  padding: 4px 10px;
 }
 
 .c-btn--ghost.c-btn--large {
-  padding: 23px 47px;
+  padding: 22px 46px;
 }
 
 .c-btn--ghost.c-btn--primary {
-  color: #F44336;
+  color: #FF4136;
 }
 
 .c-btn--ghost.c-btn--primary:hover, .c-btn--ghost.c-btn--primary:focus {
-  color: #f6695e;
+  color: #ff675e;
 }
 
 .c-btn--ghost.c-btn--secondary {
-  color: #3F51B5;
+  color: #0074D9;
 }
 
 .c-btn--ghost.c-btn--secondary:hover, .c-btn--ghost.c-btn--secondary:focus {
-  color: #6574c4;
-}
-
-.c-btn--ghost.c-btn--tertiary {
-  color: #FFEB3B;
-}
-
-.c-btn--ghost.c-btn--tertiary:hover, .c-btn--ghost.c-btn--tertiary:focus {
-  color: #ffef62;
+  color: #3390e1;
 }
 
 /* Button groups
-   ========================================================================== */
+   ================================== */
 .c-btn-group {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
+  -webkit-flex-wrap: wrap;
+      -ms-flex-wrap: wrap;
+          flex-wrap: wrap;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
 }
 
 .c-btn-group .c-btn {
@@ -2058,32 +2153,56 @@ table {
   margin: 24px 0;
 }
 
-/* ==========================================================================
+/* ==================================
    #LINKS
-   ========================================================================== */
+   ================================== */
 .c-link {
+  -webkit-transition: 0.5s cubic-bezier(0.19, 1, 0.22, 1) ease-in-out;
   transition: 0.5s cubic-bezier(0.19, 1, 0.22, 1) ease-in-out;
 }
 
 .c-link, .c-link:visited {
-  color: #F44336;
+  color: #FF4136;
 }
 
 .c-link:hover, .c-link:focus {
-  color: #f6695e;
+  color: #ff675e;
 }
 
 .is-active > .c-link {
-  color: #c3362b;
+  color: #cc342b;
 }
 
 .c-link--bare, .c-link--bare:visited, .c-link--bare:hover, .c-link--bare:focus {
   text-decoration: none;
 }
 
-/* ==========================================================================
+.c-link--skip {
+  font-size: 14px;
+  font-size: 0.875rem;
+  line-height: 1.71429;
+  position: absolute;
+  top: -1000px;
+  left: -1000px;
+  height: 1px;
+  width: 1px;
+  display: block;
+  font-weight: 500;
+  text-decoration: none;
+  -webkit-transition: color 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+  transition: color 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.c-link--skip:focus {
+  width: auto;
+  height: auto;
+  top: 100%;
+  left: 0;
+}
+
+/* ==================================
    #ICONS
-   ========================================================================== */
+   ================================== */
 .c-icon {
   display: inline-block;
   width: 1em;
@@ -2096,59 +2215,318 @@ table {
   fill: currentColor;
 }
 
-/* ==========================================================================
-   #CARDS
-   ========================================================================== */
-.c-card {
+/* ==================================
+   #INPUT
+   ================================== */
+.c-input,
+.c-textarea {
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  border-radius: 4px;
+  font-family: inherit;
+  margin: 0;
+  width: 100%;
+  display: block;
+  outline: none;
+  line-height: normal;
+  color: #888888;
+  background-color: #FFFFFF;
+  border: 1px solid #cfcfcf;
+  padding: 12px;
+  font-size: 18px;
+  font-size: 1.125rem;
+  line-height: 1.33333;
+}
+
+.c-input:focus,
+.c-textarea:focus {
+  background-color: #FFFFFF;
+  color: #111111;
+  box-shadow: 0 0 2px #cfcfcf;
+}
+
+.c-input::-webkit-input-placeholder,
+.c-textarea::-webkit-input-placeholder {
+  color: #a0a0a0;
+  font-style: italic;
+}
+
+.c-input::-moz-placeholder,
+.c-textarea::-moz-placeholder {
+  color: #a0a0a0;
+  font-style: italic;
+}
+
+.c-input:-ms-input-placeholder,
+.c-textarea:-ms-input-placeholder {
+  color: #a0a0a0;
+  font-style: italic;
+}
+
+.c-input:-moz-placeholder,
+.c-textarea:-moz-placeholder {
+  color: #a0a0a0;
+  font-style: italic;
+}
+
+.c-input--sm {
+  max-width: 14em;
+}
+
+.c-input--md {
+  max-width: 20em;
+}
+
+.c-input--lg {
+  max-width: 40em;
+}
+
+.c-select {
+  position: relative;
+  display: inline-block;
+  color: #888888;
+  width: 100%;
+  max-width: 25em;
+}
+
+.c-select select {
+  font-size: 16px;
+  font-size: 1rem;
+  line-height: 1.5;
+  display: inline-block;
+  width: 100%;
+  margin: 0;
+  padding: 12px;
+  color: #111111;
+  background-color: #FFFFFF;
+  border: 1px solid #cfcfcf;
+  border-radius: 4px;
+  cursor: pointer;
+  outline: 0;
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+}
+
+/* Undo the Firefox inner focus ring */
+.c-select select:focus:-moz-focusring {
+  color: transparent;
+  text-shadow: 0 0 0 #111111;
+}
+
+/* Dropdown arrow */
+.c-select:after {
+  position: absolute;
+  top: 50%;
+  right: 1.25rem;
+  display: inline-block;
+  content: "";
+  width: 0;
+  height: 0;
+  margin-top: -.2rem;
+  pointer-events: none;
+  border-top: 0.35rem solid #888888;
+  border-right: .35rem solid transparent;
+  border-bottom: .35rem solid transparent;
+  border-left: .35rem solid transparent;
+}
+
+/* Focus */
+.c-select select:focus {
+  box-shadow: 0 0 2px #a0a0a0;
+}
+
+/* Active/open */
+.c-select select:active {
+  color: #111111;
+}
+
+/* Hide the arrow in IE10 and up */
+.c-select select::-ms-expand {
+  display: none;
+}
+
+/* Media query to target Firefox only */
+@-moz-document url-prefix() {
+  /* Firefox hack to hide the arrow */
+  .c-select select {
+    text-indent: .01px;
+    text-overflow: '';
+    padding-right: 1rem;
+  }
+  /* <option> elements inherit styles from <select>, so reset them. */
+  .c-select option {
+    background-color: #FFFFFF;
+  }
+}
+
+/* IE9 hack to hide the arrow */
+@media screen and (min-width: 0\0) {
+  .c-select select {
+    z-index: 1;
+    padding: .5rem 1.5rem .5rem 1rem;
+  }
+  .c-select:after {
+    z-index: 2;
+  }
+  .c-select:before {
+    position: absolute;
+    top: 0;
+    right: 1rem;
+    bottom: 0;
+    z-index: 2;
+    content: "";
+    display: block;
+    width: 1.5rem;
+    background-color: #cfcfcf;
+  }
+  .c-select select:hover,
+  .c-select select:focus,
+  .c-select select:active {
+    color: #888888;
+    background-color: #cfcfcf;
+  }
+}
+
+/* ==================================
+   #FORMS
+   ================================== */
+.c-field {
+  position: relative;
+}
+
+.c-field + .c-field {
+  margin-top: 24px;
+}
+
+.c-field--check {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
   display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+  -webkit-flex-wrap: wrap;
+      -ms-flex-wrap: wrap;
+          flex-wrap: wrap;
+}
+
+.c-field--check .c-checkbox {
+  display: block;
+  padding-right: 24px;
+  position: relative;
+  top: .5ex;
+  width: 24px;
+}
+
+.c-field--check .c-label {
+  color: #111111;
+  margin-bottom: 6px;
+  width: calc(100% - 24px);
+}
+
+.c-legend {
+  font-size: 18px;
+  font-size: 1.125rem;
+  line-height: 1.33333;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.c-label {
+  font-size: 16px;
+  font-size: 1rem;
+  line-height: 1.5;
+  display: block;
+  color: #888888;
+  margin-bottom: 6px;
+}
+
+.c-label i {
+  font-size: 14px;
+  font-size: 0.875rem;
+  line-height: 1.71429;
+  display: inline-block;
+  font-style: normal;
+  position: relative;
+  bottom: .1ex;
+  padding: 0 6px;
+  margin-left: 6px;
+  color: #FFFFFF;
+  background-color: #a0a0a0;
+  border-radius: 4px;
+}
+
+/* ==================================
+   #CARDS
+   ================================== */
+.c-card {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: column;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
   border-radius: 4px;
   overflow: hidden;
 }
 
 .c-card--shadow {
-  border: 1px solid #A8A8A8;
-  box-shadow: 0 0 20px rgba(35, 44, 55, 0.1);
+  border: 1px solid #cfcfcf;
+  box-shadow: 0 0 20px rgba(17, 17, 17, 0.1);
 }
 
 .c-card--match {
   height: 100%;
 }
 
-/* ==========================================================================
-   #COLOR
-   ========================================================================== */
+/* ==================================
+   #THEME
+   ================================== */
+.s-theme-neutral-xxlight {
+  color: #111111;
+  background-color: #f3f3f3;
+}
+
 .c-color-primary {
   color: #FFFFFF;
-  background-color: #F44336;
+  background-color: #FF4136;
 }
 
 .c-color-secondary {
   color: #FFFFFF;
-  background-color: #3F51B5;
-}
-
-.c-color-tertiary {
-  color: #FFFFFF;
-  background-color: #FFEB3B;
+  background-color: #0074D9;
 }
 
 .c-color-white {
-  color: #232C37;
+  color: #111111;
   background-color: #FFFFFF;
 }
 
 .c-color-neutral {
-  color: #232C37;
-  background-color: #607D8B;
+  color: #111111;
+  background-color: #a0a0a0;
 }
 
 .c-color-black {
   color: #FFFFFF;
-  background-color: #232C37;
+  background-color: #111111;
 }
 
+/* ==================================
+   #EDITOR
+   ================================== */
+/* ==================================
+   #SYNTAX
+   ================================== */
 /* ==========================================================================
    #WIDTHS
    ========================================================================== */
@@ -4838,7 +5216,8 @@ table {
 .u-hidden-visually {
   border: 0 !important;
   clip: rect(0 0 0 0) !important;
-  clip-path: inset(50%) !important;
+  -webkit-clip-path: inset(50%) !important;
+          clip-path: inset(50%) !important;
   height: 1px !important;
   margin: -1px !important;
   overflow: hidden !important;
@@ -4854,3 +5233,7 @@ table {
 .u-hidden {
   display: none !important;
 }
+
+/* ==================================
+   #SHAME
+   ================================== */

@@ -1,6 +1,6 @@
-///* ========================================================================
-//   #CONFIG
-//   ======================================================================== */
+// ==================================
+// #CONFIG
+// ==================================
 
 // A map of global config settings. Define any project-level configuration,
 // feature switches, etc. in here.
@@ -8,7 +8,7 @@
 $inuit-config: (
   env: dev,
   healthcheck: false,
-  debug: true,
+  debug: false,
 );
 
 // You can access data in this map using the following function:

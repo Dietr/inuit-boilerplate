@@ -1,6 +1,6 @@
-///* ========================================================================
-//   #COLORS
-//   ======================================================================== */
+// ==================================
+// #COLORS
+// ==================================
 
 // Tint & shade helper functions (http://bourbon.io/docs/#tint-shade)
 
@@ -19,26 +19,25 @@
 
 
 // Base colors inspired by clrs.cc by @mrmrs_
-
-$aqua                       : #01BCD4;
-$blue                       : #04A9F4;
-$navy                       : #3F51B5;
-$teal                       : #009588;
-$green                      : #8BC34A;
-$lime                       : #CDDC3A;
-
-$yellow                     : #FFEB3B;
-$dark-yellow                : #FCBF41;
-$orange                     : #FF9802;
-$red                        : #F44336;
-$pink                       : #FFB199;
-$fuchsia                    : #E91E63;
-$purple                     : #5B3D9F;
+$navy                       : #001F3F;
+$blue                       : #0074D9;
+$aqua                       : #7FDBFF;
+$teal                       : #39CCCC;
+$olive                      : #3D9970;
+$green                      : #2ECC40;
+$lime                       : #01FF70;
+$yellow                     : #FFDC00;
+$orange                     : #FF851B;
+$red                        : #FF4136;
+$fuchsia                    : #F012BE;
+$purple                     : #B10DC9;
+$maroon                     : #85144B;
 
 $white                      : #FFFFFF;
-$silver                     : #A8A8A8;
-$gray                       : #607D8B;
-$black                      : #232C37;
+$silver                     : #DDDDDD;
+$gray                       : #888888;
+$black                      : #111111;
+
 
 
 
@@ -46,28 +45,21 @@ $black                      : #232C37;
 
 // Brand colors
 
-$color-neutral              : #39414B;
-$color-neutral-xxxlight     : #F3F5F6;
-$color-neutral-xxlight      : #EFF2F3;
-$color-neutral-border       : shade($color-neutral-xxlight,10);
-$color-neutral-xlight       : $silver;
-$color-neutral-light        : $gray;
+$color-neutral              : $gray;
+$color-neutral-xxlight      : tint($color-neutral,90);
+$color-neutral-xlight       : tint($color-neutral,60);
+$color-neutral-light        : tint($color-neutral,20);
 $color-neutral-dark         : $black;
 
 $color-primary              : $red;
-$color-primary-xlight       : tint($color-primary,80%);
-$color-primary-light        : tint($color-primary,20%);
-$color-primary-dark         : shade($color-primary,20%);
+$color-primary-xlight       : tint($color-primary,80);
+$color-primary-light        : tint($color-primary,20);
+$color-primary-dark         : shade($color-primary,20);
 
-$color-secondary            : $navy;
-$color-secondary-xlight     : tint($color-secondary,97%);
-$color-secondary-light      : tint($color-secondary,20%);
-$color-secondary-dark       : shade($color-secondary,20%);
-
-$color-tertiary             : $yellow;
-$color-tertiary-xlight      : tint($color-tertiary,97%);
-$color-tertiary-light       : tint($color-tertiary,20%);
-$color-tertiary-dark        : shade($color-tertiary,20%);
+$color-secondary            : $blue;
+$color-secondary-xlight     : tint($color-secondary,80);
+$color-secondary-light      : tint($color-secondary,20);
+$color-secondary-dark       : shade($color-secondary,20);
 
 
 

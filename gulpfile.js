@@ -87,8 +87,8 @@ const paths = {
     './assets/img/**/*.svg',
     './**/*.html',
     './_pages/**/*.markdown',
-    './_posts/*.markdown',
-    './_data/*.yml',
+    './_posts/**/*.markdown',
+    './_data/**/*.yml',
     './_config.yml',
     '!_site/**/*.*'
   ]
@@ -164,8 +164,16 @@ function css() {
   return gulp
     .src(paths.scssSrc)
     .pipe(sass({ outputStyle: "expanded" }))
+    .pipe(postcss([autoprefixer(config.autoprefixer)]))
     .pipe(gulp.dest(paths.cssSrc))
     .pipe(gulp.dest(paths.cssDist))
+    .pipe(browsersync.stream());
+}
+
+function cssProduction() {
+  return gulp
+    .src(paths.scssSrc)
+    .pipe(sass({ outputStyle: "expanded" }))
     .pipe(rename({ suffix: ".min" }))
     .pipe(postcss([autoprefixer(config.autoprefixer), cssnano()]))
     .pipe(gulp.dest(paths.cssSrc))
@@ -182,6 +190,13 @@ function scripts() {
     .pipe(concat(config.jsConcat))
     .pipe(gulp.dest(paths.jsDist))
     .pipe(gulp.dest(paths.jsJekyllDist))
+    .pipe(browsersync.stream())
+}
+
+function scriptsProduction() {
+  return gulp
+    .src(paths.jsSrc)
+    .pipe(concat(config.jsConcat))
     .pipe(uglify())
     .pipe(rename({ suffix: ".min" }))
     .pipe(gulp.dest(paths.jsDist))
@@ -232,7 +247,7 @@ gulp.task(
     clean,
     jekyllBuild,
     icons,
-    gulp.parallel(css, scripts)
+    gulp.parallel(cssProduction, scriptsProduction)
   )
 );
 

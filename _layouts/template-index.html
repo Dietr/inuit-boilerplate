@@ -2,9 +2,32 @@
 layout: default
 ---
 
-{% include organism.hero.html %}
+<section class="o-row-large s-theme-neutral-xxlight">
+  <div class="o-wrapper">
+    <form action="#!" class="c-form">
+      <div role="status" aria-live="polite">
+        <!-- Add status messages here -->
+      </div>
+      <h2>Form component</h2>
+      <fieldset class="c-fieldset">
+        <legend class="c-legend">Title</legend>
+        {% include atom.form-text.html id="text-input" placeholder="E.g. placeholder text" label="Label" optional="Optional" %}
+        {% include atom.form-textarea.html id="text-area" placeholder="E.g. placeholder text" label="Label" %}
+      </fieldset>
+      <fieldset class="c-fieldset">
+        {% include atom.form-select.html id="select" label="Label" dataset=site.data.countries %}
+      </fieldset>
+      <fieldset>
+        {% include atom.form-checkbox.html id="checkbox" label="Label" optional="Optional" %}
+      </fieldset>
+      <button role="submit" class="c-btn c-btn--primary c-btn--large">Send</button>
+    </form>
+  </div>
+</section>
 
-<div class="o-row-large c-color-primary">
+<!-- {% include organism.hero.html %} -->
+
+<!-- <div class="o-row-large c-color-primary">
   <div class="o-wrapper o-wrapper--large">
     <h2>Cards title</h2>
     <div class="o-layout o-layout--small">
@@ -36,4 +59,4 @@ layout: default
       </div>
     </div>
   </div>
-</div>
+</div> -->

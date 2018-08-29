@@ -8499,18 +8499,43 @@ return jQuery;
     }
 }());
 
-/* ==========================================================================
-   #Mobilenav
-   ========================================================================== */
+/* ======================
+   #FOCUS
+   ====================== */
+
+const skipLink = $('.js-skip');
+
+function getFocus() {
+  var skipTo = "#"+this.href.split('#')[1];
+
+  // Setting 'tabindex' to -1 takes an element out of normal
+  // tab flow but allows it to be focused via javascript
+  $(skipTo).attr('tabindex', -1).on('blur focusout', function () {
+    // when focus leaves this element,
+    // remove the tabindex attribute
+    $(this).removeAttr('tabindex');
+  }).focus(); // focus on the content container
+}
+
+skipLink.on('click', getFocus);
+
+/* ======================
+   #MOBILE NAVIGATION
+   ====================== */
 
 const html = $('html');
-const button = $('.js-nav-toggle');
 const navigation = $('.js-nav');
+const navigationToggle = $('.js-nav-toggle');
 
-function toggleNav(e) {
-  button.toggleClass('is-active');
-  navigation.toggleClass('is-active');
+function toggleNav() {
+  // Set pressed state
+  const pressed = navigationToggle.attr('aria-expanded') === 'true';
+  // Toggle button state
+  navigationToggle.attr('aria-expanded', !pressed);
+  // Toggle navigation visibility
+  navigation.toggleClass('is-visible');
+  // Add navigation class on html
   html.toggleClass('has-nav');
 }
 
-button.on('click', toggleNav);
+navigationToggle.on('click', toggleNav);

@@ -1,44 +1,39 @@
-/* ==========================================================================
+/* ==================================
    #BUTTONS
-   ========================================================================== */
+   ================================== */
 
-/**
- * This is an example component. Extend inuitcss by building your own components
- * that make up your UI. Component classes are prefixed with a `c-`.
- */
-
-/**
- * 1. Allow us to style box model properties.
- * 2. Line different sized buttons up a little nicer.
- * 3. Make buttons inherit font styles (often necessary when styling `input`s as
- *    buttons).
- * 4. Reset/normalize some styles.
- */
 
 .c-btn {
-  display: inline-block; /* [1] */
-  vertical-align: middle; /* [2] */
-  font: inherit; /* [3] */
-  text-align: center; /* [4] */
-  margin: 0; /* [4] */
-  padding: $inuit-global-spacing-unit-small $inuit-global-spacing-unit;
-  transition: $global-transition;
-  border-radius: $global-radius;
+  display: inline-block;
+  vertical-align: middle;
+  font: inherit;
+  text-align: center;
+  margin: 0;
+  padding: $unit-small $unit;
+  transition: $transition;
+  border-radius: $radius;
+  border: 0;
 }
-
 
 
 
 
 /* Size variants
-   ========================================================================== */
+   ================================== */
 
 .c-btn--small {
-  padding: inuit-rem($inuit-global-spacing-unit-tiny) inuit-rem($inuit-global-spacing-unit-small);
+  @include font-size($tiny);
+  padding: $unit-tiny $unit-small;
 }
 
 .c-btn--large {
-  padding: inuit-rem($inuit-global-spacing-unit) inuit-rem($inuit-global-spacing-unit-large);
+  @include font-size($h6);
+  padding: $unit-small $unit;
+
+  @include mq(medium) {
+    @include font-size($h5);
+    padding: $unit-small * 1.5 $unit * 1.5;
+  }
 }
 
 .c-btn--block {
@@ -50,7 +45,7 @@
 
 
 /* Style variants
-   ========================================================================== */
+   ================================== */
 
 .c-btn--primary {
   background-color: $color-primary;
@@ -88,30 +83,11 @@
 
 }
 
-.c-btn--tertiary {
-  background-color: $color-tertiary;
-
-  &,
-  &:hover,
-  &:active,
-  &:focus {
-    text-decoration: none;
-    color: $white;
-  }
-
-  &:hover,
-  &:focus {
-    background-color: $color-tertiary-light;
-  }
-
-}
-
-
 
 
 
 /* Ghost buttons
-   ========================================================================== */
+   ================================== */
 
 /**
  * Ghost buttons have see-through backgrounds and are bordered.
@@ -158,16 +134,6 @@ $btn-ghost-border-width: 2px !default;
 
   }
 
-  &.c-btn--tertiary {
-    color: $color-tertiary;
-
-    &:hover,
-    &:focus {
-      color: $color-tertiary-light;
-    }
-
-  }
-
 }
 
 
@@ -175,7 +141,7 @@ $btn-ghost-border-width: 2px !default;
 
 
 /* Button groups
-   ========================================================================== */
+   ================================== */
 
 .c-btn-group {
   display: flex;

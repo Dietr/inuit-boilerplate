@@ -1,53 +1,36 @@
-/* ==========================================================================
+/* ==================================
    #NAVIGATION
-   ========================================================================== */
-
-.c-navigation {
-  position: fixed;
-  z-index: $z-index-alpha;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  padding-left: $inuit-global-spacing-unit;
-  padding-right: $inuit-global-spacing-unit;
-  background-color: rgba($color-neutral-light,.95);
-  transform: translateX(-100%);
-  transition: $global-transition;
-
-  &.is-active {
-    display: block;
-    transform: translateX(0);
-  }
-
-  @include mq(small) {
-    position: relative;
-    padding: 0;
-    transform: translateX(0);
-    background-color: transparent;
-    transition: none;
-  }
-}
+   ================================== */
 
 .has-nav {
   overflow: hidden;
 }
 
-.c-navigation-list {
-  position: relative;
-  top: 50%;
-  transform: translateY(-50%);
+.c-navigation {
   margin-bottom: 0;
-  text-align: center;
+  position: relative;
+  display: block;
 
-  @include mq(small) {
-    text-align: left;
+  @include mq($until: small) {
+    position: fixed;
+    z-index: $z-index-alpha;
+    overflow: scroll;
+    background-color: $color-primary-xlight;
     top: 0;
-    transform: translateY(0);
+    right: 0;
+    bottom: 0;
+    left: 0;
+    padding: $unit-huge $unit;
+    transform: scale(0);
+
+    &.is-visible {
+      transform: scale(1);
+      transition: all $duration $easing;
+    }
   }
 }
 
-  .c-navigation-list__item {
+  .c-navigation__item {
     & + & {
       margin-top: $inuit-global-spacing-unit;
     }
@@ -62,10 +45,10 @@
     }
   }
 
+// Mobile navigation toggle
 .c-navigation-toggle {
-  position: absolute;
-  z-index: $z-index-alpha;
-  right: $inuit-global-spacing-unit;
+  position: relative;
+  z-index: $z-index-beta;
   border: 0;
   color: $color-primary;
   background-color: transparent;
@@ -75,7 +58,42 @@
     outline: 0;
   }
 
+  &[aria-expanded='true'] {
+  }
+
   @include mq(small) {
     display: none;
   }
 }
+
+// Hamburger icon and animation
+.c-hamburger {
+  stroke: currentColor;
+  stroke-width: 6px;
+  stroke-linecap: round;
+}
+
+  .c-hamburger__line {
+    transition: all $duration $easing;
+    transform-origin: center;
+
+    &:nth-child(3) {
+      opacity: 0;
+    }
+  }
+
+  [aria-expanded='true'] .c-hamburger__line {
+    &:nth-child(2) {
+      transform: rotate(45deg);
+    }
+
+    &:nth-child(3) {
+      transform: rotate(-45deg);
+      opacity: 1;
+    }
+
+    &:first-child,
+    &:last-child {
+      transform: scale(0);
+    }
+  }
