@@ -4,7 +4,7 @@
 <fieldset class="c-fieldset">
     <p class="c-field">
       <label for="{{ include.id }}" class="c-label">
-        {{ include.label }}{% if include.optional %}<i>{{ include.optional }}</i>{% endif %}
+        {{ include.label }}{% if include.optional %}<span class="c-badge c-badge--negative">{{ include.optional }}</span>{% endif %}
       </label>
       <span class="c-select">
         <select id="{{ include.id }}">

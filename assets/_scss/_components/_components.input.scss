@@ -49,6 +49,15 @@
   }
 }
 
+.c-checkbox,
+.c-radio {
+  position: relative;
+  top: .5ex;
+  width: $unit;
+  display: block;
+  padding-right: $unit;
+}
+
 .c-input--sm {
   max-width: 14em;
 }
@@ -62,6 +71,7 @@
 }
 
 // Custom select box
+// ---
 .c-select {
   position: relative;
   display: inline-block;

@@ -2,13 +2,27 @@
 layout: default
 ---
 
+<section class="o-row-large s-theme-primary">
+  <div class="o-wrapper">
+    <h2>Cards component</h2>
+    <ul class="o-layout">
+      {% for item in site.data.cards %}
+      <li class="o-layout__item u-1/2@medium">
+        {% include molecule.card.html image=item.image title=item.title body=item.body footnote=item.footnote %}
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+
+
 <section class="o-row-large s-theme-neutral-xxlight">
   <div class="o-wrapper">
+    <h2>Form component</h2>
     <form action="#!" class="c-form">
       <div role="status" aria-live="polite">
         <!-- Add status messages here -->
       </div>
-      <h2>Form component</h2>
       <fieldset class="c-fieldset">
         <legend class="c-legend">Title</legend>
         {% include atom.form-text.html id="text-input" placeholder="E.g. placeholder text" label="Label" optional="Optional" %}

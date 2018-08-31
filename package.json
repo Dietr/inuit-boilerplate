@@ -34,7 +34,7 @@
     "fg-loadcss": "^2.0.1",
     "fg-loadjs": "^1.0.0",
     "inuitcss": "^6.0.0",
-    "inuitcss-plugin-flexlayout": "^1.0.2",
+    "inuitcss-plugin-flexlayout": "^1.0.4",
     "inuitcss-plugin-responsive-wrapper": "^1.0.1",
     "inuitcss-plugin-row": "^1.0.2",
     "jquery": "^3.1.1",

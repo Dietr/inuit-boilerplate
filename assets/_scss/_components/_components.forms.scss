@@ -10,23 +10,10 @@
   }
 }
 
-.c-field--check {
+.c-field--check,
+.c-field--radio {
   display: flex;
   flex-wrap: wrap;
-
-  .c-checkbox {
-    display: block;
-    padding-right: $unit;
-    position: relative;
-    top: .5ex;
-    width: $unit;
-  }
-
-  .c-label {
-    color: $color-neutral-dark;
-    margin-bottom: $unit-tiny;
-    width: calc(100% - #{$unit});
-  }
 }
 
 .c-legend {
@@ -41,16 +28,9 @@
   color: $color-neutral;
   margin-bottom: $unit-tiny;
 
-  i {
-    @include font-size($tiny);
-    display: inline-block;
-    font-style: normal;
-    position: relative;
-    bottom: .1ex;
-    padding: 0 $unit-tiny;
-    margin-left: $unit-tiny;
-    color: $white;
-    background-color: $color-neutral-light;
-    border-radius: $radius;
+  .c-field--check & {
+    color: $color-neutral-dark;
+    margin-bottom: $unit-tiny;
+    width: calc(100% - #{$unit});
   }
 }

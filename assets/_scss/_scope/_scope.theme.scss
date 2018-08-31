@@ -2,10 +2,19 @@
    #THEME
    ================================== */
 
+.s-theme-white {
+  color: $color-neutral-dark;
+  background-color: $white;
+}
 
 .s-theme-neutral-xxlight {
   color: $color-neutral-dark;
   background-color: $color-neutral-xxlight;
+}
+
+.s-theme-primary {
+  color: $white;
+  background-color: $color-primary;
 }
 
 .c-color-primary {
