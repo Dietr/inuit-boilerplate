@@ -173,12 +173,11 @@ function css() {
 function cssProduction() {
   return gulp
     .src(paths.scssSrc)
-    .pipe(sass({ outputStyle: "expanded" }))
+    .pipe(sass())
     .pipe(rename({ suffix: ".min" }))
     .pipe(postcss([autoprefixer(config.autoprefixer), cssnano()]))
     .pipe(gulp.dest(paths.cssSrc))
-    .pipe(gulp.dest(paths.cssDist))
-    .pipe(browsersync.stream());
+    .pipe(gulp.dest(paths.cssDist));
 }
 
 // JS
@@ -197,11 +196,10 @@ function scriptsProduction() {
   return gulp
     .src(paths.jsSrc)
     .pipe(concat(config.jsConcat))
-    .pipe(uglify())
+    // .pipe(uglify())
     .pipe(rename({ suffix: ".min" }))
     .pipe(gulp.dest(paths.jsDist))
-    .pipe(gulp.dest(paths.jsJekyllDist))
-    .pipe(browsersync.stream())
+    .pipe(gulp.dest(paths.jsJekyllDist));
 }
 
 // Watch files
@@ -224,7 +222,9 @@ gulp.task("jekyll", jekyll);
 gulp.task("jekyllBuild", jekyllBuild);
 gulp.task("icons", icons);
 gulp.task("css", css);
+gulp.task("cssProduction", cssProduction);
 gulp.task("scripts", scripts);
+gulp.task("scriptsProduction", scriptsProduction);
 gulp.task("clean", clean);
 
 // Default

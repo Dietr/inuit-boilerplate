@@ -1,20 +1,15 @@
 /* ======================
    #MOBILE NAVIGATION
+   https://inclusive-components.design/menus-menu-buttons/
    ====================== */
 
-const html = $('html');
-const navigation = $('.js-nav');
-const navigationToggle = $('.js-nav-toggle');
+const html = document.querySelector('html');
+const nav = document.querySelector('.js-nav');
+const navButton = document.querySelector('.js-nav-toggle');
 
-function toggleNav() {
-  // Set pressed state
-  const pressed = navigationToggle.attr('aria-expanded') === 'true';
-  // Toggle button state
-  navigationToggle.attr('aria-expanded', !pressed);
-  // Toggle navigation visibility
-  navigation.toggleClass('is-visible');
-  // Add navigation class on html
-  html.toggleClass('has-nav');
-}
-
-navigationToggle.on('click', toggleNav);
+navButton.addEventListener('click', function() {
+  let expanded = this.getAttribute('aria-expanded') === 'true';
+  this.setAttribute('aria-expanded', !expanded);
+  nav.classList.toggle('is-visible');
+  html.classList.toggle('has-nav');
+});

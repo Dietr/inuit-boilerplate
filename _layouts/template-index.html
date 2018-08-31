@@ -4,7 +4,7 @@ layout: default
 
 <section class="o-row-large s-theme-primary">
   <div class="o-wrapper">
-    <h2>Cards component</h2>
+    <h2>Cards</h2>
     <ul class="o-layout">
       {% for item in site.data.cards %}
       <li class="o-layout__item u-1/2@medium">
@@ -15,10 +15,17 @@ layout: default
   </div>
 </section>
 
+<section class="o-row-large s-theme-white">
+  <div class="o-wrapper">
+    <h2>Tabs</h2>
+    {% include organism.tabs.html %}
+  </div>
+</section>
+
 
 <section class="o-row-large s-theme-neutral-xxlight">
   <div class="o-wrapper">
-    <h2>Form component</h2>
+    <h2>Forms</h2>
     <form action="#!" class="c-form">
       <div role="status" aria-live="polite">
         <!-- Add status messages here -->

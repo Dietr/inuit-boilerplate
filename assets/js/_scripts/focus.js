@@ -1,5 +1,6 @@
 /* ======================
    #FOCUS
+   @TODO: rewrite in Vanilla JS
    ====================== */
 
 const skipLink = $('.js-skip');

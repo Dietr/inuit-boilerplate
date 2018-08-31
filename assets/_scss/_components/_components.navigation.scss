@@ -58,9 +58,6 @@
     outline: 0;
   }
 
-  &[aria-expanded='true'] {
-  }
-
   @include mq(small) {
     display: none;
   }
