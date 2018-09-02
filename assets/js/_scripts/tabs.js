@@ -1,17 +1,17 @@
 /* ======================
    #TABS
-   https://heydon.github.io/inclusive-components-demos/tab-interface/true-tabbed-interface.html
+   https://codepen.io/heydon/pen/veeaEa/
    ====================== */
 
 (function () {
   // Get relevant elements and collections
-  const tabbed = document.querySelector('.js-tabs');
-  const tablist = tabbed.querySelector('.js-tabs__list');
-  const tabs = tablist.querySelectorAll('.js-tabs__link');
-  const panels = tabbed.querySelectorAll('[id^="section"]');
+  var tabbed = document.querySelector('.js-tabs');
+  var tablist = tabbed.querySelector('.js-tabs__list');
+  var tabs = tablist.querySelectorAll('.js-tabs__link');
+  var panels = tabbed.querySelectorAll('[id^="section"]');
 
   // The tab switching function
-  const switchTab = (oldTab, newTab) => {
+  var switchTab = function switchTab(oldTab, newTab) {
     newTab.focus();
     // Make the active tab focusable by the user (Tab key)
     newTab.removeAttribute('tabindex');
@@ -21,68 +21,52 @@
     oldTab.setAttribute('tabindex', '-1');
     // Get the indices of the new and old tabs to find the correct
     // tab panels to show and hide
-    let index = Array.prototype.indexOf.call(tabs, newTab);
-    let oldIndex = Array.prototype.indexOf.call(tabs, oldTab);
+    var index = Array.prototype.indexOf.call(tabs, newTab);
+    var oldIndex = Array.prototype.indexOf.call(tabs, oldTab);
     panels[oldIndex].hidden = true;
     panels[index].hidden = false;
-  }
+  };
 
   // Add the tablist role to the first <ul> in the .tabbed container
   tablist.setAttribute('role', 'tablist');
 
   // Add semantics are remove user focusability for each tab
-  Array.prototype.forEach.call(tabs, (tab, i) => {
+  Array.prototype.forEach.call(tabs, function (tab, i) {
     tab.setAttribute('role', 'tab');
     tab.setAttribute('id', 'tab' + (i + 1));
     tab.setAttribute('tabindex', '-1');
     tab.parentNode.setAttribute('role', 'presentation');
 
     // Handle clicking of tabs for mouse users
-    tab.addEventListener('click', e => {
+    tab.addEventListener('click', function (e) {
       e.preventDefault();
-      let currentTab = tablist.querySelector('[aria-selected]');
+      var currentTab = tablist.querySelector('[aria-selected]');
       if (e.currentTarget !== currentTab) {
         switchTab(currentTab, e.currentTarget);
       }
     });
 
     // Handle keydown events for keyboard users
-    tab.addEventListener('keydown', e => {
+    tab.addEventListener('keydown', function (e) {
       // Get the index of the current tab in the tabs node list
-      let index = Array.prototype.indexOf.call(tabs, e.currentTarget);
-
-      // If down arrow is pressed handle that
-      if (e.which === 40) {
-        panels[index].focus()
-        return;
-      }
-
-      // Determine arrow key pressed
-      var dir = e.which === 37 ? index - 1 : e.which === 39 ? index + 1 : null;
-
-      // Switch to the new tab if it exists
+      var index = Array.prototype.indexOf.call(tabs, e.currentTarget);
+      // Work out which key the user is pressing and
+      // Calculate the new tab's index where appropriate
+      var dir = e.which === 37 ? index - 1 : e.which === 39 ? index + 1 : e.which === 40 ? 'down' : null;
       if (dir !== null) {
         e.preventDefault();
-
-        // Find correct tab to focus
-        let newIndex;
-        if (tabs[dir]) {
-          newIndex = dir;
-        } else {
-          // Loop around if adjacent tab doesn't exist
-          newIndex = dir === index - 1 ? tabs.length - 1 : 0;
-        }
-        switchTab(e.currentTarget, tabs[newIndex]);
-        tabs[newIndex].focus();
+        // If the down key is pressed, move focus to the open panel,
+        // otherwise switch to the adjacent tab
+        dir === 'down' ? panels[i].focus() : tabs[dir] ? switchTab(e.currentTarget, tabs[dir]) : void 0;
       }
     });
   });
 
   // Add tab panel semantics and hide them all
-  Array.prototype.forEach.call(panels, (panel, i) => {
+  Array.prototype.forEach.call(panels, function (panel, i) {
     panel.setAttribute('role', 'tabpanel');
     panel.setAttribute('tabindex', '-1');
-    let id = panel.getAttribute('id');
+    var id = panel.getAttribute('id');
     panel.setAttribute('aria-labelledby', tabs[i].id);
     panel.hidden = true;
   });

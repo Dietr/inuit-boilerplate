@@ -1,3 +1,31 @@
 /* ==================================
    #EDITOR
    ================================== */
+
+.c-editor {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    margin-bottom: 0;
+  }
+
+  h1 + *,
+  h2 + *,
+  h3 + *,
+  h4 + *,
+  h5 + *,
+  h6 + * {
+    margin-top: $unit-small;
+  }
+
+  p {
+    margin-bottom: 0;
+  }
+
+  p + p {
+    margin-top: $unit-small;
+  }
+}

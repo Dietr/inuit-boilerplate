@@ -2040,6 +2040,14 @@ table {
   border: 0;
 }
 
+.c-btn-reset {
+  font: inherit;
+  color: inherit;
+  border: 0;
+  background-color: transparent;
+  padding: 0;
+}
+
 /* Size variants
    ================================== */
 .c-btn--small {
@@ -2220,6 +2228,31 @@ table {
   stroke-width: 0;
   stroke: currentColor;
   fill: currentColor;
+}
+
+.c-icon--plus {
+  width: .75em;
+  height: .75em;
+  bottom: 0;
+}
+
+.c-icon--plus__vert {
+  -webkit-transform: scaleY(100%);
+      -ms-transform: scaleY(100%);
+          transform: scaleY(100%);
+  -webkit-transform-origin: center;
+      -ms-transform-origin: center;
+          transform-origin: center;
+  -webkit-transition: -webkit-transform 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+  transition: -webkit-transform 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+  transition: transform 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+  transition: transform 0.5s cubic-bezier(0.19, 1, 0.22, 1), -webkit-transform 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+[aria-expanded="true"] .c-icon--plus__vert {
+  -webkit-transform: scaleY(0);
+      -ms-transform: scaleY(0);
+          transform: scaleY(0);
 }
 
 /* ==================================
@@ -2517,32 +2550,61 @@ table {
 /* ==================================
    #TABS
    ================================== */
-.c-tabs__list {
+.c-tabs {
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
   margin-bottom: -1px;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: column;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
+
+@media (min-width: 37.5em) {
+  .c-tabs {
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: row;
+        -ms-flex-direction: row;
+            flex-direction: row;
+  }
 }
 
 .c-tabs__item {
   border: 1px solid #f3f3f3;
-  border-bottom: 0;
   background-color: #FFFFFF;
+}
+
+@media (max-width: 1em) {
+  .c-tabs__item {
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+  }
+}
+
+.c-tabs__item:first-child {
   border-top-left-radius: 4px;
   border-top-right-radius: 4px;
 }
 
-.c-tabs__item + .c-tabs__item {
-  margin-left: 6px;
+@media (min-width: 37.5em) {
+  .c-tabs__item {
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    border-bottom: 0;
+  }
+  .c-tabs__item + .c-tabs__item {
+    margin-left: 6px;
+  }
 }
 
 .c-tabs__link {
   text-decoration: none;
   display: block;
   padding: 6px 12px;
-  border-top-left-radius: 4px;
-  border-top-right-radius: 4px;
 }
 
 .c-tabs__link, .c-tabs__link:visited {
@@ -2564,30 +2626,70 @@ table {
   background-color: transparent;
 }
 
-.c-tabs__section {
+@media (min-width: 37.5em) {
+  .c-tabs__link {
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+  }
+}
+
+.c-tabs-section {
   padding: 12px;
   border: 1px solid #f3f3f3;
   border-bottom-left-radius: 4px;
   border-bottom-right-radius: 4px;
 }
 
-.c-tabs__section * {
+.c-tabs-section * {
   margin-bottom: 0;
 }
 
-.c-tabs__section * + * {
+.c-tabs-section * + * {
   margin-top: 12px;
 }
 
-.c-tabs__section:focus {
+.c-tabs-section:focus {
   outline: 0;
-  box-shadow: inset 0 0 0 2px #cfcfcf;
+  box-shadow: inset 0 0 0 2px #f3f3f3;
 }
 
 @media (min-width: 56.25em) {
-  .c-tabs__section {
+  .c-tabs-section {
     padding: 24px;
   }
+}
+
+/* ==================================
+   #COLLAPSED SECTIONS
+   ================================== */
+.c-collapsed__btn {
+  width: 100%;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  font: inherit;
+  color: inherit;
+  border: 0;
+  background-color: transparent;
+  padding: 12px 0;
+  border-top: 1px dotted #cfcfcf;
+}
+
+*:first-of-type > .c-collapsed__btn {
+  border-top: 0;
+}
+
+.c-collapsed__body {
+  padding-bottom: 24px;
 }
 
 /* ==================================
@@ -2636,6 +2738,32 @@ table {
 /* ==================================
    #EDITOR
    ================================== */
+.c-editor h1,
+.c-editor h2,
+.c-editor h3,
+.c-editor h4,
+.c-editor h5,
+.c-editor h6 {
+  margin-bottom: 0;
+}
+
+.c-editor h1 + *,
+.c-editor h2 + *,
+.c-editor h3 + *,
+.c-editor h4 + *,
+.c-editor h5 + *,
+.c-editor h6 + * {
+  margin-top: 12px;
+}
+
+.c-editor p {
+  margin-bottom: 0;
+}
+
+.c-editor p + p {
+  margin-top: 12px;
+}
+
 /* ==================================
    #SYNTAX
    ================================== */

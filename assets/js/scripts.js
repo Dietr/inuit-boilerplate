@@ -8500,11 +8500,74 @@ return jQuery;
 }());
 
 /* ======================
-   #FOCUS
-   @TODO: rewrite in Vanilla JS
+   #COLLAPSED SECTIONS
+   https://codepen.io/heydon/pen/gGNaoM
    ====================== */
 
-const skipLink = $('.js-skip');
+(function () {
+  // Get all the headings
+  var headings = $('.js-collapsed > .js-collapsed__title');
+
+  Array.prototype.forEach.call(headings, function (heading) {
+    // Give each title a toggle button child
+    // with the SVG plus/minus icon
+    heading.innerHTML = '<button class="c-collapsed__btn aria-expanded="false">' +
+    heading.textContent + '<svg aria-hidden="true" focusable="false" viewBox="0 0 10 10" class="c-icon c-icon--plus"><rect class="c-icon--plus__vert" height="8" width="2" y="1" x="4"/><rect height="2" width="8" y="4" x="1"/></svg></button>';
+
+    // Function to create a node list
+    // of the content between this title and the next
+    var getContent = function getContent(elem) {
+      var elems = [];
+      while (elem.nextElementSibling && elem.nextElementSibling.classList.contains('js-collapsed__title') == false) {
+        elems.push(elem.nextElementSibling);
+        elem = elem.nextElementSibling;
+      }
+
+      // Delete the old versions of the content nodes
+      elems.forEach(function (node) {
+        node.parentNode.removeChild(node);
+      });
+
+      return elems;
+    };
+
+    // Assign the contents to be expanded/collapsed (array)
+    var contents = getContent(heading);
+
+    // Create a wrapper element for `contents` and hide it
+    var wrapper = document.createElement('div');
+    wrapper.className = 'c-collapsed__body';
+    wrapper.hidden = true;
+
+    // Add each element of `contents` to `wrapper`
+    contents.forEach(function (node) {
+      wrapper.appendChild(node);
+    });
+
+    // Add the wrapped content back into the DOM
+    // after the heading
+    heading.parentNode.insertBefore(wrapper, heading.nextElementSibling);
+
+    // Assign the button
+    var btn = heading.querySelector('button');
+
+    btn.onclick = function () {
+      // Cast the state as a boolean
+      var expanded = btn.getAttribute('aria-expanded') === 'true' || false;
+
+      // Switch the state
+      btn.setAttribute('aria-expanded', !expanded);
+      // Switch the content's visibility
+      wrapper.hidden = expanded;
+    };
+  });
+})();
+
+/* ======================
+   #FOCUS
+   ====================== */
+
+var skipLink = $('.js-skip');
 
 function getFocus() {
   var skipTo = "#"+this.href.split('#')[1];
@@ -8525,31 +8588,34 @@ skipLink.on('click', getFocus);
    https://inclusive-components.design/menus-menu-buttons/
    ====================== */
 
-const html = document.querySelector('html');
-const nav = document.querySelector('.js-nav');
-const navButton = document.querySelector('.js-nav-toggle');
+var html = $('html');
+var nav = $('.js-nav');
+var navButton = $('.js-nav-toggle');
 
-navButton.addEventListener('click', function() {
-  let expanded = this.getAttribute('aria-expanded') === 'true';
-  this.setAttribute('aria-expanded', !expanded);
-  nav.classList.toggle('is-visible');
-  html.classList.toggle('has-nav');
-});
+function toggleNav() {
+  var expanded = $(this).attr('aria-expanded') === 'true';
+
+  html.toggleClass('has-nav');
+  nav.toggleClass('is-visible');
+  $(this).attr('aria-expanded', !expanded);
+}
+
+navButton.on('click', toggleNav);
 
 /* ======================
    #TABS
-   https://heydon.github.io/inclusive-components-demos/tab-interface/true-tabbed-interface.html
+   https://codepen.io/heydon/pen/veeaEa/
    ====================== */
 
 (function () {
   // Get relevant elements and collections
-  const tabbed = document.querySelector('.js-tabs');
-  const tablist = tabbed.querySelector('.js-tabs__list');
-  const tabs = tablist.querySelectorAll('.js-tabs__link');
-  const panels = tabbed.querySelectorAll('[id^="section"]');
+  var tabbed = document.querySelector('.js-tabs');
+  var tablist = tabbed.querySelector('.js-tabs__list');
+  var tabs = tablist.querySelectorAll('.js-tabs__link');
+  var panels = tabbed.querySelectorAll('[id^="section"]');
 
   // The tab switching function
-  const switchTab = (oldTab, newTab) => {
+  var switchTab = function switchTab(oldTab, newTab) {
     newTab.focus();
     // Make the active tab focusable by the user (Tab key)
     newTab.removeAttribute('tabindex');
@@ -8559,68 +8625,52 @@ navButton.addEventListener('click', function() {
     oldTab.setAttribute('tabindex', '-1');
     // Get the indices of the new and old tabs to find the correct
     // tab panels to show and hide
-    let index = Array.prototype.indexOf.call(tabs, newTab);
-    let oldIndex = Array.prototype.indexOf.call(tabs, oldTab);
+    var index = Array.prototype.indexOf.call(tabs, newTab);
+    var oldIndex = Array.prototype.indexOf.call(tabs, oldTab);
     panels[oldIndex].hidden = true;
     panels[index].hidden = false;
-  }
+  };
 
   // Add the tablist role to the first <ul> in the .tabbed container
   tablist.setAttribute('role', 'tablist');
 
   // Add semantics are remove user focusability for each tab
-  Array.prototype.forEach.call(tabs, (tab, i) => {
+  Array.prototype.forEach.call(tabs, function (tab, i) {
     tab.setAttribute('role', 'tab');
     tab.setAttribute('id', 'tab' + (i + 1));
     tab.setAttribute('tabindex', '-1');
     tab.parentNode.setAttribute('role', 'presentation');
 
     // Handle clicking of tabs for mouse users
-    tab.addEventListener('click', e => {
+    tab.addEventListener('click', function (e) {
       e.preventDefault();
-      let currentTab = tablist.querySelector('[aria-selected]');
+      var currentTab = tablist.querySelector('[aria-selected]');
       if (e.currentTarget !== currentTab) {
         switchTab(currentTab, e.currentTarget);
       }
     });
 
     // Handle keydown events for keyboard users
-    tab.addEventListener('keydown', e => {
+    tab.addEventListener('keydown', function (e) {
       // Get the index of the current tab in the tabs node list
-      let index = Array.prototype.indexOf.call(tabs, e.currentTarget);
-
-      // If down arrow is pressed handle that
-      if (e.which === 40) {
-        panels[index].focus()
-        return;
-      }
-
-      // Determine arrow key pressed
-      var dir = e.which === 37 ? index - 1 : e.which === 39 ? index + 1 : null;
-
-      // Switch to the new tab if it exists
+      var index = Array.prototype.indexOf.call(tabs, e.currentTarget);
+      // Work out which key the user is pressing and
+      // Calculate the new tab's index where appropriate
+      var dir = e.which === 37 ? index - 1 : e.which === 39 ? index + 1 : e.which === 40 ? 'down' : null;
       if (dir !== null) {
         e.preventDefault();
-
-        // Find correct tab to focus
-        let newIndex;
-        if (tabs[dir]) {
-          newIndex = dir;
-        } else {
-          // Loop around if adjacent tab doesn't exist
-          newIndex = dir === index - 1 ? tabs.length - 1 : 0;
-        }
-        switchTab(e.currentTarget, tabs[newIndex]);
-        tabs[newIndex].focus();
+        // If the down key is pressed, move focus to the open panel,
+        // otherwise switch to the adjacent tab
+        dir === 'down' ? panels[i].focus() : tabs[dir] ? switchTab(e.currentTarget, tabs[dir]) : void 0;
       }
     });
   });
 
   // Add tab panel semantics and hide them all
-  Array.prototype.forEach.call(panels, (panel, i) => {
+  Array.prototype.forEach.call(panels, function (panel, i) {
     panel.setAttribute('role', 'tabpanel');
     panel.setAttribute('tabindex', '-1');
-    let id = panel.getAttribute('id');
+    var id = panel.getAttribute('id');
     panel.setAttribute('aria-labelledby', tabs[i].id);
     panel.hidden = true;
   });

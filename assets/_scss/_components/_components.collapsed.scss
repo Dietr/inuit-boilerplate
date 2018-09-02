@@ -1,0 +1,33 @@
+/* ==================================
+   #COLLAPSED SECTIONS
+   ================================== */
+
+
+.c-collapsed {
+
+}
+
+  .c-collapsed__title {
+
+  }
+
+  .c-collapsed__btn {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font: inherit;
+    color: inherit;
+    border: 0;
+    background-color: transparent;
+    padding: $unit-small 0;
+    border-top: 1px dotted $color-neutral-xlight;
+
+    *:first-of-type > & {
+      border-top: 0;
+    }
+  }
+
+  .c-collapsed__body {
+    padding-bottom: $unit;
+  }

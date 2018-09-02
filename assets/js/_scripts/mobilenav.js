@@ -3,13 +3,16 @@
    https://inclusive-components.design/menus-menu-buttons/
    ====================== */
 
-const html = document.querySelector('html');
-const nav = document.querySelector('.js-nav');
-const navButton = document.querySelector('.js-nav-toggle');
+var html = $('html');
+var nav = $('.js-nav');
+var navButton = $('.js-nav-toggle');
 
-navButton.addEventListener('click', function() {
-  let expanded = this.getAttribute('aria-expanded') === 'true';
-  this.setAttribute('aria-expanded', !expanded);
-  nav.classList.toggle('is-visible');
-  html.classList.toggle('has-nav');
-});
+function toggleNav() {
+  var expanded = $(this).attr('aria-expanded') === 'true';
+
+  html.toggleClass('has-nav');
+  nav.toggleClass('is-visible');
+  $(this).attr('aria-expanded', !expanded);
+}
+
+navButton.on('click', toggleNav);

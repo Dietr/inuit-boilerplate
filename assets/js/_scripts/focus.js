@@ -1,9 +1,8 @@
 /* ======================
    #FOCUS
-   @TODO: rewrite in Vanilla JS
    ====================== */
 
-const skipLink = $('.js-skip');
+var skipLink = $('.js-skip');
 
 function getFocus() {
   var skipTo = "#"+this.href.split('#')[1];

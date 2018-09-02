@@ -196,7 +196,7 @@ function scriptsProduction() {
   return gulp
     .src(paths.jsSrc)
     .pipe(concat(config.jsConcat))
-    // .pipe(uglify())
+    .pipe(uglify())
     .pipe(rename({ suffix: ".min" }))
     .pipe(gulp.dest(paths.jsDist))
     .pipe(gulp.dest(paths.jsJekyllDist));
