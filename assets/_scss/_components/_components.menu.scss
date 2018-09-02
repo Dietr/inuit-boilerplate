@@ -1,0 +1,82 @@
+/* ==================================
+   #MENU
+   ================================== */
+
+.c-menu {
+  position: relative;
+  display: inline-block;
+}
+
+.c-menu [data-inclusive-menu-from="right"] {
+  left: auto;
+  right: 0;
+}
+
+  .c-menu__btn,
+  .c-menu__list-item {
+    text-align: left;
+    border: 0;
+    padding: $unit-small;
+  }
+
+  .c-menu__btn {
+    background-color: $color-secondary;
+    transition: $global-transition;
+
+    &,
+    &:active {
+      color: $white
+    }
+
+    &:hover,
+    &[aria-expanded="true"] {
+      background-color:$color-secondary-dark;
+    }
+
+    &:focus {
+      outline: 0;
+      box-shadow: inset 0 0 0 2px $color-secondary-dark;
+    }
+  }
+
+  .c-menu__icon {
+    margin-left: $unit-tiny;
+  }
+
+  .c-menu__list {
+    position: absolute;
+    left: 0;
+  }
+
+  .c-menu__list-item {
+    display: block;
+    min-width: 100%;
+    white-space: nowrap;
+    background-color: $color-secondary-light;
+    transition: $global-transition;
+
+    &,
+    &:active {
+      color: $white
+    }
+
+    &:hover,
+    &:focus {
+      background-color: $color-secondary;
+    }
+
+    &:focus {
+      outline: 0;
+      box-shadow: inset 0 0 0 2px $color-secondary-dark;
+    }
+
+    &[aria-checked="true"] {
+      background-color: $color-secondary;
+    }
+
+    &[aria-checked="true"]::before {
+      content: '\2713\0020';
+    }
+  }
+
+

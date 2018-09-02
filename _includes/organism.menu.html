@@ -1,0 +1,14 @@
+{% comment %}
+{% include organism.menu.html %}
+{% endcomment %}
+<div class="c-menu" data-inclusive-menu>
+ <button class="c-menu__btn" data-inclusive-menu-opens="difficulty" >
+   Difficulty
+   <span aria-hidden="true" class="c-menu__icon">{% include atom.icon.html value="arrow-down" %}</span>
+ </button>
+ <div id="difficulty" data-inclusive-menu-from="left" class="c-menu__list">
+   <button class="c-menu__list-item">Easy</button>
+   <button class="c-menu__list-item">Medium</button>
+   <button class="c-menu__list-item">Incredibly Hard</button>
+ </div>
+</div>
