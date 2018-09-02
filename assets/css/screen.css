@@ -5474,6 +5474,10 @@ table {
   display: none !important;
 }
 
+.u-divider + .u-divider {
+  border-top: 2px solid #f3f3f3;
+}
+
 /* ==================================
    #SHAME
    ================================== */
