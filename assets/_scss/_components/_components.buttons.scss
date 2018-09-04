@@ -16,12 +16,22 @@
 }
 
 .c-btn-reset {
-  @include font-size($h2);
+  font: inherit;
   position: relative;
   color: inherit;
   border: 0;
   background-color: transparent;
   padding: 0;
+  cursor: pointer;
+
+  &:focus {
+    outline: 0;
+    box-shadow: inset 0 0 0 2px $color-neutral-xlight;
+  }
+}
+
+.c-btn-reset--large {
+  @include font-size($h2);
 }
 
 
