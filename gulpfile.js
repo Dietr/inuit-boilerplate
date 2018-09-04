@@ -9,6 +9,7 @@
 // Plugins
 const gulp = require("gulp");
 const cp = require("child_process");
+const shell = require('gulp-shell')
 const gnf = require("gulp-npm-files");
 const browsersync = require("browser-sync").create();
 const del = require("del");
@@ -18,7 +19,6 @@ const postcss = require("gulp-postcss");
 const autoprefixer = require("autoprefixer");
 const cssnano = require("cssnano");
 const cheerio = require("gulp-cheerio");
-const svgmin = require("gulp-svgmin");
 const svgSymbols = require("gulp-svg-symbols");
 const concat = require("gulp-concat");
 const uglify = require("gulp-uglify");
@@ -41,7 +41,9 @@ const config = {
   },
   icons: {
     title: '%f icon',
-    svgClassname: 'c-icon-set',
+    svgAttrs: {
+      class: 'c-icon-set',
+    },
     templates: ['default-svg']
   },
   cheerio: {
@@ -130,17 +132,18 @@ function browserSyncReload(done) {
 // ---
 // Incremental build
 function jekyll() {
-  return cp.spawn("bundle", ["exec", "jekyll", "build","--incremental"], { stdio: "inherit" });
+  return cp.spawn("bundle", ["exec", "jekyll", "build", "--incremental"], { stdio: "inherit" });
 }
 
-// Production build @TODO env does not work
+// Production build
 function jekyllBuild() {
-  return cp.spawn("bundle", ["exec", "jekyll", "build", "JEKYLL_ENV=production"], { stdio: "inherit" });
+  return cp.spawn("bundle", ["exec", "jekyll", "build"], { stdio: "inherit" });
 }
+
 
 // Clean
 // ---
-// Clean assets
+// Clean site folder
 function clean() {
   return del(["./_site/"]);
 }
@@ -152,7 +155,6 @@ function clean() {
 function icons() {
   return gulp.src(paths.iconsSrc)
     .pipe(cheerio(config.cheerio))
-    .pipe(svgmin())
     .pipe(svgSymbols(config.icons))
     .pipe(gulp.dest(paths.iconsDist))
     .pipe(browsersync.stream());
@@ -233,9 +235,8 @@ gulp.task(
   gulp.series(
     "install",
     clean,
-    jekyll,
-    icons,
-    gulp.parallel(css, scripts)
+    gulp.parallel(css, scripts,icons),
+    jekyll
   )
 );
 
@@ -245,9 +246,8 @@ gulp.task(
   gulp.series(
     "install",
     clean,
-    jekyllBuild,
-    icons,
-    gulp.parallel(cssProduction, scriptsProduction)
+    gulp.parallel(cssProduction, cssProduction,icons),
+    jekyllBuild
   )
 );
 

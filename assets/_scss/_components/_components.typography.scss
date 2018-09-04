@@ -10,9 +10,9 @@
 // Badge > Small text with background color
 // ---
 .c-badge {
-  @include font-size($tiny);
+  @include font-size($tiny,1.3);
   display: inline-block;
-  padding: 0 $unit-tiny;
+  padding: $unit-tiny/2 $unit-tiny;
   color: $color-neutral;
   background-color: $color-neutral-xxlight;
   border-radius: $radius;
@@ -25,4 +25,19 @@
 .c-badge--negative {
   color: $white;
   background-color: $color-neutral-light;
+}
+
+.c-badge--icon {
+  line-height: 1;
+  position: absolute;
+  display: table;
+  right: -$unit-tiny;
+  top: -$unit-tiny;
+  border-radius: 1.5em;
+  width: 1.5em;
+  height: 1.5em;
+  padding: .3em .5em;
+  border: 2px solid $white;
+  vertical-align: middle;
+  text-align: center;
 }

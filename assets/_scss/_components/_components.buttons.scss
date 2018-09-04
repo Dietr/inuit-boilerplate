@@ -16,7 +16,8 @@
 }
 
 .c-btn-reset {
-  font: inherit;
+  @include font-size($h2);
+  position: relative;
   color: inherit;
   border: 0;
   background-color: transparent;
