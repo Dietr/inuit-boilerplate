@@ -6,6 +6,12 @@ The goal of this boilerplate is to make to create a library of components which 
 
 You are free to copy, modify, and distribute Inuit boilerplate, even for commercial purposes, without asking for permission. For any third-party code please refer to the corresponding license included in this project.
 
+## Live demo
+[![Netlify Status](https://api.netlify.com/api/v1/badges/9df5facc-7474-469c-9296-21e4ccb4f00a/deploy-status)](https://app.netlify.com/sites/inuit-boilerplate/deploys)
+
+You can see a live demo of this boilerplate at [https://inuit-boilerplate.netlify.com/](https://inuit-boilerplate.netlify.com/)
+
+
 ## Roadmap
 This project is still under development and will change in the future. Some things I'm working on:
 - better form layout
