@@ -1,0 +1,62 @@
+{% comment %}
+{% include organism.head.html %}
+{% endcomment %}
+<head>
+  {% comment %}
+  Default meta tags to set charset, responsive viewport and proper IE behaviour.
+  {% endcomment %}
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>{% if title %}{{ site.title }} – {{ title }}{% else %}{{ site.title }}{% endif %}</title>
+  <meta name="description" content="{% if og-description %}{{ og-description }}{% else %}{{ site.og-description }}{% endif %}">
+
+  {% comment %}
+  Stylesheets
+  {% endcomment %}
+  <link rel="stylesheet" href="/assets/css/screen.css">
+
+  {% comment %}
+  Canonical link (for SEO)
+  {% endcomment %}
+  <link rel="canonical" href="{{ url | replace:'index.html',''| prepend: site.url }}">
+
+  {% comment %}
+  RSS feed
+  {% endcomment %}
+  <link rel="alternate" type="application/rss+xml" title="{{ site.title }}" href="{{ "feed.xml" | prepend: "/" | prepend: site.url }}">
+
+  {% comment %}
+  Favicons
+  {% endcomment %}
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/icons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/icons/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/img/icons/favicon-16x16.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="mask-icon" href="/assets/img/icons/safari-pinned-tab.svg" color="#2626d9">
+  <meta name="apple-mobile-web-app-title" content="{{ site.title }}">
+  <meta name="application-name" content="{{ site.title }}">
+  <meta name="msapplication-TileColor" content="{{ site.tile-color }}">
+  <meta name="theme-color" content="{{ site.theme-color }}">
+
+  {% comment %}
+  Facebook OG meta tags (https://developers.facebook.com/docs/sharing/best-practices#tags)
+  {% endcomment %}
+  <meta property="og:image" content="{% if og-image %}{{ og-image | prepend: site.url }}{% else %}{{ site.og-image | prepend: site.url }}{% endif %}">
+  <meta property="og:title" content="{{ site.title }} | {{ title }}">
+  <meta property="og:url" content="{{ url | prepend: site.url }}">
+  <meta property="og:site_name" content="{{ site.title }}">
+  <meta property="og:description" content="{% if og-description %}{{ og-description }}{% else %}{{ site.og-description }}{% endif %}">
+
+  {% comment %}
+  Twitter card meta tags (https://dev.twitter.com/cards/types/summary)
+  {% endcomment %}
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="@{{ site.og-handle }}" />
+  <meta name="twitter:title" content="{% if title %}{{ site.title }} – {{ title }}{% else %}{{ site.title }}{% endif %}" />
+  <meta name="twitter:description" content="{% if description %}{{ description }}{% else %}{{ site.description }}{% endif %}" />
+  <meta name="twitter:url" content="{{ url | prepend: site.url }}" />
+  <meta name="twitter:image" content="{% if og-image %}{{ og-image | prepend: site.url }}{% else %}{{ site.og-image | prepend: site.url }}{% endif %}" />
+  <meta name="twitter:image:alt" content="{% if site.og-image-alt %}{{ site.og-image-alt }}{% else %}{{ og-image-alt }}{% endif %}" />
+</head>

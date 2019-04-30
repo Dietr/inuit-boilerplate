@@ -1,0 +1,24 @@
+{
+  "main": [
+    {
+      "title": "Typography",
+      "url": "/typography/"
+    }
+  ],
+  "cta": [
+    {
+      "title": "Contact",
+      "url": "/#!"
+    }
+  ],
+  "footer": [
+    {
+      "title": "Cookies",
+      "url": "/#!"
+    },
+    {
+      "title": "Privacy",
+      "url": "/#!"
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "title": "Inuit boilerplate",
+  "og-description": "A Jekyll boilerplate.",
+  "og-handle": "DieterPeirs",
+  "og-image": "/assets/img/jpg/og-image.jpg",
+  "og-image-alt": "Inuit boilerplate logo",
+  "og_locale": "en",
+  "tile-color": "#000000",
+  "theme-color": "#ffffff",
+  "url": "https://inuit-boilerplate.netlify.com",
+  "baseurl": "",
+  "comments": false,
+  "copyright": {
+    "author": "Roaring and Gentle",
+    "year": "2019"
+  },
+  "legal": {
+    "company": "Roaring and Gentle Comm.V",
+    "address": "Henri Dunantlaan 18/402",
+    "city": "Gent",
+    "phone": "+32 479 79 76 74",
+    "email": "dieter@roaringandgentle.com",
+    "btw": "BTW BE0663.754.370"
+  },
+  "navigation": [
+    {
+      "item": "title",
+      "url": "url"
+    },
+    {
+      "item": "title",
+      "url": "url"
+    }
+  ]
+}

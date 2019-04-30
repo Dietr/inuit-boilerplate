@@ -1,0 +1,19 @@
+{% comment %}
+{% include atom.tooltip.html title="Notifications" icon="notifications" badge="3" desc="View and manage notifications settings" location="bottom" %}
+{% endcomment %}
+<div class="c-tooltip c-tooltip--{{ location }}">
+  <button class="c-btn-reset c-btn-reset--large c-tooltip__link" aria-labelledby="{{ icon }}-count" aria-describedby="{{ icon }}-desc">
+    {% include "components/atom.icon.liquid" value:icon %}
+    {% if badge %}
+    <span id="{{ icon }}-count" class="c-badge c-badge--icon">
+      {{ badge }}
+    </span>
+    {% endif %}
+    <span class="u-hidden-visually">
+      {{ title }}
+    </span>
+  </button>
+  <div id="{{ icon }}-desc" class="c-tooltip__body" role="tooltip">
+    {{ desc }}
+  </div>
+</div>

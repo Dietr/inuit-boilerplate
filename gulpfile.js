@@ -2,32 +2,85 @@
 
 
 // ---
-// Setup: load plugins and define config variables
+// Setup: load plugins and load tasks
 // ---
 
+// Project variables
+const project = {
+  buildSrc: 'src',
+  buildDest: '_site',
+  cssSrc: '/assets/_scss/*.scss',
+  cssDest: '/assets/css/',
+  scriptsSrc: [
+    '_vendor/jquery/dist/jquery.slim.min.js',
+    '_vendor/svgxuse/svgxuse.min.js',
+    '_vendor/picturefill/dist/picturefill.min.js',
+    '_vendor/lazysizes/lazysizes.js',
+    '_vendor/lazysizes/plugins/unveilhooks/ls.unveilhooks.js',
+    'src/assets/js/**/*.js'
+  ],
+  scriptsDest: '/assets/js',
+  iconSrc: './_artwork/icons/*.svg',
+  iconDest: '/assets/img/svg/',
+  vendorDest: './_vendor/'
+}
 
 // Plugins
-const gulp = require("gulp");
-const cp = require("child_process");
-const shell = require('gulp-shell')
-const gnf = require("gulp-npm-files");
-const browsersync = require("browser-sync").create();
-const del = require("del");
-const rename = require("gulp-rename");
-const sass = require("gulp-sass");
-const postcss = require("gulp-postcss");
-const autoprefixer = require("autoprefixer");
-const cssnano = require("cssnano");
-const cheerio = require("gulp-cheerio");
-const svgSymbols = require("gulp-svg-symbols");
-const concat = require("gulp-concat");
-const uglify = require("gulp-uglify");
+var gulp         = require('gulp');
+var shell        = require('gulp-shell');
+var gnf          = require("gulp-npm-files");
+var del          = require("del");
+var browsersync  = require("browser-sync").create();
+var clean        = require('gulp-clean');
+var sass         = require("gulp-sass");
+var postcss      = require("gulp-postcss");
+var autoprefixer = require("autoprefixer");
+var cssnano      = require("cssnano");
+var uglify       = require('gulp-uglify');
+var concat       = require('gulp-concat');
+var cheerio      = require("gulp-cheerio");
+var svgSymbols   = require("gulp-svg-symbols");
+var os           = require("os");
+var parallel     = require("concurrent-transform");
+var rename       = require("gulp-rename");
+var imageResize  = require('gulp-image-resize');
 
-// Config
-const config = {
-  browsersync: {
+
+// ---
+// Functions
+// ---
+
+// Install
+// ---
+// Copy dependencies from `node_modules` to $paths.vendor
+function copyNpmDependencies() {
+  return gulp.src(gnf(), {base:'./'})
+    .pipe(gulp.dest(project.vendorDest));
+}
+
+// Move `$paths.vendor/node_modules/**/*` to `$paths.vendor/**/*`
+function copyVendorDependencies() {
+  return gulp.src(project.vendorDest + 'node_modules/**/*')
+    .pipe(gulp.dest(project.vendorDest));
+}
+
+// Delete `$paths.vendor/node_modules`
+function dependencies() {
+  return del([project.vendorDest + 'node_modules/']);
+}
+
+
+// Run our static site generator to build the pages
+// ---
+gulp.task('generate', shell.task('eleventy'));
+
+
+// Browsersync
+// ---
+function browserSync(done) {
+  browsersync.init({
     server: {
-      baseDir: '_site',
+      baseDir: project.buildDest,
       reloadDelay: 2000,
       debounce: 200,
       notify: true,
@@ -38,87 +91,7 @@ const config = {
         scroll: false
       }
     }
-  },
-  icons: {
-    title: '%f icon',
-    svgAttrs: {
-      class: 'c-icon-set',
-    },
-    templates: ['default-svg']
-  },
-  cheerio: {
-    run: function ($) {
-      $('[fill]').removeAttr('fill');
-    },
-    parserOptions: { xmlMode: true }
-  },
-  autoprefixer: {
-    browsers: [
-      'last 2 version',
-      '> 2%',
-      'ie >= 9',
-      'ios >= 8',
-      'android >= 4'
-    ]
-  },
-  jsConcat: 'scripts.js'
-};
-
-// Paths
-const paths = {
-  vendor: './_vendor/',
-  scssSrc: './assets/_scss/**/*.scss',
-  cssSrc: './assets/css/',
-  cssDist: './_site/assets/css/',
-  jsSrc: [
-    './_vendor/jquery/dist/jquery.slim.js',
-    './_vendor/svgxuse/svgxuse.js',
-    './assets/js/_scripts/*.js'
-  ],
-  jsDist: './assets/js/',
-  jsJekyllDist: './_site/assets/js/',
-  iconsSrc: './_artwork/icons/*.svg',
-  iconsDist: './assets/img/svg/',
-  cssWatch: './assets/_scss/**/*.scss',
-  jsWatch: './assets/js/_scripts/**/*.js',
-  iconsWatch: './_artwork/icons/*.svg',
-  imageWatch: './assets/img/**/*',
-  siteWatch: [
-    './assets/img/**/*.png',
-    './assets/img/**/*.jpg',
-    './assets/img/**/*.svg',
-    './**/*.html',
-    './_pages/**/*.markdown',
-    './_posts/**/*.markdown',
-    './_data/**/*.yml',
-    './_config.yml',
-    '!_site/**/*.*'
-  ]
-}
-
-// Install
-// ---
-// Copy dependencies from `node_modules` to $paths.vendor
-function copyNpmDependencies() {
-  return gulp.src(gnf(), {base:'./'})
-    .pipe(gulp.dest(paths.vendor));
-}
-
-// Move `$paths.vendor/node_modules/**/*` to `$paths.vendor/**/*`
-function copyVendorDependencies() {
-  return gulp.src(paths.vendor + 'node_modules/**/*')
-    .pipe(gulp.dest(paths.vendor));
-}
-
-// Delete `$paths.vendor/node_modules`
-function dependencies() {
-  return del([paths.vendor + 'node_modules/']);
-}
-
-// BrowserSync
-// ---
-function browserSync(done) {
-  browsersync.init(config.browsersync);
+  });
   done();
 }
 
@@ -128,134 +101,155 @@ function browserSyncReload(done) {
   done();
 }
 
-// Jekyll
-// ---
-// Incremental build
-function jekyll() {
-  return cp.spawn("bundle", ["exec", "jekyll", "build", "--incremental"], { stdio: "inherit" });
-}
-
-// Production build
-function jekyllBuild() {
-  return cp.spawn("bundle", ["exec", "jekyll", "build"], { stdio: "inherit" });
-}
-
-
 // Clean
 // ---
-// Clean site folder
-function clean() {
-  return del(["./_site/"]);
+function cleanBuild() {
+  return gulp.src(project.buildDest, {read: false, allowEmpty: true},)
+    .pipe(clean());
 }
+
+
+// Compile SCSS files to CSS
+// ---
+function css() {
+  return gulp.src(project.buildSrc + project.cssSrc)
+    .pipe(sass({ outputStyle: "compressed" }))
+    .pipe(postcss([autoprefixer({
+      browsers: [
+        'last 2 version',
+        '> 2%',
+        'ie >= 9',
+        'ios >= 8',
+        'android >= 4'
+      ]
+    }), cssnano()]))
+    .pipe(gulp.dest(project.buildDest + project.cssDest))
+    .pipe(browsersync.stream());
+}
+
+
+// Uglify our javascript files into one.
+// ---
+function scripts() {
+  return gulp
+    .src(project.scriptsSrc)
+    .pipe(concat('scripts.js'))
+    .pipe(uglify())
+    .pipe(gulp.dest(project.buildDest + project.scriptsDest))
+    .pipe(browsersync.stream());
+}
+
 
 // Icons
 // ---
 // Convert multiple svg's to one symbol file
 // https://css-tricks.com/svg-symbol-good-choice-icons/
 function icons() {
-  return gulp.src(paths.iconsSrc)
-    .pipe(cheerio(config.cheerio))
-    .pipe(svgSymbols(config.icons))
-    .pipe(gulp.dest(paths.iconsDist))
+  return gulp.src(project.iconSrc)
+    .pipe(cheerio({
+      run: function ($) {
+        $('[fill]').removeAttr('fill');
+      },
+      parserOptions: { xmlMode: true }
+    }))
+    .pipe(svgSymbols({
+      title: '%f icon',
+      svgAttrs: {
+        class: 'c-icon-set',
+      },
+      templates: ['default-svg']
+    }))
+    .pipe(gulp.dest(project.buildSrc + project.iconDest))
+    .pipe(gulp.dest(project.buildDest + project.iconDest))
     .pipe(browsersync.stream());
 }
 
-// CSS
-// ---
-function css() {
-  return gulp
-    .src(paths.scssSrc)
-    .pipe(sass({ outputStyle: "expanded" }))
-    .pipe(postcss([autoprefixer(config.autoprefixer)]))
-    .pipe(gulp.dest(paths.cssSrc))
-    .pipe(gulp.dest(paths.cssDist))
-    .pipe(browsersync.stream());
-}
 
-function cssProduction() {
-  return gulp
-    .src(paths.scssSrc)
-    .pipe(sass())
-    .pipe(rename({ suffix: ".min" }))
-    .pipe(postcss([autoprefixer(config.autoprefixer), cssnano()]))
-    .pipe(gulp.dest(paths.cssSrc))
-    .pipe(gulp.dest(paths.cssDist));
-}
+// create a set of resize tasks at defined image widths
+var resizeImageTasks = [];
+[400,1000].forEach(function(size) {
+  var resizeImageTask = 'resize_' + size;
+  gulp.task(resizeImageTask, function(done) {
+    gulp.src(project.buildSrc + '/assets/img/*')
+    .pipe(parallel(
+      imageResize({ width : size }),
+      os.cpus().length
+    ))
+    .pipe(rename(function (path) { path.basename += "-" + size; }))
+    .pipe(gulp.dest(project.buildDest+ '/assets/img'));
+    done();
+  });
+  resizeImageTasks.push(resizeImageTask);
+});
 
-// JS
-// ---
-// Transpile, concatenate and minify scripts
-function scripts() {
-  return gulp
-    .src(paths.jsSrc)
-    .pipe(concat(config.jsConcat))
-    .pipe(gulp.dest(paths.jsDist))
-    .pipe(gulp.dest(paths.jsJekyllDist))
-    .pipe(browsersync.stream())
-}
 
-function scriptsProduction() {
-  return gulp
-    .src(paths.jsSrc)
-    .pipe(concat(config.jsConcat))
-    .pipe(uglify())
-    .pipe(rename({ suffix: ".min" }))
-    .pipe(gulp.dest(paths.jsDist))
-    .pipe(gulp.dest(paths.jsJekyllDist));
-}
+// Copy our core images to the dist folder, and resize all preview images
+gulp.task('images', gulp.parallel(resizeImageTasks, function copyOriginalImages(done) {
+  gulp.src(project.buildSrc + '/assets/img/*')
+    .pipe(gulp.dest(project.buildDest+ '/assets/img'))
+    done();
+}));
 
-// Watch files
+
+// Watch folders for changes
 // ---
 function watchFiles() {
-  gulp.watch(paths.cssWatch, css);
-  gulp.watch(paths.jsWatch, scripts);
-  gulp.watch(paths.jsWatch, scripts);
-  gulp.watch(paths.iconsWatch, icons);
+  gulp.watch(project.buildSrc + "/assets/_scss/**/*", gulp.parallel('css'));
+  gulp.watch(project.buildSrc + "/assets/js/**/*", gulp.parallel('scripts'));
+  gulp.watch("./_artwork/icons/*.svg", gulp.parallel('icons'));
   gulp.watch(
-    paths.siteWatch,
-    gulp.series(jekyll, browserSyncReload)
+    [
+      project.buildSrc + '/assets/img/**/*.png',
+      project.buildSrc + '/assets/img/**/*.jpg',
+      project.buildSrc + '/assets/img/**/*.svg',
+      project.buildSrc + '/pages/**/*',
+      project.buildSrc + '/_data/**/*.json',
+      project.buildSrc + '/_includes/**/*.liquid',
+      project.buildSrc + '/_includes/**/*.liquid',
+      project.buildSrc + '/_pages/*.md',
+      project.buildSrc + '/_articles/*.md',
+      project.buildSrc + '/_cases/*.md'
+    ],
+    gulp.series('generate', 'browserSyncReload')
   );
 }
 
+
+// ---
 // Tasks
 // ---
-gulp.task("install", gulp.series(copyNpmDependencies, copyVendorDependencies, dependencies));
-gulp.task("jekyll", jekyll);
-gulp.task("jekyllBuild", jekyllBuild);
-gulp.task("icons", icons);
-gulp.task("css", css);
-gulp.task("cssProduction", cssProduction);
-gulp.task("scripts", scripts);
-gulp.task("scriptsProduction", scriptsProduction);
-gulp.task("clean", clean);
+gulp.task('install', gulp.series(copyNpmDependencies, copyVendorDependencies, dependencies));
+gulp.task('cleanBuild', cleanBuild);
+gulp.task('css', css);
+gulp.task('scripts', scripts);
+gulp.task('icons', icons);
+gulp.task('watchFiles', watchFiles);
+gulp.task('browserSync', browserSync);
+gulp.task('browserSyncReload', browserSyncReload);
+
+
+// Assets
+gulp.task('assets', gulp.parallel(
+  'icons',
+  'css',
+  'scripts'
+));
+
 
 // Default
-gulp.task(
-  "default",
-  gulp.series(
-    "install",
-    clean,
-    gulp.parallel(css, scripts,icons),
-    jekyll
-  )
-);
+gulp.task('default', gulp.series(
+  'install',
+  'cleanBuild',
+  'generate',
+  'assets'
+));
 
-// Build
-gulp.task(
-  "build",
-  gulp.series(
-    "install",
-    clean,
-    gulp.parallel(cssProduction, cssProduction,icons),
-    jekyllBuild
-  )
-);
 
 // Watch
-gulp.task(
-  "watch",
-  gulp.series(
-    "default",
-    gulp.parallel(watchFiles, browserSync)
+gulp.task('watch', gulp.series(
+    'default',
+    gulp.parallel('watchFiles', 'browserSync')
   )
 );
+
+

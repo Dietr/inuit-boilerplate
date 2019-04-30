@@ -1,0 +1,100 @@
+/* ==================================
+   #NAVIGATION
+   ================================== */
+
+.has-nav {
+  overflow: hidden;
+}
+
+.c-navigation {
+  margin-bottom: 0;
+  position: relative;
+  display: block;
+
+  @include mq($until: small) {
+    position: fixed;
+    z-index: $z-index-alpha;
+    overflow: scroll;
+    background-color: $color-primary-xlight;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    padding: $unit-huge $unit;
+    transform: scale(0);
+
+    &.is-visible {
+      transform: scale(1);
+      transition: all $duration $easing;
+    }
+  }
+}
+
+  .c-navigation__item {
+    & + & {
+      margin-top: $inuit-global-spacing-unit;
+    }
+
+    @include mq(small) {
+      display: inline-block;
+
+      & + & {
+        margin-top: 0;
+        margin-left: $inuit-global-spacing-unit;
+      }
+    }
+  }
+
+// Mobile navigation toggle
+.c-navigation-toggle {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: $z-index-beta;
+  border: 0;
+  color: $color-primary;
+  background-color: transparent;
+  transition: $global-transition;
+
+  &:focus {
+    outline: 0;
+  }
+
+  @include mq(small) {
+    display: none;
+  }
+}
+
+// Hamburger icon and animation
+.c-hamburger {
+  stroke: currentColor;
+  stroke-width: 6px;
+  stroke-linecap: round;
+  width: 44px;
+  height: 44px;
+}
+
+  .c-hamburger__line {
+    transition: all $duration $easing;
+    transform-origin: center;
+
+    &:nth-child(3) {
+      opacity: 0;
+    }
+  }
+
+  [aria-expanded='true'] .c-hamburger__line {
+    &:nth-child(2) {
+      transform: rotate(45deg);
+    }
+
+    &:nth-child(3) {
+      transform: rotate(-45deg);
+      opacity: 1;
+    }
+
+    &:first-child,
+    &:last-child {
+      transform: scale(0);
+    }
+  }

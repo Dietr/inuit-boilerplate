@@ -1,0 +1,61 @@
+{% comment %}
+{% include components/molecule.social-links.liquid %}
+{% endcomment %}
+<ul class="o-list-bare c-ui-list">
+  {% if social.twitter_username != "" %}
+  <li class="c-ui-list__item">
+    <a href="https://twitter.com/{{ social.twitter_username }}" class="c-link c-link--bare">
+      {% include "components/atom.icon.liquid" value:"twitter" %}
+      Twitter
+    </a>
+  </li>
+  {% endif %}
+  {% if social.dribbble_username != "" %}
+  <li class="c-ui-list__item">
+    <a href="https://dribbble.com/{{ social.dribbble_username }}" class="c-link c-link--bare">
+      {% include "components/atom.icon.liquid" value:"dribbble" %}
+      Dribbble
+    </a>
+  </li>
+  {% endif %}
+  {% if social.github_username != "" %}
+  <li class="c-ui-list__item">
+    <a href="https://github.com/{{ social.github_username }}" class="c-link c-link--bare">
+      {% include "components/atom.icon.liquid" value:"github" %}
+      Github
+    </a>
+  </li>
+  {% endif %}
+  {% if social.facebook_username != "" %}
+  <li class="c-ui-list__item">
+    <a href="https://facebook.com/{{ social.facebook_username }}" class="c-link c-link--bare">
+      {% include "components/atom.icon.liquid" value:"facebook" %}
+      Facebook
+     </a>
+  </li>
+  {% endif %}
+  {% if social.linkedin_username != "" %}
+  <li class="c-ui-list__item">
+    <a href="https://linkedin.com/{{ social.linkedin_username }}" class="c-link c-link--bare">
+      {% include "components/atom.icon.liquid" value:"linkedin" %}
+      LinkedIn
+     </a>
+  </li>
+  {% endif %}
+  {% if social.youtube_username != "" %}
+  <li class="c-ui-list__item">
+    <a href="https://youtube.com/{{ social.youtube_username }}" class="c-link c-link--bare">
+      {% include "components/atom.icon.liquid" value:"youtube" %}
+      YouTube
+     </a>
+  </li>
+  {% endif %}
+  {% if social.medium_username != "" %}
+  <li class="c-ui-list__item">
+    <a href="https://medium.com/{{ social.medium_username }}" class="c-link c-link--bare">
+      {% include "components/atom.icon.liquid" value:"medium" %}
+      Medium
+     </a>
+  </li>
+  {% endif %}
+</ul>

@@ -1,0 +1,9 @@
+{% comment %}
+{% include atom.form-checkbox.html id="checkbox" label="Label" optional="Optional" %}
+{% endcomment %}
+<p class="c-field c-field--check">
+  <input id="{{ id }}" type="checkbox" class="c-checkbox">
+  <label for="{{ id }}" class="c-label">
+    {{ label }}{% if optional %}<span class="c-badge c-badge--negative">{{ optional }}</span>{% endif %}
+  </label>
+</p>

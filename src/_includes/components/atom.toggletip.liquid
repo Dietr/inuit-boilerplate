@@ -1,0 +1,10 @@
+{% comment %}
+{% include atom.toggletip.html title="More info" icon="info" desc="This clarifies whatever needs clarifying." location="right" %}
+{% endcomment %}
+<span class="c-toggletip c-toggletip--{{ location }}">
+  <button type="button" class="c-btn-reset js-toggletip" title="{{ desc }}">
+    {% include "components/atom.icon.liquid" value:icon %}
+    <span class="u-hidden-visually">{{ title }}</span>
+  </button>
+  <span role="status"></span>
+</span>

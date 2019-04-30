@@ -1,0 +1,25 @@
+{% comment %}
+{% include molecule.navigation.html %}
+{% endcomment %}
+<nav>
+  {% include "components/atom.hamburger.liquid" %}
+
+  <ul class="o-list-bare c-navigation js-nav">
+    <!-- Define your site navigation in nav.json -->
+    {% for item in nav.main %}
+    <li class="c-navigation__item {% if page.url contains item.url %} is-active{% endif %}">
+      <a href="{{ item.url }}" class="c-link c-link--bare">{{ item.title }}</a>
+    </li>
+    {% endfor %}
+
+    <!-- Navigation CTA -->
+    {% for item in nav.cta %}
+    <li class="c-navigation__item">
+      <a href="/{{ item.url }}" alt="Contact" class="c-btn c-btn--primary c-btn--ghost c-btn--small">
+        {{ item.title }} {% include "components/atom.icon.liquid" value:"arrow" %}
+      </a>
+    </li>
+    {% endfor %}
+  </ul>
+</nav>
+
