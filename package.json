@@ -46,7 +46,7 @@
     "inuitcss-plugin-responsive-wrapper": "^1.0.1",
     "inuitcss-plugin-row": "^1.0.2",
     "jquery": "^3.4.0",
-    "lazysizes": "^4.1.8",
+    "lazysizes": "^5.2.1",
     "picturefill": "^3.0.3",
     "sass-mq": "^5.0.0",
     "svgxuse": "^1.2.6"
