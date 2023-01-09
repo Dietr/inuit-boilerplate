@@ -14,7 +14,7 @@
   },
   "homepage": "https://github.com/Dietr/inuit-boilerplate#readme",
   "devDependencies": {
-    "@11ty/eleventy": "^0.8.2",
+    "@11ty/eleventy": "^1.0.2",
     "@11ty/eleventy-plugin-syntaxhighlight": "^2.0.3",
     "autoprefixer": "^9.5.1",
     "browser-sync": "^2.26.7",
